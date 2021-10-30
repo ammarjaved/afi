@@ -1,4 +1,14 @@
 <!doctype html>
+<?php
+session_start();
+$loc = 'http://' . $_SERVER['HTTP_HOST'];
+if (isset($_SESSION['logedin'])) {
+
+} 
+else {
+    header("Location:" . $loc . "/afi_old/login/loginform.php");
+}
+?>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -33,7 +43,9 @@
                              class="d-inline-block align-middle mr-2">
 
                         <span class="text-uppercase font-weight-bold text-muted">AFI</span>
+                        <a href="services/logout.php" class="pull-right btn btn-danger" style="color: white; margin-top: 3px !important;">Logout</a>
                     </div>
+                   
                 </div>
 
             </div>
@@ -137,9 +149,30 @@
             </div>
         </div>
 
+        <div class="row"  >
+            <div class="col-md-12 remove_right_padding" id="">
+                <div style="display:none; margin-left: 50px !important; margin-top: 5px !important; margin-bottom: 10px !important;" id="fd_details_div">
+    
+                    <p id="fd_p1" class="fd_p" style="cursor:pointer">Feder_No.1: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_1">0</span></p>&nbsp&nbsp
+                    <p id="fd_p2" class="fd_p" style="cursor:pointer">Feder_No.2: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_2">0</span></p>&nbsp&nbsp
+                    <p id="fd_p3" class="fd_p" style="cursor:pointer">Feder_No.3: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_3">0</span></p>&nbsp&nbsp
+                    <p id="fd_p4" class="fd_p" style="cursor:pointer">Feder_No.4: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_4">0</span></p>&nbsp&nbsp
+                    <p id="fd_p5" class="fd_p" style="cursor:pointer">Feder_No.5: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_5">0</span></p>&nbsp&nbsp
+                    <p id="fd_p6" class="fd_p" style="cursor:pointer">Feder_No.6: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_6">0</span></p>&nbsp&nbsp
+                    <p id="fd_p7" class="fd_p" style="cursor:pointer">Feder_No.7: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_7">0</span></p>&nbsp&nbsp
+                    <p id="fd_p8" class="fd_p" style="cursor:pointer">Feder_No.8: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_8">0</span></p>&nbsp&nbsp
+                    <p id="fd_p9" class="fd_p" style="cursor:pointer">Feder_No.9: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_9">0</span></p>&nbsp&nbsp
+                    <p id="fd_p10" class="fd_p" style="cursor:pointer">Feder_No.10: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_10">0</span></p>&nbsp&nbsp
+                    <p id="fd_p11" class="fd_p" style="cursor:pointer">Feder_No.11: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_11">0</span></p>&nbsp&nbsp
+                    <p id="fd_p12" class="fd_p" style="cursor:pointer">Feder_No.12: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_12">0</span></p>&nbsp&nbsp
+                </div>
+            </div>
+        </div>
+        
+
 
         <div class="row">
-            <div class="col-md-9 remove_right_padding">
+            <div class="col-md-12 ">
                 <div class="panel panel-default">
                     <!--<a data-toggle="collapse" data-parent="#accordionBar2" href="#r1p1" style="color: #000;">-->
                     <!--<div class="panel-heading" style="background: #EEEEEE; font-weight: bold;">Choropleth Map-->
@@ -147,60 +180,13 @@
                     <!--</div>-->
                     <!--</a>-->
                     <div id="r1p1" class="panel-collapse collapse in">
-                        <div class="panel-body" id="map_div" style="padding: 0; height: 495px !important;">
+                        <div class="panel-body" id="map_div" style="padding: 0; height: 456px !important; margin-bottom: 0px !important;">
                             <!--Panel content-->
                             <!--Map will be here-->
                            
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-3 remove_right_padding" id="">
-                <div class="panel panel-default">
-                    <!--<a data-toggle="collapse" data-parent="#accordionBar2" href="#r1p3" style="color: #000;">-->
-                    <div class="panel-heading" style="background: #EEEEEE; font-weight: bold;">Map Layers
-                    </div>
-                    <!--</a>-->
-                    <div id="r1p3" class="panel-collapse collapse in" style="overflow: auto;">
-                        <div class="panel-body" id="toc_div">
-                            <!--Panel content-->
-
-                            <div class="card">
-                                <div class="card-body" id="headingTwo">
-                                 <label for="lvdb_l1" >
-                                        <input type="checkbox" class="chk" name="lvdb_l1" value="Bike" onclick="addRemoveLayer('lvdb_l1')" id="lvdb_l1" >
-                                        LVDB_L1</label>&nbsp<img src="images/green.png" alt="" width="30" height="30"><br>
-                                <label for="SFP_L2" >
-                                        <input type="checkbox" class="chk" name="SFP_L2" value="Bike" onclick="addRemoveLayer('SFP_L2')" id="SFP_L2" >
-                                        SFP_L2</label>&nbsp<img src="images/pink.png" alt="" width="30" height="30"><br>
-                                    <label for="MFP_L3" >
-                                        <input type="checkbox" class="chk" name="MFP_L3" value="Bike" onclick="addRemoveLayer('MFP_L3')" id="MFP_L3" >
-                                        MFP_L3</label>&nbsp<img src="images/orange.png" alt="" width="30" height="30"><br>
-        
-                                    <label for="demand_point">
-                                        <input type="checkbox" class="chk" name="demand_point" value="Car" onclick="addRemoveLayer('demand_point')" id="demand_point" checked>
-                                        Demand Point</label>&nbsp<img src="images/layer.jpg" alt="" width="30" height="30"><br>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div style="display:none;" id="fd_details_div">
-                    <p id="fd_p1" class="fd_p" style="cursor:pointer">Feder_No.1: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_1">0</span></p>&nbsp&nbsp
-                    <p id="fd_p2" class="fd_p" style="cursor:pointer">Feder_No.2: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_2">0</span></p>&nbsp&nbsp
-                    <p id="fd_p3" class="fd_p" style="cursor:pointer">Feder_No.3: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_3">0</span></p><hr>
-                    <p id="fd_p4" class="fd_p" style="cursor:pointer">Feder_No.4: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_4">0</span></p>&nbsp&nbsp
-                    <p id="fd_p5" class="fd_p" style="cursor:pointer">Feder_No.5: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_5">0</span></p>&nbsp&nbsp
-                    <p id="fd_p6" class="fd_p" style="cursor:pointer">Feder_No.6: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_6">0</span></p><hr>
-                    <p id="fd_p7" class="fd_p" style="cursor:pointer">Feder_No.7: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_7">0</span></p>&nbsp&nbsp
-                    <p id="fd_p8" class="fd_p" style="cursor:pointer">Feder_No.8: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_8">0</span></p>&nbsp&nbsp
-                    <p id="fd_p9" class="fd_p" style="cursor:pointer">Feder_No.9: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_9">0</span></p><hr>
-                    <p id="fd_p10" class="fd_p" style="cursor:pointer">Feder_No.10: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_10">0</span></p>&nbsp&nbsp
-                    <p id="fd_p11" class="fd_p" style="cursor:pointer">Feder_No.11: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_11">0</span></p>&nbsp&nbsp
-                    <p id="fd_p12" class="fd_p" style="cursor:pointer">Feder_No.12: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_12">0</span></p>&nbsp&nbsp
-                </div>
-                
             </div>
         </div>
 

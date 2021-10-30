@@ -1,7 +1,7 @@
-var lvdb_l1;
-var SFP_L2;
-var MFP_L3;
-var demand_point;
+var lvdb_l1 = L.layerGroup();
+var SFP_L2 = L.layerGroup();
+var MFP_L3 = L.layerGroup();
+var demand_point = L.layerGroup();
 var current_dropdown_cd_id='%';
 var current_phase_val='%';
 var latlngsarr = Array();
@@ -23,7 +23,7 @@ var point_polylines_arr=Array();
 var map = L.map('map_div', {
     center: [2.390668368, 102.080687281],
     zoom: 16,
-    layers: [googleSat],
+    layers: [googleSat, demand_point],
     attributionControl:false 
 });
 
@@ -34,7 +34,14 @@ var baseLayers = {
     "Dark": dark,
 };
 
-L.control.layers(baseLayers).addTo(map);
+var overlays = {
+    "LVDB_L1&nbsp&nbsp<img src='images/green.png' width='30' height='30'>": lvdb_l1,
+    "SFP_L2&nbsp&nbsp<img src='images/pink.png' width='30' height='30'>": SFP_L2,
+    "MFP_L3&nbsp&nbsp<img src='images/orange.png' width='30' height='30'>": MFP_L3,
+    "Demand Point&nbsp&nbsp<img src='images/layer.jpg' width='30' height='30'>": demand_point,
+};
+
+L.control.layers(baseLayers, overlays).addTo(map);
 
 
 $(document).ready(function(){
@@ -129,7 +136,7 @@ $(document).ready(function(){
                         }
                     });
                 }
-             });
+            }).addTo(lvdb_l1)
 
             }
         });
@@ -179,7 +186,7 @@ $(document).ready(function(){
                         }
                     });
                 }
-            });
+            }).addTo(SFP_L2)
 
             }
         });
@@ -232,7 +239,7 @@ $(document).ready(function(){
                         });
 
                     }
-                });
+                }).addTo(MFP_L3)
 
             }
         });
@@ -344,7 +351,7 @@ $(document).ready(function(){
                             
                         });
                     }
-                }).addTo(map)
+                }).addTo(demand_point)
             }
         });
        

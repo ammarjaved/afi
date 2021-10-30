@@ -1,8 +1,8 @@
 <?php
 class Connection
 {
-   public $hostname = 'localhost';
-    // public $hostname = '172.20.82.84';
+//    public $hostname = 'localhost';
+    public $hostname = '121.121.232.54';
   //  public $hostname = '172.20.82.72';
     public $port        = 5433;
     public $database    = 'afi_old';
