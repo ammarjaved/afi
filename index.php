@@ -151,7 +151,7 @@ else {
 
         <div class="row"  >
             <div class="col-md-12 remove_right_padding" id="">
-                <div style="display:none; margin-left: 50px !important; margin-top: 5px !important; margin-bottom: 10px !important;" id="fd_details_div">
+                <div style="display:none; margin-left: 20px !important; margin-top: 5px !important; margin-bottom: 10px !important;" id="fd_details_div">
     
                     <p id="fd_p1" class="fd_p" style="cursor:pointer">Feder_No.1: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_1">0</span></p>&nbsp&nbsp
                     <p id="fd_p2" class="fd_p" style="cursor:pointer">Feder_No.2: &nbsp<span class="badge bg-danger ms-2" style="background-color: gray;" class="fd_detail" id="fd_2">0</span></p>&nbsp&nbsp

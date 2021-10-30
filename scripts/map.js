@@ -494,7 +494,7 @@ $('.maincountdiv').on('click',function(){
                 $('.fd_p').css({'background': '#007BFF'});
             }
             if(phase_val=="RYB"){
-                $('.fd_p').css({'background': '#26C6DA'});
+                $('.fd_p').css({'background': '#7d26cd'});
             }
 
     $.ajax({
