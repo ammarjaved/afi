@@ -22,7 +22,7 @@ var point_polylines_arr=Array();
 
 var map = L.map('map_div', {
     center: [2.390668368, 102.080687281],
-    zoom: 16,
+    zoom: 7,
     layers: [googleSat, demand_point],
     attributionControl:false 
 });
@@ -56,7 +56,7 @@ $(document).ready(function(){
           console.log(response)
           $("#sred").text(response.Rsingle[0]["count"]);
           $("#syellow").text(response.Ysingle[0]["count"]);
-          $("#tblue").text(response.Bthree[0]["count"]);
+          $("#tblue").text(response.Bsingle[0]["count"]);
           $("#tryb").text(response.RYBthree[0]["count"]);
 
         }
@@ -560,7 +560,7 @@ function loadfilterdata(cd_id){
         success: function callback(response) {
           $("#sred").text(response.Rsingle[0]["count"]);
           $("#syellow").text(response.Ysingle[0]["count"]);
-          $("#tblue").text(response.Bthree[0]["count"]);
+          $("#tblue").text(response.Bsingle[0]["count"]);
           $("#tryb").text(response.RYBthree[0]["count"]);
 
         }

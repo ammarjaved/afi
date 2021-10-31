@@ -6,8 +6,8 @@ $output = array();
 
 
 $sql1="select cd_id,id,pe_name from public.fpl1;";
-$sql2="select cd_id,id,pe_name from public.sfp_l2;";
-$sql3="select cd_id,id,pe_name from public.mfp_l3;";
+$sql2="select cd_id,gid,pe_name from public.sfp_l2;";
+$sql3="select cd_id,gid,pe_name from public.mfp_l3;";
 
 
 

@@ -27,7 +27,7 @@ if($query2)
 }
 if($query3)
 {
-    $output['Bthree'] = pg_fetch_all($query3);
+    $output['Bsingle'] = pg_fetch_all($query3);
 }
 if($query4)
 {
