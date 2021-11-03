@@ -3,12 +3,12 @@ session_start();
 include 'connection.php';
 $output = array();
 
-$cd_id=$_GET['cd_id'];
+$lid=$_GET['lid'];
 
-$sql1="select count(*) from public.demand_point where phase='R'  and cd_id ilike '$cd_id';";
-$sql2="select count(*) from public.demand_point where phase='Y'  and cd_id ilike '$cd_id';";
-$sql3="select count(*) from public.demand_point where phase='B'  and cd_id ilike '$cd_id';";   
-$sql4="select count(*) from public.demand_point where phase='RYB' and cd_id ilike '$cd_id';";   
+$sql1="select count(*) from public.demand_point where phase='R' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";
+$sql2="select count(*) from public.demand_point where phase='Y' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";
+$sql3="select count(*) from public.demand_point where phase='B' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";   
+$sql4="select count(*) from public.demand_point where phase='RYB' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";  
 
 //echo $sql1."<br/>";
 $query1=pg_query($sql1);

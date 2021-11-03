@@ -133,7 +133,7 @@ else {
             <div class="col-md-3">
                 <div style="cursor:pointer" class="maincountdiv card-counter primary" id="B">
                     <i class="fa fa-bolt"></i>
-                    <span class="count-numbers" id="tblue"></span>
+                    <span class="count-numbers" id="sblue"></span>
                     <span class="count-name">Single Phase Blue</span>
                 </div>
             </div>
