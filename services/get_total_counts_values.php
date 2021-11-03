@@ -5,10 +5,10 @@ $output = array();
 
 $lid=$_GET['lid'];
 
-$sql1="select count(*) from public.demand_point where phase='R' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";
-$sql2="select count(*) from public.demand_point where phase='Y' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";
-$sql3="select count(*) from public.demand_point where phase='B' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";   
-$sql4="select count(*) from public.demand_point where phase='RYB' and l1_id ilike '$lid' or l2_id ilike '$lid' or l3_id ilike '$lid';";  
+$sql1="select count(*) from public.demand_point where phase='R' ;";
+$sql2="select count(*) from public.demand_point where phase='Y' ;";
+$sql3="select count(*) from public.demand_point where phase='B' ;";   
+$sql4="select count(*) from public.demand_point where phase='RYB' ;";  
 
 //echo $sql1."<br/>";
 $query1=pg_query($sql1);
