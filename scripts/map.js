@@ -48,7 +48,7 @@ L.control.layers(baseLayers, overlays).addTo(map);
 $(document).ready(function(){
     //-----------counts----------
     $.ajax({
-        url: "services/get_total_counts_values.php?cd_id=%",
+        url: "services/get_total_counts_values.php?lid=%",
         type: "GET",
         dataType: "json",
         //data: JSON.stringify(geom,layer.geometry),
