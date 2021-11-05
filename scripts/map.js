@@ -53,6 +53,20 @@ var overlays = {
 L.control.layers(baseLayers, overlays).addTo(map);
 
 
+var Icon1 = L.icon({
+    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
+    iconSize:     [35, 35] // size of the icon
+});
+var Icon2 = L.icon({
+    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/2.png',
+    iconSize:     [35, 35] // size of the icon
+});
+var Icon3 = L.icon({
+    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/3.png',
+    iconSize:     [35, 35] // size of the icon
+});
+
+
 $(document).ready(function(){
     //-----------counts----------
     $.ajax({
@@ -94,18 +108,7 @@ $(document).ready(function(){
 
             }
         });
-        var Icon1 = L.icon({
-            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
-            iconSize:     [35, 35] // size of the icon
-        });
-        var Icon2 = L.icon({
-            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/2.png',
-            iconSize:     [35, 35] // size of the icon
-        });
-        var Icon3 = L.icon({
-            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/3.png',
-            iconSize:     [35, 35] // size of the icon
-        });
+      
         //-----------geojson of layers----------  
         $.ajax({
             url: "services/get_lvdb_l1_geojson.php?l1_id=%",
@@ -386,7 +389,9 @@ $(document).ready(function(){
 							
 							
                             setTimeout(function(){ 
-                                var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
+                                // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
+                                var polyline = L.polyline(arr);
+                                setPolylineColors(polyline,['yellow','pink','green'])
                                 line_l1_l2_l3_markers.addTo(map);
                                 point_polylines_arr.push(polyline);
                              }, 400);
@@ -460,79 +465,48 @@ $('select[name="fp"]').on('change',function(e){
     //  }
     e.preventDefault();
     var l1_id= $(this).val();
-    map.removeLayer(demand_point)
-    map.removeLayer(lvdb_l1)
-    map.removeLayer(SFP_L2)
-    map.removeLayer(MFP_L3)
     $("#sred").text('');
     $("#syellow").text('');
     $("#sblue").text('');
     $("#tryb").text('');
 
-    $(".chk").prop("checked", false);
-    $("#demand_point").prop("checked", true);
-    
-    $("#sfp").val('0');
-    $("#mfp").val('0');
-
     $('#fd_details_div').show();
-
     current_dropdown_Lid=l1_id;
     loadfilterdata(l1_id); 
 });
 
 $('select[name="sfp"]').on('change',function(e){
     e.preventDefault();
-    var cd_id= $(this).val();
-    map.removeLayer(demand_point)
-    map.removeLayer(lvdb_l1)
-    map.removeLayer(SFP_L2)
-    map.removeLayer(MFP_L3)
+    var l2id= $(this).val();
+
     $("#sred").text('');
     $("#syellow").text('');
     $("#sblue").text('');
     $("#tryb").text('');
 
-    $(".chk").prop("checked", false);
-    $("#demand_point").prop("checked", true);
-    
-    $("#fp").val('0');
-    $("#mfp").val('0');
-
     $('#fd_details_div').show();
 
-    current_dropdown_Lid=cd_id;
-    loadfilterdata(cd_id);
+    current_dropdown_Lid=l2id;
+    loadfilterdata(l2id);
 });
 $('select[name="mfp"]').on('change',function(e){
     e.preventDefault();
-    var cd_id= $(this).val();
-    map.removeLayer(demand_point)
-    map.removeLayer(lvdb_l1)
-    map.removeLayer(SFP_L2)
-    map.removeLayer(MFP_L3)
-
+    var l3id= $(this).val();
     $("#sred").text('');
     $("#syellow").text('');
     $("#sblue").text('');
     $("#tryb").text('');
-
-    $(".chk").prop("checked", false);
-    $("#demand_point").prop("checked", true);
-    
-    $("#fp").val('0');
-    $("#sfp").val('0');
-
+    // just blank show fd_details_div
     $('#fd_details_div').show();
 
-    current_dropdown_Lid=cd_id;
-    loadfilterdata(cd_id);
+    current_dropdown_Lid=l3id;
+    loadfilterdata(l3id);
     
 });
 
 
-
-$('.maincountdiv').on('click',function(){
+// now filling color and values to fd_details_div
+$('.countdiv').on('click',function(){
     var phase_val = $(this).attr("id");
             // console.log(phase_val)
             if(phase_val=="R"){
@@ -570,11 +544,8 @@ $('.fd_p').on('click',function(){
     var id = $(this).attr("id");
     var fd_no=id.replace("fd_p", "");
 
-    map.removeLayer(demand_point)
-    map.removeLayer(lvdb_l1)
-    map.removeLayer(SFP_L2)
-    map.removeLayer(MFP_L3)
-    console.log(current_phase_val+','+fd_no)
+    // map.removeLayer(demand_point)
+    // console.log(current_phase_val+','+fd_no)
     $.ajax({
         url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=" + fd_no+ "&phase=" + current_phase_val,
         type: "GET",
@@ -582,11 +553,7 @@ $('.fd_p').on('click',function(){
         contentType: "application/json; charset=utf-8",
         success: function callback(response) {
             console.log(response)
-            
             get_filtered_dp_geojson(response)
-
-            $(".chk").prop("checked", false);
-            $("#demand_point").prop("checked", true);
         }
     });
 });
@@ -618,6 +585,7 @@ function loadfilterdata(lid){
     });
 }
 
+
 function get_filtered_dp_geojson(response){
 
     if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
@@ -637,35 +605,38 @@ function get_filtered_dp_geojson(response){
     if(response.incoming){
         var incoming=response.incoming[0];
     }
+
+    map.removeLayer(demand_point)
+    map.removeLayer(line_l1_l2_l3_markers)
     demand_point=L.geoJSON(JSON.parse(response.geojson),{
         pointToLayer: function (feature, latlng) {
-             let arr = Array();
-            if(current_dropdown_Lid =='a111' || current_dropdown_Lid =='a222'){
-                map.addLayer(lvdb_l1)
-                $("#lvdb_l1").prop("checked", true);
-                arr.push(l1);
-            }
-            if(current_dropdown_Lid =='a333' || current_dropdown_Lid =='a444'){
-                map.addLayer(SFP_L2)
-                $("#SFP_L2").prop("checked", true);
-                arr.push(l2);
-            }
-            if(current_dropdown_Lid =='a555'){
-                map.addLayer(MFP_L3)
-                $("#MFP_L3").prop("checked", true);
-                arr.push(l3);
+            //  let arr = Array();
+            // if(current_dropdown_Lid =='a111' || current_dropdown_Lid =='a222'){
+            //     map.addLayer(lvdb_l1)
+            //     $("#lvdb_l1").prop("checked", true);
+            //     arr.push(l1);
+            // }
+            // if(current_dropdown_Lid =='a333' || current_dropdown_Lid =='a444'){
+            //     map.addLayer(SFP_L2)
+            //     $("#SFP_L2").prop("checked", true);
+            //     arr.push(l2);
+            // }
+            // if(current_dropdown_Lid =='a555'){
+            //     map.addLayer(MFP_L3)
+            //     $("#MFP_L3").prop("checked", true);
+            //     arr.push(l3);
                
-            }
-            if(current_dropdown_Lid =='a666'){
-                map.addLayer(MFP_L3)
-                $("#MFP_L3").prop("checked", true);
-                // {lat: 2.392597492, lng: 102.078805727}
-                arr.push([2.390839101,102.081263347])
+            // }
+            // if(current_dropdown_Lid =='a666'){
+            //     map.addLayer(MFP_L3)
+            //     $("#MFP_L3").prop("checked", true);
+            //     // {lat: 2.392597492, lng: 102.078805727}
+            //     arr.push([2.390839101,102.081263347])
                 
-            }
-            arr.push(latlng);
-                 var polyline = L.polyline(arr, {color: 'red'});
-                 filter_polylines_arr.push(polyline);
+            // }
+            // arr.push(latlng);
+            //      var polyline = L.polyline(arr, {color: 'red'});
+            //      filter_polylines_arr.push(polyline);
         
         if(feature.properties.phase == "R"){
             return L.circleMarker(latlng, {
@@ -746,51 +717,125 @@ function get_filtered_dp_geojson(response){
                 layer.bindPopup(str);
             }
 			
-			 layer.on('click', function (e) {
-                            if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-                                for(var i=0; i<point_polylines_arr.length; i++){
-                                    map.removeLayer(point_polylines_arr[i])
-                                }
-                            }
-                            // map.removeLayer(demand_point)
-                            feature_point=layer.toGeoJSON();
-                            console.log(feature_point);
-                            let arr = Array();
-                            arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-							if(feature_point.properties.l3_id=='1'){
-                                map.addLayer(MFP_L3)
-                                $("#MFP_L3").prop("checked", true);
-                                arr.push(l3);
-                            }
-                            if(feature_point.properties.l3_id=='2'){
-                                map.addLayer(MFP_L3)
-                                $("#MFP_L3").prop("checked", true);
-                                arr.push([2.390839101,102.081263347])
-                            }
-							if(feature_point.properties.l2_id=='1' || feature_point.properties.l2_id=='2'){
-                                map.addLayer(SFP_L2)
-                                $("#SFP_L2").prop("checked", true);
-                                arr.push(l2);
-                            }
-                            if(feature_point.properties.l1_id=='1' || feature_point.properties.l1_id=='2'){
-                                map.addLayer(lvdb_l1)
-                                $("#lvdb_l1").prop("checked", true);
-                                arr.push(l1);
-                            }
-                            
-                            
-                            var polyline = L.polyline(arr, {color: 'green', weight: '8'}).addTo(map);
-                            point_polylines_arr.push(polyline);
-                            
-                        });
+            layer.on('click', function (e) {
+                map.removeLayer(line_l1_l2_l3_markers);
+                if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
+                    for(var i=0; i<point_polylines_arr.length; i++){
+                        map.removeLayer(point_polylines_arr[i]);
+                    }
+                }
+                
+                // map.removeLayer(demand_point)
+                feature_point=layer.toGeoJSON();
+                // console.log(feature_point);
+                let arr = Array();
+                arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
+                if(feature_point.properties.l3_id){
+                    var l3_id=feature_point.properties.l3_id
+                    $.ajax({
+                        url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+                        type: "GET",
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function callback(response) {
+                             // console.log(response);
+                             arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                             var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                             L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+                         }
+                    })
+                }
+                if(feature_point.properties.l2_id){
+                    var l2_id=feature_point.properties.l2_id
+                    $.ajax({
+                        url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+                        type: "GET",
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function callback(response) {
+                            // console.log(response);
+                            arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                            var latlng2=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                            L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+                        }
+                    })
+                }
+                if(feature_point.properties.l1_id){
+                    var l1_id=feature_point.properties.l1_id
+                    $.ajax({
+                        url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+                        type: "GET",
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function callback(response) {
+                            // console.log(response);
+                            arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                            var latlng1=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                            L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+                        }
+                    })
+                }
+                
+                
+                setTimeout(function(){ 
+                    var polyline = L.polyline(arr);
+                    setPolylineColors(polyline,['yellow','pink','green'])
+                    line_l1_l2_l3_markers.addTo(map);
+                    point_polylines_arr.push(polyline);
+                 }, 400);
+                
+                
+            });
             
         }
         
-    }).addTo(map);
-  
-    
+    }).addTo(demand_point)
 
+    demand_point.addTo(map);
+  
 }
+
+function setPolylineColors(line,colors){
+  
+    var latlngs = line.getLatLngs();
+  
+  latlngs.forEach(function(latlng, idx){
+          if(idx+1 < latlngs.length ){
+           var polyline =  L.polyline([latlng,latlngs[idx+1]],{color: colors[idx]}).addTo(map);
+       }
+  })
+}
+
+// function retur_nmarker_and_color(latlng, color) {
+//     return L.circleMarker(latlng, {
+//         radius: 8,
+//         fillColor: color,
+//         color: "#000",
+//         weight: 1,
+//         opacity: 1,
+//         fillOpacity: 0.8
+//     });
+// }
+
+// if(feature.properties.phase == "R"){
+//     var color="R"
+//     retur_nmarker_and_color(latlng, color)
+// }if(feature.properties.phase == "Y"){
+//     var color="Y"
+//     retur_nmarker_and_color(latlng, color)
+// }if(feature.properties.phase == "B"){
+//     var color="B"
+//     retur_nmarker_and_color(latlng, color)
+// }if(feature.properties.phase == "RYB"){
+//     var color="RYB"
+//     retur_nmarker_and_color(latlng, color)
+// }else{
+//     var color="white"
+//     retur_nmarker_and_color(latlng, color)
+// }
 
 // $('#filterbtn').on('click',function(){
 
