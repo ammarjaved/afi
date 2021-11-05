@@ -10,6 +10,7 @@ var l2;
 var l3;
 var filter_polylines_arr=Array();
 var point_polylines_arr=Array();
+var line_l1_l2_l3_markers = L.layerGroup();
 
    
     var street   = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
@@ -19,15 +20,21 @@ var point_polylines_arr=Array();
                     subdomains:['mt0','mt1','mt2','mt3']
                 });
 
-
+    var dpns = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:demand_point_not_surveyed',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
 var map = L.map('map_div', {
     center: [2.390668368, 102.080687281],
     zoom: 9,
-    layers: [googleSat, demand_point],
+    layers: [googleSat, demand_point, dpns],
     attributionControl:false 
 });
 
 
+        
 
 var baseLayers = {
     "Street": street,
@@ -36,10 +43,11 @@ var baseLayers = {
 };
 
 var overlays = {
-    "LVDB_L1&nbsp&nbsp<img src='images/greenstar.png' width='30' height='30'>": lvdb_l1,
-    "SFP_L2&nbsp&nbsp<img src='images/pinkstar.png' width='30' height='30'>": SFP_L2,
-    "MFP_L3&nbsp&nbsp<img src='images/orangestar.png' width='30' height='30'>": MFP_L3,
-    "Demand Point&nbsp&nbsp<img src='images/layer.jpg' width='30' height='30'>": demand_point,
+    "FPL_L1&nbsp&nbsp<img src='images/1.png' width='30' height='30'>": lvdb_l1,
+    "SFP_L2&nbsp&nbsp<img src='images/2.png' width='30' height='30'>": SFP_L2,
+    "MFP_L3&nbsp&nbsp<img src='images/3.png' width='30' height='30'>": MFP_L3,
+    "Surveyed Demand Points &nbsp&nbsp<img src='images/layer.jpg' width='30' height='30'>": demand_point,
+    "Non Surveyed D/P": dpns,
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -86,21 +94,21 @@ $(document).ready(function(){
 
             }
         });
-        var greenIcon = L.icon({
-            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/greenstar.png',
-            iconSize:     [20, 20] // size of the icon
+        var Icon1 = L.icon({
+            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
+            iconSize:     [35, 35] // size of the icon
         });
-        var pinkIcon = L.icon({
-            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/pinkstar.png',
-            iconSize:     [20, 20] // size of the icon
+        var Icon2 = L.icon({
+            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/2.png',
+            iconSize:     [35, 35] // size of the icon
         });
-        var orangeIcon = L.icon({
-            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/orangestar.png',
-            iconSize:     [20, 20] // size of the icon
+        var Icon3 = L.icon({
+            iconUrl: 'https://061.bz/scripts/AWIS/assets/img/3.png',
+            iconSize:     [35, 35] // size of the icon
         });
         //-----------geojson of layers----------  
         $.ajax({
-            url: "services/get_lvdb_l1_geojson.php",
+            url: "services/get_lvdb_l1_geojson.php?l1_id=%",
             type: "GET",
             dataType: "json",
             //data: JSON.stringify(geom,layer.geometry),
@@ -122,7 +130,7 @@ $(document).ready(function(){
                     //     opacity: 1,
                     //     fillOpacity: 0.8
                     // });
-                    return L.marker(latlng, {icon: greenIcon});
+                    return L.marker(latlng, {icon: Icon1});
                 },
                 onEachFeature: function (feature, layer) {
                     var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
@@ -156,7 +164,7 @@ $(document).ready(function(){
             }
         });
         $.ajax({
-            url: "services/get_SFP_L2_geojson.php",
+            url: "services/get_SFP_L2_geojson.php?l2_id=%",
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -165,11 +173,11 @@ $(document).ready(function(){
             SFP_L2=L.geoJSON(response,{
                 pointToLayer: function (feature, latlng) {
                     l2=latlng;
-                    return L.marker(latlng, {icon: pinkIcon});
+                    return L.marker(latlng, {icon: Icon2});
                 },
                 onEachFeature: function (feature, layer) {
                     var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                    str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
+                    str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
                     str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
                     str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
                     str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
@@ -199,7 +207,7 @@ $(document).ready(function(){
             }
         });
         $.ajax({
-            url: "services/get_MFP_L3_geojson.php",
+            url: "services/get_MFP_L3_geojson.php?l3_id=%",
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -209,11 +217,11 @@ $(document).ready(function(){
                     pointToLayer: function (feature, latlng) {
                         l3=latlng;
                         // console.log(latlng)
-                        return L.marker(latlng, {icon: orangeIcon});
+                        return L.marker(latlng, {icon: Icon3});
                     },
                     onEachFeature: function (feature, layer) {
                         var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                        str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
+                        str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
                         str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
                         str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
                         str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
@@ -315,40 +323,74 @@ $(document).ready(function(){
                         layer.bindPopup(str);
 
                         layer.on('click', function (e) {
+                            map.removeLayer(line_l1_l2_l3_markers);
                             if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
                                 for(var i=0; i<point_polylines_arr.length; i++){
-                                    map.removeLayer(point_polylines_arr[i])
+                                    map.removeLayer(point_polylines_arr[i]);
                                 }
                             }
+                            
                             // map.removeLayer(demand_point)
                             feature_point=layer.toGeoJSON();
-                            console.log(feature_point);
+                            // console.log(feature_point);
                             let arr = Array();
                             arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-							if(feature_point.properties.l3_id=='1'){
-                                map.addLayer(MFP_L3)
-                                $("#MFP_L3").prop("checked", true);
-                                arr.push(l3);
+                            if(feature_point.properties.l3_id){
+                                var l3_id=feature_point.properties.l3_id
+                                $.ajax({
+                                    url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+                                    type: "GET",
+                                    async: false,
+                                    dataType: "json",
+                                    contentType: "application/json; charset=utf-8",
+                                    success: function callback(response) {
+                                         // console.log(response);
+                                         arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                                         var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                                         L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+                                     }
+                                })
                             }
-                            if(feature_point.properties.l3_id=='2'){
-                                map.addLayer(MFP_L3)
-                                $("#MFP_L3").prop("checked", true);
-                                arr.push([2.390839101,102.081263347])
+                            if(feature_point.properties.l2_id){
+                                var l2_id=feature_point.properties.l2_id
+                                $.ajax({
+                                    url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+                                    type: "GET",
+                                    async: false,
+                                    dataType: "json",
+                                    contentType: "application/json; charset=utf-8",
+                                    success: function callback(response) {
+                                        // console.log(response);
+                                        arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                                        var latlng2=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                                        L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+                                    }
+                                })
                             }
-							if(feature_point.properties.l2_id=='1' || feature_point.properties.l2_id=='2'){
-                                map.addLayer(SFP_L2)
-                                $("#SFP_L2").prop("checked", true);
-                                arr.push(l2);
+							if(feature_point.properties.l1_id){
+                                var l1_id=feature_point.properties.l1_id
+                                $.ajax({
+                                    url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+                                    type: "GET",
+                                    async: false,
+                                    dataType: "json",
+                                    contentType: "application/json; charset=utf-8",
+                                    success: function callback(response) {
+                                        // console.log(response);
+                                        arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                                        var latlng1=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                                        L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+                                    }
+                                })
                             }
-                            if(feature_point.properties.l1_id=='1' || feature_point.properties.l1_id=='2'){
-                                map.addLayer(lvdb_l1)
-                                $("#lvdb_l1").prop("checked", true);
-                                arr.push(l1);
-                            }
+							
+							
+                            setTimeout(function(){ 
+                                var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
+                                line_l1_l2_l3_markers.addTo(map);
+                                point_polylines_arr.push(polyline);
+                             }, 400);
                             
-                            
-                            var polyline = L.polyline(arr, {color: 'green', weight: '8'}).addTo(map);
-                            point_polylines_arr.push(polyline);
                             
                         });
                     }
@@ -408,7 +450,7 @@ function addRemoveLayer(name){
 
 //-----------on change fp dropdown----------  
 $('select[name="fp"]').on('change',function(e){
-
+    console.log(demand_point)
     // function fp_zoom_to_feature(did){
     //     gj= JSON.parse(geojsonfromhiddenfld)
     //      for(var i=0;i<gj.features.length;i++){if(gj.features[i].properties.device_id==did){map.setView([gj.features[i].geometry.coordinates[1],gj.features[i].geometry.coordinates[0]],17)}}
@@ -507,7 +549,7 @@ $('.maincountdiv').on('click',function(){
             }
 
     $.ajax({
-        url : 'services/get_fd_counts.php?phase='+phase_val + "&cd_id=" + current_dropdown_Lid,
+        url : 'services/get_fd_counts.php?phase='+phase_val + "&lid=" + current_dropdown_Lid,
         type : "GET",
         success:function(d){
             console.log(d);
@@ -534,7 +576,7 @@ $('.fd_p').on('click',function(){
     map.removeLayer(MFP_L3)
     console.log(current_phase_val+','+fd_no)
     $.ajax({
-        url: "services/get_demand_point_geojson.php?cd_id="+current_dropdown_Lid + "&fd_no=" + fd_no+ "&phase=" + current_phase_val,
+        url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=" + fd_no+ "&phase=" + current_phase_val,
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -684,8 +726,8 @@ function get_filtered_dp_geojson(response){
                 str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
                 str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
                 str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                str = str + '<tr><td> lvf1_fd  </td><td>' + incoming.lvf1_fd  + '</td></tr>'
-                str = str + '<tr><td> lvf2_fd  </td><td>' + incoming.lvf2_fd  + '</td></tr>'
+                // str = str + '<tr><td> lvf1_fd  </td><td>' + incoming.lvf1_fd  + '</td></tr>'
+                // str = str + '<tr><td> lvf2_fd  </td><td>' + incoming.lvf2_fd  + '</td></tr>'
                 str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
                 str = str + '</table></div>'
                 layer.bindPopup(str);
