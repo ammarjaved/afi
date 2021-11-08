@@ -100,14 +100,24 @@ function getProperties(layer){
             method: 'GET',
             async: false,
             success: function callback(data) {
-                console.log(data)
+                console.log(data.features[0].properties.acc_no)
+                var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+                str = str + '<tr><td> Account No. </td><td>' + data.features[0].properties.acc_no + '</td></tr>';
+                str = str + '<tr><td> pe_name  </td><td>' + data.features[0].properties.pe_name  + '</td></tr>'
+                str = str + '<tr><td> cd_id  </td><td>' + data.features[0].properties.cd_id  + '</td></tr>'
+                str = str + '<tr><td> fd_no  </td><td>' + data.features[0].properties.fd_no  + '</td></tr>'
+                str = str + '<tr><td> l1_id  </td><td>' + data.features[0].properties.l1_id  + '</td></tr>'
+                str = str + '<tr><td> l2_id  </td><td>' + data.features[0].properties.l2_id  + '</td></tr>'
+                str = str + '<tr><td> l3_id  </td><td>' + data.features[0].properties.l3_id  + '</td></tr>'
+                str = str + '<tr><td> image  </td><td><a href="'+data.features[0].properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + data.features[0].properties.image2 + '" width="20px" height="20px"></a></td></tr>'
+                str = str + '</table></div>'
+                $("#modalbody_id").html(str)
+
             }
         });
-
-
-
-
+        $('#nonsurvedmodal').modal('show');
     });
+    
 }
 
         

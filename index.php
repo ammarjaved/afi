@@ -57,6 +57,7 @@ else {
 
     
     <div id="content">
+       
         <!-- Header -->
         <div class="row" id="filter_div" style="margin-bottom: 0px !important;">
             <!-- <div class="col-md-3 remove_right_padding">
@@ -184,6 +185,26 @@ else {
                         <div class="panel-body" id="map_div" style="padding: 0; height: 456px !important; margin-bottom: 0px !important;">
                             <!--Panel content-->
                             <!--Map will be here-->
+                            <!-- Modal for non surved department-->
+                            <div class="modal" id="nonsurvedmodal" role="dialog" style="">
+                                <div class="modal-dialog"  >
+                                
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Non surveyed Demand Point</h4>
+                                    </div>
+                                    <div class="modal-body" id="modalbody_id">
+                                    
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                
+                                </div>
+                            </div>
                            
                         </div>
                     </div>
