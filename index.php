@@ -36,9 +36,10 @@ else {
             <div class="col-lg-12 npnm">
                 <div class="row npnm">
                     <div class="col-lg-1 npnm">
-
+                    <a class="pull-left btn btn-info" onclick="mapreset()" style="margin-left: 0px !important; color: white; margin-top: 3px !important;">Home</a>
                     </div>
                     <div class="col-lg-11 npnm">
+                   
                         <img src="images/logo.png" width="150"  height="47" alt=""
                              class="d-inline-block align-middle mr-2">
 
@@ -114,7 +115,7 @@ else {
 
             <div class="col-md-3">
                 
-                <div style="cursor:pointer" class="maincountdiv card-counter danger" id="R">
+                <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
                 <i class="fa fa-bolt"></i>
                 <span class="count-numbers" id="sred"></span>
                 <span class="count-name">Single Phase Red</span>
@@ -123,7 +124,7 @@ else {
             </div>
 			  
             <div class="col-md-3">
-                <div style="cursor:pointer; background-color:#FFC107!important;" class=" maincountdiv card-counter danger" id="Y">
+                <div style="cursor:pointer; background-color:#FFC107!important;" class=" countdiv card-counter danger" id="Y">
                     <i class="fa fa-bolt"></i>
                     <span class="count-numbers" id="syellow"></span>
                     <span class="count-name">Single Phase Yellow</span>
@@ -131,7 +132,7 @@ else {
             </div>
 			
             <div class="col-md-3">
-                <div style="cursor:pointer" class="maincountdiv card-counter primary" id="B">
+                <div style="cursor:pointer" class="countdiv card-counter primary" id="B">
                     <i class="fa fa-bolt"></i>
                     <span class="count-numbers" id="sblue"></span>
                     <span class="count-name">Single Phase Blue</span>
@@ -139,7 +140,7 @@ else {
             </div>
           
             <div class="col-md-3">
-                <div style="cursor:pointer" class="maincountdiv card-counter info" id="RYB">
+                <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
                         <i class="fa fa-bolt"></i>
                         <span class="count-numbers" id="tryb"></span>
                         <span class="count-name">Three Phase RYB</span>
@@ -237,6 +238,10 @@ else {
 
 
     });
+
+    function mapreset(){
+        location.reload();
+    }
 
 
 </script>

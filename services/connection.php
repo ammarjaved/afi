@@ -11,6 +11,7 @@ class Connection
   //  public $password     = '111';
 	// public $password     = 'diamondx';
      public $password     = 'Admin123';
+
     public $conDB;
 
     public function connectionDB(){
