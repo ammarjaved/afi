@@ -81,7 +81,7 @@ function getProperties(layer){
 
 
     map.on('click', function(e) {
-        map.off('click');
+     //   map.off('click');
 
         // Build the URL for a GetFeatureInfo
         var url = getFeatureInfoUrl(
