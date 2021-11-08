@@ -33,6 +33,82 @@ var map = L.map('map_div', {
     attributionControl:false 
 });
 
+function getFeatureInfoUrl(map, layer, latlng, params) {
+
+    var point = map.latLngToContainerPoint(latlng, map.getZoom()),
+        size = map.getSize(),
+
+        params = {
+            request: 'GetFeatureInfo',
+            service: 'WMS',
+            srs: 'EPSG:4326',
+            styles: layer.wmsParams.styles,
+            transparent: layer.wmsParams.transparent,
+            version: layer._wmsVersion,
+            format:layer.wmsParams.format,
+            bbox: map.getBounds().toBBoxString(),
+            height: size.y,
+            width: size.x,
+            layers: layer.wmsParams.layers,
+            query_layers: layer.wmsParams.layers,
+            info_format: 'application/json'
+        };
+
+    params[params.version === '1.3.0' ? 'i' : 'x'] = parseInt(point.x);
+    params[params.version === '1.3.0' ? 'j' : 'y'] = parseInt(point.y);
+
+    // return this._url + L.Util.getParamString(params, this._url, true);
+
+    var url = layer._url + L.Util.getParamString(params, layer._url, true);
+    if(typeof layer.wmsParams.proxy !== "undefined") {
+
+
+        // check if proxyParamName is defined (instead, use default value)
+        if(typeof layer.wmsParams.proxyParamName !== "undefined")
+            layer.wmsParams.proxyParamName = 'url';
+
+        // build proxy (es: "proxy.php?url=" )
+        _proxy = layer.wmsParams.proxy + '?' + layer.wmsParams.proxyParamName + '=';
+
+        url = _proxy + encodeURIComponent(url);
+
+    }
+
+    return url.toString();
+
+}
+function getProperties(layer){
+
+
+    map.on('click', function(e) {
+        map.off('click');
+
+        // Build the URL for a GetFeatureInfo
+        var url = getFeatureInfoUrl(
+            map,
+            layer,
+            e.latlng,
+            {
+                'info_format': 'application/json',
+                'propertyName': 'NAME,AREA_CODE,DESCRIPTIO'
+            }
+        );
+        $.ajax({
+            url: 'services/proxy.php?url='+encodeURIComponent(url),
+            dataType: 'JSON',
+            //data: data,
+            method: 'GET',
+            async: false,
+            success: function callback(data) {
+                console.log(data)
+            }
+        });
+
+
+
+
+    });
+}
 
         
 
@@ -66,6 +142,34 @@ var Icon3 = L.icon({
     iconSize:     [35, 35] // size of the icon
 });
 
+function fillDropDowns(di,lyr){
+    $.ajax({
+        url: "services/get_dropdn_values.php?lyr="+lyr+"&di="+di,
+        type: "GET",
+        dataType: "json",
+        //data: JSON.stringify(geom,layer.geometry),
+        contentType: "application/json; charset=utf-8",
+        success: function callback(data) {
+            // var r=JSON.parse(response)
+            if(lyr=='fp'){
+                console.log(data.fp)
+                for(var i=0;i<data.length;i++){
+                    $('select[name="fp"]').append('<option value="'+ data[i].l1_id +'">'+data[i].l1_id+'</option>');
+                }
+            }else if(lyr=='sfp'){
+                for(var i=0;i<data.length;i++){
+                    $('select[name="sfp"]').append('<option value="'+ data[i].l2_id +'">'+data[i].l2_id+'</option>');
+                }
+            }else if(lyr=='mfp') {
+                for (var i = 0; i < data.length; i++) {
+                    $('select[name="mfp"]').append('<option value="' + data[i].l3_id + '">' + data[i].l3_id + '</option>');
+                }
+            }
+
+        }
+    });
+}
+
 
 $(document).ready(function(){
     //-----------counts----------
@@ -85,29 +189,9 @@ $(document).ready(function(){
         }
     });
     setTimeout(function(){
+        getProperties(dpns)
          //-----------fp dropdown ids----------  
-        $.ajax({
-            url: "services/get_dropdn_values.php",
-            type: "GET",
-            dataType: "json",
-            //data: JSON.stringify(geom,layer.geometry),
-            contentType: "application/json; charset=utf-8",
-            success: function callback(data) {
-                // var r=JSON.parse(response)
-            console.log(data.fp)
-            for(var i=0;i<data.fp.length;i++){
-                $('select[name="fp"]').append('<option value="'+ data.fp[i].l1_id +'">'+data.fp[i].l1_id+'</option>');
-            }
-            for(var i=0;i<data.sfp.length;i++){
-                $('select[name="sfp"]').append('<option value="'+ data.sfp[i].l2_id +'">'+data.sfp[i].l2_id+'</option>');
-            }
-            for(var i=0;i<data.mfp.length;i++){
-                $('select[name="mfp"]').append('<option value="'+ data.mfp[i].l3_id +'">'+data.mfp[i].l3_id+'</option>');
-            }
-
-
-            }
-        });
+        fillDropDowns('%','fp')
       
         //-----------geojson of layers----------  
         $.ajax({
@@ -465,6 +549,7 @@ $('select[name="fp"]').on('change',function(e){
     //  }
     e.preventDefault();
     var l1_id= $(this).val();
+    fillDropDowns(l1_id,'sfp')
     $("#sred").text('');
     $("#syellow").text('');
     $("#sblue").text('');
@@ -478,7 +563,7 @@ $('select[name="fp"]').on('change',function(e){
 $('select[name="sfp"]').on('change',function(e){
     e.preventDefault();
     var l2id= $(this).val();
-
+    fillDropDowns(l2id,'mfp')
     $("#sred").text('');
     $("#syellow").text('');
     $("#sblue").text('');
