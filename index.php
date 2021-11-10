@@ -187,7 +187,7 @@ else {
                             <!--Map will be here-->
                             <!-- Modal for non surved department-->
                             <div class="modal" id="nonsurvedmodal" role="dialog" style="">
-                                <div class="modal-dialog"  >
+                                <div class="modal-dialog">
                                 
                                 <!-- Modal content-->
                                 <div class="modal-content">

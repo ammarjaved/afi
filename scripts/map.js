@@ -27,7 +27,8 @@ var line_l1_l2_l3_markers = L.layerGroup();
         transparent: true
     });
 var map = L.map('map_div', {
-    center: [2.390668368, 102.080687281],
+    // center: [2.390668368, 102.080687281],
+    center: [31.5204, 74.3587],
     zoom: 9,
     layers: [googleSat, demand_point, dpns],
     attributionControl:false 
@@ -164,15 +165,15 @@ function fillDropDowns(di,lyr){
             if(lyr=='fp'){
                 console.log(data.fp)
                 for(var i=0;i<data.length;i++){
-                    $('select[name="fp"]').append('<option value="'+ data[i].l1_id +'">'+data[i].l1_id+'</option>');
+                    $('select[name="fp"]').append('<option value="'+ data[i].l1_id +'">'+data[i].l1_id+' ('+data[i].pe_name+')'+'</option>');
                 }
             }else if(lyr=='sfp'){
-                for(var i=0;i<data.length;i++){
-                    $('select[name="sfp"]').append('<option value="'+ data[i].l2_id +'">'+data[i].l2_id+'</option>');
+                for(var i=0;i<data.length;i++){  
+                    $('select[name="sfp"]').append('<option value="'+ data[i].l2_id +'">'+data[i].l2_id+' ( '+data[i].pe_name+')'+'</option>');
                 }
             }else if(lyr=='mfp') {
                 for (var i = 0; i < data.length; i++) {
-                    $('select[name="mfp"]').append('<option value="' + data[i].l3_id + '">' + data[i].l3_id + '</option>');
+                    $('select[name="mfp"]').append('<option value="' + data[i].l3_id + '">' + data[i].l3_id+' ('+data[i].pe_name+')'+'</option>');
                 }
             }
 
@@ -231,7 +232,7 @@ $(document).ready(function(){
                 },
                 onEachFeature: function (feature, layer) {
                     var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                    str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
+                    str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
                     str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
                     str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
                     str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
@@ -881,6 +882,33 @@ function get_filtered_dp_geojson(response){
                     line_l1_l2_l3_markers.addTo(map);
                     point_polylines_arr.push(polyline);
                  }, 400);
+
+                 let arr1 = Array();
+                 arr1.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
+                 if(feature_point.properties.l3_id=='1'){
+                     map.addLayer(MFP_L3)
+                     $("#MFP_L3").prop("checked", true);
+                     arr1.push(l3);
+                 }
+                 if(feature_point.properties.l3_id=='2'){
+                     map.addLayer(MFP_L3)
+                     $("#MFP_L3").prop("checked", true);
+                     arr1.push([2.390839101,102.081263347])
+                 }
+                 if(feature_point.properties.l2_id=='1' || feature_point.properties.l2_id=='2'){
+                     map.addLayer(SFP_L2)
+                     $("#SFP_L2").prop("checked", true);
+                     arr1.push(l2);
+                 }
+                 if(feature_point.properties.l1_id=='1' || feature_point.properties.l1_id=='2'){
+                     map.addLayer(lvdb_l1)
+                     $("#lvdb_l1").prop("checked", true);
+                     arr1.push(l1);
+                 }
+                 
+                 
+                 var polyline = L.polyline(arr1, {color: 'green', weight: '8'}).addTo(map);
+                 point_polylines_arr.push(polyline);
                 
                 
             });
