@@ -74,33 +74,56 @@ else {
                     </div>
                 </div>
             </div> -->
-            <div class="col-md-4 remove_right_padding">
-                <div class="panel panel-default">
+            <div class="col-md-3 remove_right_padding">
+                <div class=" panel panel-default">
                     <div class="panel-body panel_body_style">
                         <label style="font-weight: bold;">FP</label>
-                        <select class="form-control formControlWIdth" name="fp" id="fp">
+                        <select class="form-control formControlWIdth" name="fp" id="fpdropdown">
                         <option selected disabled value="0">--Select ID--</option>
                         </select>
                     </div>
                 </div>
+
             </div>
-            <div class="col-md-4 remove_right_padding">
+            <div class="col-md-3 remove_right_padding">
                 <div class="panel panel-default">
                     <div class="panel-body panel_body_style">
                         <label style="font-weight: bold;">SFP</label>
-                        <select class="form-control formControlWIdth"name="sfp" id="sfp">
+                        <select class="form-control formControlWIdth"name="sfp" id="sfpdropdown">
                             <option selected disabled value="0">--Select ID--</option>
                         </select>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 remove_right_padding">
-                <div class="panel panel-default">
-                    <div class="panel-body panel_body_style">
-                        <label style="font-weight: bold;">MFP</label>
-                        <select class="form-control formControlWIdth" name="mfp" id="mfp">
-                            <option selected disabled value="0">--Select ID--</option>
-                        </select>
+            <div class="col-md-3 remove_right_padding">
+                    <div class="panel panel-default">
+                        <div class="panel-body panel_body_style">
+                            <label style="font-weight: bold;">MFP</label>
+                            <select class="form-control formControlWIdth" name="mfp" id="mfpdropdown">
+                                <option selected disabled value="0">--Select ID--</option>
+                            </select>
+                        </div>
+                    </div>
+            </div>
+            <div class="col-md-3 ">
+                <div class="row">
+                    
+                    <div class="col-md-2 " >
+                        <div class="radio">
+                        <label><input type="radio" name="optradio" id="fpradiobtn" checked>FP</label>
+                        </div>
+                        <div class="radio">
+                        <label><input type="radio" name="optradio" id="sfpradiobtn">SFP</label>
+                        </div>
+                        <div class="radio disabled">
+                        <label><input type="radio" name="optradio" id="mfpradiobtn">MFP</label>
+                        </div>
+                    </div>
+                    <div id="search-bar" class="col-md-6 " style="margin-top:30px; margin-left:10px margin-right:10px;">
+                        <input type="text" id="search_input" name="search" placeholder="Search DeviceID..." class="typeahead">
+                    </div>
+                    <div class="col-md-2" style="margin-top:25px;">
+                        <button  style="margin-right:50px;" id="ser" onclick="search_deviceid()" class="pull-left btn btn-success">Search</button>
                     </div>
                 </div>
             </div>
@@ -252,17 +275,38 @@ else {
 
 
 <script src="scripts/map.js"></script>
+<script src="libs/typeahead.min.js"></script>
 
 <script>
 
     $(document).ready(function () {
+        setTimeout(function(){
+            var tblname
+            var fpckb = $("#fpradiobtn").is(':checked');
+            if(fpckb==true){
+                tblname='fpl1'
+            }
+            var sfpckb = $("#sfpradiobtn").is(':checked');
+            if(sfpckb==true){
+                tblname='sfp_l2'
+            }
+            var mfpckb = $("#mfpradiobtn").is(':checked');
+            if(mfpckb==true){
+                tblname='mfp_l3'
+            }
+            $('.typeahead').typeahead({
+                name: 'hce',
+                remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
+                limit: 5
+            });
 
-
+        }, 3000);
     });
 
     function mapreset(){
         location.reload();
     }
+   
 
 
 </script>

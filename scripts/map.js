@@ -27,8 +27,8 @@ var line_l1_l2_l3_markers = L.layerGroup();
         transparent: true
     });
 var map = L.map('map_div', {
-    // center: [2.390668368, 102.080687281],
-    center: [31.5204, 74.3587],
+    center: [2.390668368, 102.080687281],
+    // center: [31.5204, 74.3587],
     zoom: 9,
     layers: [googleSat, demand_point, dpns],
     attributionControl:false 
@@ -158,6 +158,7 @@ var ryb= L.icon({
 });
 
 function fillDropDowns(di,lyr){
+    
     $.ajax({
         url: "services/get_dropdn_values.php?lyr="+lyr+"&di="+di,
         type: "GET",
@@ -167,20 +168,20 @@ function fillDropDowns(di,lyr){
         success: function callback(data) {
             // var r=JSON.parse(response)
             if(lyr=='fp'){
+                $('.load_options').remove();
                 console.log(data.fp)
                 for(var i=0;i<data.length;i++){
                     $('select[name="fp"]').append('<option value="'+ data[i].l1_id +'">'+data[i].l1_id+' ('+data[i].pe_name+')'+'</option>');
                 }
             }else if(lyr=='sfp'){
                 for(var i=0;i<data.length;i++){  
-                    $('select[name="sfp"]').append('<option value="'+ data[i].l2_id +'">'+data[i].l2_id+' ( '+data[i].pe_name+')'+'</option>');
+                    $('select[name="sfp"]').append('<option class="load_options" value="'+ data[i].l2_id +'">'+data[i].l2_id+' ( '+data[i].pe_name+')'+'</option>');
                 }
             }else if(lyr=='mfp') {
                 for (var i = 0; i < data.length; i++) {
-                    $('select[name="mfp"]').append('<option value="' + data[i].l3_id + '">' + data[i].l3_id+' ('+data[i].pe_name+')'+'</option>');
+                    $('select[name="mfp"]').append('<option class="load_options" value="' + data[i].l3_id + '">' + data[i].l3_id+' ('+data[i].pe_name+')'+'</option>');
                 }
             }
-
         }
     });
 }
@@ -547,6 +548,7 @@ function addRemoveLayer(name){
 
 //-----------on change fp dropdown----------  
 $('select[name="fp"]').on('change',function(e){
+
     console.log(demand_point)
     // function fp_zoom_to_feature(did){
     //     gj= JSON.parse(geojsonfromhiddenfld)
@@ -646,7 +648,7 @@ $('.fd_p').on('click',function(){
         contentType: "application/json; charset=utf-8",
         success: function callback(response) {
             console.log(response)
-            get_filtered_fidder_geojson(response)
+            get_filtered_dp_geojson(response)
         }
     });
 });
@@ -703,33 +705,78 @@ function get_filtered_dp_geojson(response){
     map.removeLayer(line_l1_l2_l3_markers)
     demand_point=L.geoJSON(JSON.parse(response.geojson),{
         pointToLayer: function (feature, latlng) {
-            //  let arr = Array();
-            // if(current_dropdown_Lid =='a111' || current_dropdown_Lid =='a222'){
-            //     map.addLayer(lvdb_l1)
-            //     $("#lvdb_l1").prop("checked", true);
-            //     arr.push(l1);
-            // }
-            // if(current_dropdown_Lid =='a333' || current_dropdown_Lid =='a444'){
-            //     map.addLayer(SFP_L2)
-            //     $("#SFP_L2").prop("checked", true);
-            //     arr.push(l2);
-            // }
-            // if(current_dropdown_Lid =='a555'){
-            //     map.addLayer(MFP_L3)
-            //     $("#MFP_L3").prop("checked", true);
-            //     arr.push(l3);
+            map.removeLayer(line_l1_l2_l3_markers)
+            feature_point=feature;
+            // console.log(feature_point);
+            let arr = Array();
+            // arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
+            if(feature_point.properties.l3_id){
+                var l3_id=feature_point.properties.l3_id
+                $.ajax({
+                    url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+                    type: "GET",
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function callback(response) {
+                         // console.log(response);
+                         arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                         var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                         L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+                     }
+                })
+            }
+            if(feature_point.properties.l2_id){
+                var l2_id=feature_point.properties.l2_id
+                $.ajax({
+                    url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+                    type: "GET",
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function callback(response) {
+                        // console.log(response);
+                        arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                        var latlng2=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                        L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+                    }
+                })
+            }
+            if(feature_point.properties.l1_id){
+                var l1_id=feature_point.properties.l1_id
+                $.ajax({
+                    url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+                    type: "GET",
+                    async: false,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function callback(response) {
+                        // console.log(response);
+                        arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                        var latlng1=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                        L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+                    }
+                })
+            }
+            arr.push(latlng);
+            var polyline = L.polyline(arr, {color: 'red'});
+            filter_polylines_arr.push(polyline);
+
+            if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
+                for(var i=0; i<filter_polylines_arr.length; i++){
+                    map.addLayer(filter_polylines_arr[i])
+                }
+            }
+
+            line_l1_l2_l3_markers.addTo(map);
+            
+            // setTimeout(function(){ 
+            //     var polyline = L.polyline(arr);
+            //     setPolylineColors(polyline,['yellow','pink','green'])
+            //     line_l1_l2_l3_markers.addTo(map);
                
-            // }
-            // if(current_dropdown_Lid =='a666'){
-            //     map.addLayer(MFP_L3)
-            //     $("#MFP_L3").prop("checked", true);
-            //     // {lat: 2.392597492, lng: 102.078805727}
-            //     arr.push([2.390839101,102.081263347])
-                
-            // }
-            // arr.push(latlng);
-            //      var polyline = L.polyline(arr, {color: 'red'});
-            //      filter_polylines_arr.push(polyline);
+            //  }, 400);
+        
         
             if(feature.properties.phase == "R"){
                 return L.circleMarker(latlng, {
@@ -885,182 +932,6 @@ function get_filtered_dp_geojson(response){
   
 }
 
-function get_filtered_fidder_geojson(response){
-
-    if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-        for(var i=0; i<point_polylines_arr.length; i++){
-            map.removeLayer(point_polylines_arr[i])
-        }
-    }
-    // map.removeLayer(polyline)
-    if (filter_polylines_arr.length !== 0) {
-        for(var i=0; i<filter_polylines_arr.length; i++){
-            map.removeLayer(filter_polylines_arr[i])
-        }
-    }
-    filter_polylines_arr=[];
-
-    if(response.incoming){
-        var incoming=response.incoming[0];
-    }
-
-    map.removeLayer(demand_point)
-    map.removeLayer(line_l1_l2_l3_markers)
-    demand_point=L.geoJSON(JSON.parse(response.geojson),{
-        pointToLayer: function (feature, latlng) {
-        if(feature.properties.phase == "R"){
-            return L.circleMarker(latlng, {
-                radius: 8,
-                fillColor: "red",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            });
-        }
-        if(feature.properties.phase == "Y"){
-            return L.circleMarker(latlng, {
-                radius: 8,
-                fillColor: "yellow",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            });
-        }if(feature.properties.phase == "B"){
-            return L.circleMarker(latlng, {
-                radius: 8,
-                fillColor: "blue",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            });
-        }if(feature.properties.phase == "RYB"){
-            return L.marker(latlng, {icon: ryb});
-        }else{
-            return L.circleMarker(latlng, {
-                radius: 8,
-                fillColor: "black",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            });
-        }
-        },
-        onEachFeature: function (feature, layer) {
-
-            if(current_dropdown_Lid !='a111' && current_dropdown_Lid !='a222'){
-                var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-                str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-                str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-                str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-                str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                // str = str + '<tr><td> lvf1_fd  </td><td>' + incoming.lvf1_fd  + '</td></tr>'
-                // str = str + '<tr><td> lvf2_fd  </td><td>' + incoming.lvf2_fd  + '</td></tr>'
-                str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '</table></div>'
-                layer.bindPopup(str);
-            }
-            else{
-                var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-                str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-                str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-                str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-                str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '</table></div>'
-                layer.bindPopup(str);
-            }
-			
-            layer.on('click', function (e) {
-                map.removeLayer(line_l1_l2_l3_markers);
-                if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-                    for(var i=0; i<point_polylines_arr.length; i++){
-                        map.removeLayer(point_polylines_arr[i]);
-                    }
-                }
-                
-                // map.removeLayer(demand_point)
-                feature_point=layer.toGeoJSON();
-                // console.log(feature_point);
-                let arr = Array();
-                arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-                if(feature_point.properties.l3_id){
-                    var l3_id=feature_point.properties.l3_id
-                    $.ajax({
-                        url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                             // console.log(response);
-                             arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
-                             var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
-                             L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-                         }
-                    })
-                }
-                if(feature_point.properties.l2_id){
-                    var l2_id=feature_point.properties.l2_id
-                    $.ajax({
-                        url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                            // console.log(response);
-                            arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
-                            var latlng2=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
-                            L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-                        }
-                    })
-                }
-                if(feature_point.properties.l1_id){
-                    var l1_id=feature_point.properties.l1_id
-                    $.ajax({
-                        url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                            // console.log(response);
-                            arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
-                            var latlng1=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
-                            L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-                        }
-                    })
-                }
-                
-                
-                setTimeout(function(){ 
-                    var polyline = L.polyline(arr);
-                    setPolylineColors(polyline,['yellow','pink','green'])
-                    line_l1_l2_l3_markers.addTo(map);
-                   
-                 }, 400);
-
-                
-                
-            });
-            
-        }
-        
-    }).addTo(demand_point)
-
-    demand_point.addTo(map);
-  
-}
 
 function setPolylineColors(line,colors){
   
