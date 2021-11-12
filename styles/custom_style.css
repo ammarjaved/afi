@@ -215,6 +215,7 @@
 
   }
 
+
 /* Landscape phones and portrait tablets */
 /*====================================================================================================================*/
 @media (max-width: 767px)
@@ -492,6 +493,12 @@ table tr:nth-child(even) {
     width: 120px;
     color: #fff;
     display:inline;
+  }
+
+  .tt-dropdown-menu{
+      background-color: beige;
+      color:black;
+      width: 170px;
   }
 
  

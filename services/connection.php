@@ -1,16 +1,15 @@
 <?php
 class Connection
 {
-   public $hostname = 'localhost';
-    //  public $hostname = '121.121.232.54';
+//    public $hostname = 'localhost';
+     public $hostname = '121.121.232.54';
   //  public $hostname = '172.20.82.72';
-    // public $port        = 5433;
-    public $port        = 5432;
+    public $port        = 5433;
+    // public $port        = 5432;
     public $database    = 'afi';
     public $username     = 'postgres';
-   public $password     = '111';
-	// public $password     = 'diamondx';
-    //  public $password     = 'Admin123';
+//    public $password     = '111';
+     public $password     = 'Admin123';
 
     public $conDB;
 

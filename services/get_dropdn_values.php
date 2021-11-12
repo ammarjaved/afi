@@ -12,7 +12,7 @@ public function fillDropdown(){
 
 
         if ($lyr == 'fp') {
-            $sql = "select l1_id,id,pe_name from public.fpl1 where status='complete';";
+            $sql = "select l1_id,id,pe_name from public.fpl1 where status='Completed';";
         } else if ($lyr == 'sfp') {
             $sql = "select l2_id,gid,pe_name from public.sfp_l2 where l1_id='$di';";
         } else if ($lyr == 'mfp') {

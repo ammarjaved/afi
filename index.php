@@ -110,13 +110,13 @@ else {
                     
                     <div class="col-md-2 " >
                         <div class="radio">
-                        <label><input type="radio" name="optradio" id="fpradiobtn" checked>FP</label>
+                        <label><input type="radio" name="optradio" id="fpradiobtn" value="fpl1" checked>FP</label>
                         </div>
                         <div class="radio">
-                        <label><input type="radio" name="optradio" id="sfpradiobtn">SFP</label>
+                        <label><input type="radio" name="optradio" id="sfpradiobtn" value="sfp_l2">SFP</label>
                         </div>
                         <div class="radio disabled">
-                        <label><input type="radio" name="optradio" id="mfpradiobtn">MFP</label>
+                        <label><input type="radio" name="optradio" id="mfpradiobtn" value="mfp_l3">MFP</label>
                         </div>
                     </div>
                     <div id="search-bar" class="col-md-6 " style="margin-top:30px; margin-left:10px margin-right:10px;">
@@ -280,32 +280,41 @@ else {
 <script>
 
     $(document).ready(function () {
-        setTimeout(function(){
-            var tblname
-            var fpckb = $("#fpradiobtn").is(':checked');
-            if(fpckb==true){
-                tblname='fpl1'
+        var tblname
+        $("#search_input").on('keyup', function(){
+            var radioValue = $("input[name='optradio']:checked").val();
+            if(radioValue){
+                tblname=radioValue;
             }
-            var sfpckb = $("#sfpradiobtn").is(':checked');
-            if(sfpckb==true){
-                tblname='sfp_l2'
-            }
-            var mfpckb = $("#mfpradiobtn").is(':checked');
-            if(mfpckb==true){
-                tblname='mfp_l3'
-            }
-            $('.typeahead').typeahead({
-                name: 'hce',
-                remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
-                limit: 5
-            });
-
-        }, 3000);
+            setTimeout(function(){
+                // alert(tblname);
+                $('.typeahead').typeahead({
+                    name: 'hce',
+                    remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
+                    limit: 5
+                });
+            }, 400);
+           
+        });
+        
+       
     });
 
     function mapreset(){
         location.reload();
     }
+
+    function search_deviceid(){
+        var deviceid = $("#search_input").val(); 
+        current_dropdown_Lid=deviceid;
+        $("#sred").text('');
+        $("#syellow").text('');
+        $("#sblue").text('');
+        $("#tryb").text('');
+        $('#fd_details_div').show();
+        loadfilterdata(deviceid);
+    }
+   
    
 
 
