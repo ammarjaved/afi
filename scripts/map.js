@@ -720,8 +720,8 @@ function get_filtered_dp_geojson(response){
                     contentType: "application/json; charset=utf-8",
                     success: function callback(response) {
                          // console.log(response);
-                         arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
-                         var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                         var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                          L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
                          map.setView(latlng3, 12);
                      }
@@ -737,8 +737,8 @@ function get_filtered_dp_geojson(response){
                     contentType: "application/json; charset=utf-8",
                     success: function callback(response) {
                         // console.log(response);
-                        arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
-                        var latlng2=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                        arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                        var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                         L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
                         map.setView(latlng2, 12);
                     }
@@ -754,8 +754,8 @@ function get_filtered_dp_geojson(response){
                     contentType: "application/json; charset=utf-8",
                     success: function callback(response) {
                         // console.log(response);
-                        arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
-                        var latlng1=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                        arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                        var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                         L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
                         map.setView(latlng1, 12);
                     }
@@ -875,7 +875,8 @@ function get_filtered_dp_geojson(response){
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         success: function callback(response) {
-                             // console.log(response);
+                                // console.log(response);
+                           
                              arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
                              var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
                              L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
@@ -891,7 +892,7 @@ function get_filtered_dp_geojson(response){
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         success: function callback(response) {
-                            // console.log(response);
+                          
                             arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
                             var latlng2=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
                             L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
@@ -908,6 +909,7 @@ function get_filtered_dp_geojson(response){
                         contentType: "application/json; charset=utf-8",
                         success: function callback(response) {
                             // console.log(response);
+                           
                             arr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
                             var latlng1=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
                             L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
