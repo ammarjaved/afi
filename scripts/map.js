@@ -723,7 +723,7 @@ function get_filtered_dp_geojson(response){
                          arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                          var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                          L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-                         map.setView(latlng3, 12);
+                         map.setView(latlng3, 14);
                      }
                 })
             }
@@ -740,7 +740,7 @@ function get_filtered_dp_geojson(response){
                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                         var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                         L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-                        map.setView(latlng2, 12);
+                        map.setView(latlng2, 14);
                     }
                 })
             }
@@ -757,7 +757,7 @@ function get_filtered_dp_geojson(response){
                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                         var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                         L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-                        map.setView(latlng1, 12);
+                        map.setView(latlng1, 14);
                     }
                 })
             }
