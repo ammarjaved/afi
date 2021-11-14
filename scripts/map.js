@@ -298,11 +298,6 @@ $(document).ready(function(){
                             str = str + '</table></div>'
                             layer.bindPopup(str);
                             layer.on('click', function (e) {
-                                if (filter_polylines_arr.length !== 0) {
-                                    for(var i=0; i<filter_polylines_arr.length; i++){
-                                        map.removeLayer(filter_polylines_arr[i])
-                                    }
-                                }
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
                                 var did=feature.properties.l1_id;
@@ -343,11 +338,6 @@ $(document).ready(function(){
                             str = str + '</table></div>'
                             layer.bindPopup(str);
                             layer.on('click', function (e) {
-                                if (filter_polylines_arr.length !== 0) {
-                                    for(var i=0; i<filter_polylines_arr.length; i++){
-                                        map.removeLayer(filter_polylines_arr[i])
-                                    }
-                                }
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
                                 var did=feature.properties.l1_id;
@@ -388,11 +378,6 @@ $(document).ready(function(){
                             str = str + '</table></div>'
                             layer.bindPopup(str);
                             layer.on('click', function (e) {
-                                if (filter_polylines_arr.length !== 0) {
-                                    for(var i=0; i<filter_polylines_arr.length; i++){
-                                        map.removeLayer(filter_polylines_arr[i])
-                                    }
-                                }
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
                                 var did=feature.properties.l1_id;
@@ -723,6 +708,7 @@ function drawlines_against_fp_geojson(response){
             map.removeLayer(filter_polylines_arr[i])
         }
     }
+    filter_polylines_arr=[];
     map.removeLayer(demand_point)
     console.log(JSON.parse(response.geojson));
     demand_point=L.geoJSON(JSON.parse(response.geojson),{
