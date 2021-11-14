@@ -49,14 +49,14 @@ else {
             </div>
 
     </nav>
-<div class="container-fluid" >
+<div class="container-fluid" style="padding:0 0 0 0;">
    
 
     
     <div id="content">
        
         <!-- Header -->
-        <div class="row" id="filter_div" style="margin-bottom: 0px !important;">
+        <div class="row" id="filter_div" style="margin-left: 0px !important; margin-right: 0px !important;">
             <!-- <div class="col-md-3 remove_right_padding">
                 <div class="panel panel-default">
                     <div class="panel-body panel_body_style">
@@ -202,7 +202,7 @@ else {
                     <!--</div>-->
                     <!--</a>-->
                     <div id="r1p1" class="panel-collapse collapse in">
-                        <div class="panel-body" id="map_div" style="padding: 0; height: 63vh !important; margin-bottom: 0px !important;">
+                        <div class="panel-body" id="map_div" style="padding: 0;  margin-bottom: 0px !important;">
 
                             <div id="clearlinesbtn" style="display:none; z-index: 1000000;position: relative;">
                                 <a class="pull-left btn btn-danger btn-sm" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 20px !important;margin-left: 50px;">Clear Lines</a>
@@ -299,8 +299,13 @@ else {
                 // alert(tblname);
                 
             //}, 400);
-           
-       
+           setTimeout(() => {
+               alert($(window).height());
+               alert($("#content").height());
+            $("#map_div").height($(window).height()-$("#content").height());
+            map.invalidateSize();
+           }, 100);
+            
         
        
     });
