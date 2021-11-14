@@ -667,6 +667,10 @@ $('.fd_p').on('click',function(){
 
 
 function get_dp_and_counts_against_fp_dvid(did){
+    $("#sred").text('0');
+    $("#syellow").text('0');
+    $("#sblue").text('0');
+    $("#tryb").text('0');
     $.ajax({
         url: "services/get_demand_point_geojson.php?lid="+did + "&fd_no=%"+ "&phase=%",
         type: "GET",
