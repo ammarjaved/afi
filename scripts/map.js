@@ -452,7 +452,7 @@ $(document).ready(function(){
                         layer.bindPopup(str);
 
                         layer.on('click', function (e) {
-                            map.removeLayer(line_l1_l2_l3_markers);
+                            // map.removeLayer(line_l1_l2_l3_markers);
                             if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
                                 for(var i=0; i<point_polylines_arr.length; i++){
                                     map.removeLayer(point_polylines_arr[i]);
@@ -463,7 +463,7 @@ $(document).ready(function(){
                             feature_point=layer.toGeoJSON();
                             // console.log(feature_point);
                             let arr = Array();
-                            arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
+                            arr.push([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
                             if(feature_point.properties.l3_id){
                                 var l3_id=feature_point.properties.l3_id
                                 $.ajax({
@@ -518,7 +518,7 @@ $(document).ready(function(){
                                 // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
                                 var polyline = L.polyline(arr);
                                 setPolylineColors(polyline,['yellow','pink','green'])
-                                line_l1_l2_l3_markers.addTo(map);
+                                // line_l1_l2_l3_markers.addTo(map);
                                 // point_polylines_arr.push(polyline);
                              }, 400);
                             
@@ -791,16 +791,68 @@ function drawlines_against_fp_geojson(response){
                         map.removeLayer(point_polylines_arr[i]);
                     }
                 }
-
-
+                
+                // map.removeLayer(demand_point)
                 feature_point=layer.toGeoJSON();
+                // console.log(feature_point);
                 let arr = Array();
-                arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-                arr.push(current_dropdown_latlng);
+                arr.push([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
+                if(feature_point.properties.l3_id){
+                    var l3_id=feature_point.properties.l3_id
+                    $.ajax({
+                        url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+                        type: "GET",
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function callback(response) {
+                             // console.log(response);
+                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                            var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                             L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+                         }
+                    })
+                }
+                if(feature_point.properties.l2_id){
+                    var l2_id=feature_point.properties.l2_id
+                    $.ajax({
+                        url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+                        type: "GET",
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function callback(response) {
+                            // console.log(response);
+                            arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                            var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                            L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+                        }
+                    })
+                }
+                if(feature_point.properties.l1_id){
+                    var l1_id=feature_point.properties.l1_id
+                    $.ajax({
+                        url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+                        type: "GET",
+                        async: false,
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function callback(response) {
+                            // console.log(response);
+                            arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                            var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                            L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+                        }
+                    })
+                }
+                
                 
                 setTimeout(function(){ 
+                    // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
                     var polyline = L.polyline(arr);
                     setPolylineColors(polyline,['yellow','pink','green'])
+                    // line_l1_l2_l3_markers.addTo(map);
+                    // point_polylines_arr.push(polyline);
                  }, 400);
             });
             
