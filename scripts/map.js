@@ -27,9 +27,9 @@ var line_l1_l2_l3_markers = L.layerGroup();
         transparent: true
     });
 var map = L.map('map_div', {
-    center: [2.390668368, 102.080687281],
+    center: [2.3773940674819998, 102.21967220306398],
     // center: [31.5204, 74.3587],
-    zoom: 9,
+    zoom: 15,
     layers: [googleSat, demand_point, dpns],
     attributionControl:false 
 });
@@ -167,43 +167,98 @@ function fillDropDowns(di,lyr){
         contentType: "application/json; charset=utf-8",
         success: function callback(data) {
             // var r=JSON.parse(response)
+            for(var j=0;j<data.count.length;j++){ 
+                if(data.count[j].phase=="R"){       
+                $("#sred").text(data.count[j].count);
+                }
+                if(data.count[j].phase=="Y"){
+                $("#syellow").text(data.count[j].count);
+                }
+                if(data.count[j].phase=="B"){
+                $("#sblue").text(data.count[j].count);
+                }
+                if(data.count[j].phase=="RYB"){
+                $("#tryb").text(data.count[j].count);
+                }
+              } 
             if(lyr=='fp'){
                 $('.load_options').remove();
-                console.log(data.fp)
-                for(var i=0;i<data.length;i++){
-                    $('select[name="fp"]').append('<option value="'+ data[i].l1_id +'">'+data[i].l1_id+' ('+data[i].pe_name+')'+'</option>');
+                //console.log(data.fp)
+                if(data.fp!="false"){
+                for(var i=0;i<data.fp.length;i++){
+                    $('select[name="fp"]').append('<option value="'+ data.fp[i].l1_id+","+data.fp[i].x+"-"+data.fp[i].y+'">'+data.fp[i].l1_id+' ('+data.fp[i].pe_name+')'+'</option>');
                 }
-            }else if(lyr=='sfp'){
+            }
+            }
+            else if(lyr=='sfp'){
+                if(data.sfp!="false"){
                 for(var i=0;i<data.length;i++){  
                     $('select[name="sfp"]').append('<option class="load_options" value="'+ data[i].l2_id +'">'+data[i].l2_id+' ( '+data[i].pe_name+')'+'</option>');
                 }
+            }
             }else if(lyr=='mfp') {
+                if(data.mfp!="false"){
                 for (var i = 0; i < data.length; i++) {
                     $('select[name="mfp"]').append('<option class="load_options" value="' + data[i].l3_id + '">' + data[i].l3_id+' ('+data[i].pe_name+')'+'</option>');
                 }
             }
         }
+    }
     });
 }
+
+$('select[name="fp"]').on('change',function(e){
+
+    //  console.log(demand_point)
+      // function fp_zoom_to_feature(did){
+      //     gj= JSON.parse(geojsonfromhiddenfld)
+      //      for(var i=0;i<gj.features.length;i++){if(gj.features[i].properties.device_id==did){map.setView([gj.features[i].geometry.coordinates[1],gj.features[i].geometry.coordinates[0]],17)}}
+      //      // console.log(did)
+      //      // console.log(geojsonfromhiddenfld)
+           
+      //  }
+      e.preventDefault();
+      var l1_id= $(this).val();
+      var spl1id=l1_id.split(',');
+     // var did=spl1id[0];
+      spl2id=spl1id[1].split('-');
+      map.setView([spl2id[1],spl2id[0]],16);
+            $("#sred").text('');
+          $("#syellow").text('');
+          $("#sblue").text('');
+          $("#tryb").text('');
+  
+      fillDropDowns(spl1id[0],'sfp')
+
+     // current_phase_val= spl1id[0].split(",")[0];
+     
+   
+      
+      
+      $('#fd_details_div').show();
+      current_dropdown_Lid=spl1id[0];
+      //loadfilterdata(l1_id); 
+     // clickTopDropDowns(l1_id);
+  });
 
 
 $(document).ready(function(){
     //-----------counts----------
-    $.ajax({
-        url: "services/get_total_counts_values.php?lid=%",
-        type: "GET",
-        dataType: "json",
-        //data: JSON.stringify(geom,layer.geometry),
-        contentType: "application/json; charset=utf-8",
-        success: function callback(response) {
-          console.log(response)
-          $("#sred").text(response.Rsingle[0]["count"]);
-          $("#syellow").text(response.Ysingle[0]["count"]);
-          $("#sblue").text(response.Bsingle[0]["count"]);
-          $("#tryb").text(response.RYBthree[0]["count"]);
+    // $.ajax({
+    //     url: "services/get_total_counts_values.php?lid=%",
+    //     type: "GET",
+    //     dataType: "json",
+    //     //data: JSON.stringify(geom,layer.geometry),
+    //     contentType: "application/json; charset=utf-8",
+    //     success: function callback(response) {
+    //       console.log(response)
+    //       $("#sred").text(response.Rsingle[0]["count"]);
+    //       $("#syellow").text(response.Ysingle[0]["count"]);
+    //       $("#sblue").text(response.Bsingle[0]["count"]);
+    //       $("#tryb").text(response.RYBthree[0]["count"]);
 
-        }
-    });
+    //     }
+    // });
     setTimeout(function(){
         getProperties(dpns)
          //-----------fp dropdown ids----------  
@@ -547,28 +602,7 @@ function addRemoveLayer(name){
 
 
 //-----------on change fp dropdown----------  
-$('select[name="fp"]').on('change',function(e){
 
-    console.log(demand_point)
-    // function fp_zoom_to_feature(did){
-    //     gj= JSON.parse(geojsonfromhiddenfld)
-    //      for(var i=0;i<gj.features.length;i++){if(gj.features[i].properties.device_id==did){map.setView([gj.features[i].geometry.coordinates[1],gj.features[i].geometry.coordinates[0]],17)}}
-    //      // console.log(did)
-    //      // console.log(geojsonfromhiddenfld)
-         
-    //  }
-    e.preventDefault();
-    var l1_id= $(this).val();
-    fillDropDowns(l1_id,'sfp')
-    $("#sred").text('');
-    $("#syellow").text('');
-    $("#sblue").text('');
-    $("#tryb").text('');
-
-    $('#fd_details_div').show();
-    current_dropdown_Lid=l1_id;
-    loadfilterdata(l1_id); 
-});
 
 $('select[name="sfp"]').on('change',function(e){
     e.preventDefault();
@@ -680,6 +714,10 @@ function loadfilterdata(lid){
     });
 }
 
+function clickTopDropDowns(){
+
+}
+
 
 function get_filtered_dp_geojson(response){
 
@@ -723,7 +761,7 @@ function get_filtered_dp_geojson(response){
                          arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                          var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                          L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-                         map.setView(latlng3, 14);
+                         map.setView(latlng3, 18);
                      }
                 })
             }
@@ -740,7 +778,7 @@ function get_filtered_dp_geojson(response){
                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                         var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                         L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-                        map.setView(latlng2, 14);
+                        map.setView(latlng2, 18);
                     }
                 })
             }
@@ -757,7 +795,7 @@ function get_filtered_dp_geojson(response){
                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                         var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                         L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-                        map.setView(latlng1, 14);
+                        map.setView(latlng1, 18);
                     }
                 })
             }

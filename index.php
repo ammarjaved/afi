@@ -281,21 +281,24 @@ else {
 
     $(document).ready(function () {
         var tblname
-        $("#search_input").on('keyup', function(){
             var radioValue = $("input[name='optradio']:checked").val();
             if(radioValue){
                 tblname=radioValue;
             }
-            setTimeout(function(){
-                // alert(tblname);
-                $('.typeahead').typeahead({
-                    name: 'hce',
-                    remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
-                    limit: 5
-                });
-            }, 400);
-           
+        $("#search_input").on('keyup', function(){
+            $('.typeahead').typeahead({
+                name: 'hce',
+                remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
+                limit: 5
+            });
         });
+            
+          //  setTimeout(function(){
+                // alert(tblname);
+                
+            //}, 400);
+           
+       
         
        
     });
