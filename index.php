@@ -300,9 +300,9 @@ else {
                 
             //}, 400);
            setTimeout(() => {
-               alert($(window).height());
-               alert($("#content").height());
-            $("#map_div").height($(window).height()-$("#content").height());
+               //alert($(window).height());
+               //alert($("#content").height());
+            $("#map_div").height($(window).height()-266);
             map.invalidateSize();
            }, 100);
             
