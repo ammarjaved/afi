@@ -205,7 +205,7 @@ else {
                         <div class="panel-body" id="map_div" style="padding: 0; height: 456px !important; margin-bottom: 0px !important;">
 
                             <div id="clearlinesbtn" style="display:none; z-index: 1000000;position: relative;">
-                                <a class="pull-right btn btn-danger" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 100px !important;">Clear Lines</a>
+                                <a class="pull-left btn btn-danger btn-sm" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 20px !important;margin-left: 50px;">Clear Lines</a>
                             </div>
                             <!--Panel content-->
                             <!--Map will be here-->
