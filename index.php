@@ -280,18 +280,19 @@ else {
 <script>
 
     $(document).ready(function () {
-        var tblname
+        var tblname= 'fpl1'
             var radioValue = $("input[name='optradio']:checked").val();
             if(radioValue){
                 tblname=radioValue;
             }
-        $("#search_input").on('keyup', function(){
+        // $("#search_input").on('keyup', function(){
+           
+        // });
             $('.typeahead').typeahead({
                 name: 'hce',
                 remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
                 limit: 5
             });
-        });
             
           //  setTimeout(function(){
                 // alert(tblname);

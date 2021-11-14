@@ -11,6 +11,7 @@ var l3;
 var filter_polylines_arr=Array();
 var point_polylines_arr=Array();
 var line_l1_l2_l3_markers = L.layerGroup();
+var current_dropdown_latlng;
 
    
     var street   = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
@@ -20,7 +21,7 @@ var line_l1_l2_l3_markers = L.layerGroup();
                     subdomains:['mt0','mt1','mt2','mt3']
                 });
 
-    var dpns = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+    var non_surveyed_dp = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
         layers: 'cite:demand_point_not_surveyed',
         format: 'image/png',
         maxZoom: 20,
@@ -30,7 +31,7 @@ var map = L.map('map_div', {
     center: [2.3773940674819998, 102.21967220306398],
     // center: [31.5204, 74.3587],
     zoom: 15,
-    layers: [googleSat, demand_point, dpns],
+    layers: [googleSat, demand_point, non_surveyed_dp,lvdb_l1,SFP_L2,MFP_L3],
     attributionControl:false 
 });
 
@@ -134,7 +135,7 @@ var overlays = {
     "SFP_L2&nbsp&nbsp<img src='images/2.png' width='30' height='30'>": SFP_L2,
     "MFP_L3&nbsp&nbsp<img src='images/3.png' width='30' height='30'>": MFP_L3,
     "Surveyed Demand Points &nbsp&nbsp<img src='images/layer.jpg' width='30' height='30'>": demand_point,
-    "Non Surveyed D/P": dpns,
+    "Non Surveyed D/P": non_surveyed_dp,
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -222,7 +223,7 @@ $('select[name="fp"]').on('change',function(e){
       var spl1id=l1_id.split(',');
      // var did=spl1id[0];
       spl2id=spl1id[1].split('-');
-      map.setView([spl2id[1],spl2id[0]],16);
+      map.setView([spl2id[1],spl2id[0]],19);
             $("#sred").text('');
           $("#syellow").text('');
           $("#sblue").text('');
@@ -237,7 +238,8 @@ $('select[name="fp"]').on('change',function(e){
       
       $('#fd_details_div').show();
       current_dropdown_Lid=spl1id[0];
-      //loadfilterdata(l1_id); 
+      current_dropdown_latlng=[spl2id[1],spl2id[0]];
+      //get_dp_and_counts_against_dvid(l1_id); 
      // clickTopDropDowns(l1_id);
   });
 
@@ -260,7 +262,7 @@ $(document).ready(function(){
     //     }
     // });
     setTimeout(function(){
-        getProperties(dpns)
+        getProperties(non_surveyed_dp)
          //-----------fp dropdown ids----------  
         fillDropDowns('%','fp')
       
@@ -272,53 +274,38 @@ $(document).ready(function(){
             //data: JSON.stringify(geom,layer.geometry),
             contentType: "application/json; charset=utf-8",
             success: function callback(response) {
-                
-                // var r=JSON.parse(response)
-            
-             lvdb_l1=L.geoJSON(response,{
-                pointToLayer: function (feature, latlng) {
-                    l1=latlng;
-                    // console.log(latlng)
-                    // return L.circleMarker(latlng, {
-                    //     radius: 15,
-                    //     lineCap: "round",
-                    //     fillColor: "green",
-                    //     color: "#000",
-                    //     weight: 1,
-                    //     opacity: 1,
-                    //     fillOpacity: 0.8
-                    // });
-                    return L.marker(latlng, {icon: Icon1});
-                },
-                onEachFeature: function (feature, layer) {
-                    var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                    str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                    str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                    str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image_4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_4  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image_5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_5  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_6  </td><td><a href="'+feature.properties.image_6 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_6  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_7  </td><td><a href="'+feature.properties.image_7 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_7  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_8  </td><td><a href="'+feature.properties.image_8 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_8  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_9  </td><td><a href="'+feature.properties.image_9 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_9  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_10 </td><td><a href="'+feature.properties.image_10+'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_10 + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '</table></div>'
-                    // var popupText = "<b>status:</b> " + feature.properties.status +
-                    //             "<br><b>pe_name:</b> " + feature.properties.pe_name+
-                    //             "<br><b>Latitude:</b> " + response.features[0].geometry.coordinates[0][0]+"  <b>Longitude:</b> " + response.features[0].geometry.coordinates[0][1] 
-                    layer.bindPopup(str);
-                    layer.on('click', function (e) {
-                        if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
-                            for(var i=0; i<filter_polylines_arr.length; i++){
-                                map.addLayer(filter_polylines_arr[i])
-                            }
+                if(response==undefined || response==''){
+                console.log(response);
+                }else{
+                lvdb_l1=L.geoJSON(response,{
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: Icon1});
+                        },
+                        onEachFeature: function (feature, layer) {
+                            var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
+                            str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                            str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image_4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_4  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image_5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_5  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_6  </td><td><a href="'+feature.properties.image_6 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_6  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_7  </td><td><a href="'+feature.properties.image_7 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_7  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_8  </td><td><a href="'+feature.properties.image_8 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_8  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_9  </td><td><a href="'+feature.properties.image_9 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_9  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_10 </td><td><a href="'+feature.properties.image_10+'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_10 + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '</table></div>'
+                            layer.bindPopup(str);
+                            layer.on('click', function (e) {
+                                var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+                                current_dropdown_latlng= dlatlng;
+                                var did=feature.properties.l1_id;
+                                get_dp_and_counts_against_fp_dvid(did)
+                            });
                         }
-                    });
+                    }).addTo(lvdb_l1)
                 }
-            }).addTo(lvdb_l1)
-
             }
         });
         $.ajax({
@@ -327,41 +314,38 @@ $(document).ready(function(){
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function callback(response) {
-                
-            SFP_L2=L.geoJSON(response,{
-                pointToLayer: function (feature, latlng) {
-                    l2=latlng;
-                    return L.marker(latlng, {icon: Icon2});
-                },
-                onEachFeature: function (feature, layer) {
-                    var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                    str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                    str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                    str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image_4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_4  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image_5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_5  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_6  </td><td><a href="'+feature.properties.image_6 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_6  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_7  </td><td><a href="'+feature.properties.image_7 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_7  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_8  </td><td><a href="'+feature.properties.image_8 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_8  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_9  </td><td><a href="'+feature.properties.image_9 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_9  + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '<tr><td> image_10 </td><td><a href="'+feature.properties.image_10+'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_10 + '" width="20px" height="20px"></a></td></tr>'
-                    str = str + '</table></div>'
-                    // var popupText = "<b>status:</b> " + feature.properties.status +
-                    //             "<br><b>pe_name:</b> " + feature.properties.pe_name+
-                    //             "<br><b>Latitude:</b> " + response.features[0].geometry.coordinates[0][0]+"  <b>Longitude:</b> " + response.features[0].geometry.coordinates[0][1] 
-                    layer.bindPopup(str);
-                    layer.on('click', function (e) {
-                        if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
-                            for(var i=0; i<filter_polylines_arr.length; i++){
-                                map.addLayer(filter_polylines_arr[i])
-                            }
+                if(response==undefined || response==''){
+                console.log(response);
+                }else{
+                SFP_L2=L.geoJSON(response,{
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: Icon2});
+                        },
+                        onEachFeature: function (feature, layer) {
+                            var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+                            str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                            str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image_4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_4  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image_5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_5  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_6  </td><td><a href="'+feature.properties.image_6 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_6  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_7  </td><td><a href="'+feature.properties.image_7 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_7  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_8  </td><td><a href="'+feature.properties.image_8 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_8  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_9  </td><td><a href="'+feature.properties.image_9 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_9  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_10 </td><td><a href="'+feature.properties.image_10+'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_10 + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '</table></div>'
+                            layer.bindPopup(str);
+                            layer.on('click', function (e) {
+                                var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+                                current_dropdown_latlng= dlatlng;
+                                var did=feature.properties.l1_id;
+                                get_dp_and_counts_against_fp_dvid(did)
+                            });
                         }
-                    });
+                    }).addTo(SFP_L2)
                 }
-            }).addTo(SFP_L2)
-
             }
         });
         $.ajax({
@@ -370,44 +354,38 @@ $(document).ready(function(){
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             success: function callback(response) {
-                console.log(response)
+                if(response==undefined || response==''){
+                console.log(response);
+                }else{
                 MFP_L3=L.geoJSON(response,{
-                    pointToLayer: function (feature, latlng) {
-                        l3=latlng;
-                        // console.log(latlng)
-                        return L.marker(latlng, {icon: Icon3});
-                    },
-                    onEachFeature: function (feature, layer) {
-                        var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                        str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                        str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                        str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image_4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_4  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image_5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_5  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_6  </td><td><a href="'+feature.properties.image_6 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_6  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_7  </td><td><a href="'+feature.properties.image_7 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_7  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_8  </td><td><a href="'+feature.properties.image_8 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_8  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_9  </td><td><a href="'+feature.properties.image_9 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_9  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_10 </td><td><a href="'+feature.properties.image_10+'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_10 + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '</table></div>'
-                        // var popupText = "<b>status:</b> " + feature.properties.status +
-                        //             "<br><b>pe_name:</b> " + feature.properties.pe_name+
-                        //             "<br><b>Latitude:</b> " + response.features[0].geometry.coordinates[0][0]+"  <b>Longitude:</b> " + response.features[0].geometry.coordinates[0][1] 
-                        layer.bindPopup(str);
-
-                        layer.on('click', function (e) {
-                            if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
-                                for(var i=0; i<filter_polylines_arr.length; i++){
-                                    map.addLayer(filter_polylines_arr[i])
-                                }
-                            }
-                        });
-
-                    }
-                }).addTo(MFP_L3)
-
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {icon: Icon3});
+                        },
+                        onEachFeature: function (feature, layer) {
+                            var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+                            str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                            str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image_4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_4  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image_5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_5  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_6  </td><td><a href="'+feature.properties.image_6 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_6  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_7  </td><td><a href="'+feature.properties.image_7 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_7  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_8  </td><td><a href="'+feature.properties.image_8 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_8  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_9  </td><td><a href="'+feature.properties.image_9 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_9  + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '<tr><td> image_10 </td><td><a href="'+feature.properties.image_10+'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_10 + '" width="20px" height="20px"></a></td></tr>'
+                            str = str + '</table></div>'
+                            layer.bindPopup(str);
+                            layer.on('click', function (e) {
+                                var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
+                                current_dropdown_latlng= dlatlng;
+                                var did=feature.properties.l1_id;
+                                get_dp_and_counts_against_fp_dvid(did)
+                            });
+                        }
+                    }).addTo(MFP_L3)
+                }
             }
         });
         $.ajax({
@@ -616,7 +594,7 @@ $('select[name="sfp"]').on('change',function(e){
     $('#fd_details_div').show();
 
     current_dropdown_Lid=l2id;
-    loadfilterdata(l2id);
+    get_dp_and_counts_against_dvid(l2id);
 });
 $('select[name="mfp"]').on('change',function(e){
     e.preventDefault();
@@ -629,7 +607,7 @@ $('select[name="mfp"]').on('change',function(e){
     $('#fd_details_div').show();
 
     current_dropdown_Lid=l3id;
-    loadfilterdata(l3id);
+    get_dp_and_counts_against_dvid(l3id);
     
 });
 
@@ -682,26 +660,29 @@ $('.fd_p').on('click',function(){
         contentType: "application/json; charset=utf-8",
         success: function callback(response) {
             console.log(response)
-            get_filtered_dp_geojson(response)
+            drawlines_against_fp_geojson(response)
         }
     });
 });
 
-function loadfilterdata(lid){
+
+function get_dp_and_counts_against_fp_dvid(did){
     $.ajax({
-        url: "services/get_demand_point_geojson.php?lid="+lid + "&fd_no=%"+ "&phase=%",
+        url: "services/get_demand_point_geojson.php?lid="+did + "&fd_no=%"+ "&phase=%",
         type: "GET",
         dataType: "json",
+        async: false,
         contentType: "application/json; charset=utf-8",
         success: function callback(response) {
 
-            get_filtered_dp_geojson(response)
+            drawlines_against_fp_geojson(response)
         }
     });
     $.ajax({
         url: "services/get_total_counts_values.php?lid="+lid,
         type: "GET",
         dataType: "json",
+        async: false,
         //data: JSON.stringify(geom,layer.geometry),
         contentType: "application/json; charset=utf-8",
         success: function callback(response) {
@@ -714,91 +695,26 @@ function loadfilterdata(lid){
     });
 }
 
-function clickTopDropDowns(){
-
-}
-
-
-function get_filtered_dp_geojson(response){
+function drawlines_against_fp_geojson(response){
 
     if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
         for(var i=0; i<point_polylines_arr.length; i++){
             map.removeLayer(point_polylines_arr[i])
         }
     }
-    
-    // map.removeLayer(polyline)
+
     if (filter_polylines_arr.length !== 0) {
         for(var i=0; i<filter_polylines_arr.length; i++){
             map.removeLayer(filter_polylines_arr[i])
         }
     }
-    filter_polylines_arr=[];
-
-    if(response.incoming){
-        var incoming=response.incoming[0];
-    }
-
     map.removeLayer(demand_point)
-    map.removeLayer(line_l1_l2_l3_markers)
+    console.log(JSON.parse(response.geojson));
     demand_point=L.geoJSON(JSON.parse(response.geojson),{
+
         pointToLayer: function (feature, latlng) {
-            map.removeLayer(line_l1_l2_l3_markers)
-            feature_point=feature;
-            // console.log(feature_point);
             let arr = Array();
-            // arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-            if(feature_point.properties.l3_id){
-                var l3_id=feature_point.properties.l3_id
-                $.ajax({
-                    url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-                    type: "GET",
-                    async: false,
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function callback(response) {
-                         // console.log(response);
-                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                         var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                         L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-                         map.setView(latlng3, 18);
-                     }
-                })
-            }
-            if(feature_point.properties.l2_id){
-                var l2_id=feature_point.properties.l2_id
-                $.ajax({
-                    url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-                    type: "GET",
-                    async: false,
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function callback(response) {
-                        // console.log(response);
-                        arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                        var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                        L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-                        map.setView(latlng2, 18);
-                    }
-                })
-            }
-            if(feature_point.properties.l1_id){
-                var l1_id=feature_point.properties.l1_id
-                $.ajax({
-                    url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-                    type: "GET",
-                    async: false,
-                    dataType: "json",
-                    contentType: "application/json; charset=utf-8",
-                    success: function callback(response) {
-                        // console.log(response);
-                        arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                        var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                        L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-                        map.setView(latlng1, 18);
-                    }
-                })
-            }
+            arr.push(current_dropdown_latlng);
             arr.push(latlng);
             var polyline = L.polyline(arr, {color: 'red'});
             filter_polylines_arr.push(polyline);
@@ -808,16 +724,6 @@ function get_filtered_dp_geojson(response){
                     map.addLayer(filter_polylines_arr[i])
                 }
             }
-
-            line_l1_l2_l3_markers.addTo(map);
-            
-            // setTimeout(function(){ 
-            //     var polyline = L.polyline(arr);
-            //     setPolylineColors(polyline,['yellow','pink','green'])
-            //     line_l1_l2_l3_markers.addTo(map);
-               
-            //  }, 400);
-        
         
             if(feature.properties.phase == "R"){
                 return L.circleMarker(latlng, {
@@ -862,22 +768,6 @@ function get_filtered_dp_geojson(response){
         },
         onEachFeature: function (feature, layer) {
 
-            if(current_dropdown_Lid !='a111' && current_dropdown_Lid !='a222'){
-                var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-                str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-                str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-                str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-                str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                // str = str + '<tr><td> lvf1_fd  </td><td>' + incoming.lvf1_fd  + '</td></tr>'
-                // str = str + '<tr><td> lvf2_fd  </td><td>' + incoming.lvf2_fd  + '</td></tr>'
-                str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '</table></div>'
-                layer.bindPopup(str);
-            }
-            else{
                 var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
                 str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
                 str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
@@ -889,82 +779,23 @@ function get_filtered_dp_geojson(response){
                 str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
                 str = str + '</table></div>'
                 layer.bindPopup(str);
-            }
-			
+
             layer.on('click', function (e) {
-                map.removeLayer(line_l1_l2_l3_markers);
                 if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
                     for(var i=0; i<point_polylines_arr.length; i++){
                         map.removeLayer(point_polylines_arr[i]);
                     }
                 }
-                
-                // map.removeLayer(demand_point)
+
                 feature_point=layer.toGeoJSON();
-                // console.log(feature_point);
                 let arr = Array();
                 arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-                if(feature_point.properties.l3_id){
-                    var l3_id=feature_point.properties.l3_id
-                    $.ajax({
-                        url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                                // console.log(response);
-                           
-                                arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                                var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                             L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-                         }
-                    })
-                }
-                if(feature_point.properties.l2_id){
-                    var l2_id=feature_point.properties.l2_id
-                    $.ajax({
-                        url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                          
-                            arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                            var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                            L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-                        }
-                    })
-                }
-                if(feature_point.properties.l1_id){
-                    var l1_id=feature_point.properties.l1_id
-                    $.ajax({
-                        url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                            // console.log(response);
-                           
-                            arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                            var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                            L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-                        }
-                    })
-                }
-                
+                arr.push(current_dropdown_latlng);
                 
                 setTimeout(function(){ 
                     var polyline = L.polyline(arr);
                     setPolylineColors(polyline,['yellow','pink','green'])
-                    line_l1_l2_l3_markers.addTo(map);
-                   
                  }, 400);
-
-                
-                
             });
             
         }
@@ -974,6 +805,7 @@ function get_filtered_dp_geojson(response){
     demand_point.addTo(map);
   
 }
+
 
 
 function setPolylineColors(line,colors){
@@ -987,6 +819,302 @@ function setPolylineColors(line,colors){
        }
   })
 }
+
+
+
+
+
+// function get_dp_and_counts_against_dvid(lid){
+//     $.ajax({
+//         url: "services/get_demand_point_geojson.php?lid="+lid + "&fd_no=%"+ "&phase=%",
+//         type: "GET",
+//         dataType: "json",
+//         async: false,
+//         contentType: "application/json; charset=utf-8",
+//         success: function callback(response) {
+
+//             drawlines_against_geojson(response)
+//         }
+//     });
+//     $.ajax({
+//         url: "services/get_total_counts_values.php?lid="+lid,
+//         type: "GET",
+//         dataType: "json",
+//         async: false,
+//         //data: JSON.stringify(geom,layer.geometry),
+//         contentType: "application/json; charset=utf-8",
+//         success: function callback(response) {
+//           $("#sred").text(response.Rsingle[0]["count"]);
+//           $("#syellow").text(response.Ysingle[0]["count"]);
+//           $("#sblue").text(response.Bsingle[0]["count"]);
+//           $("#tryb").text(response.RYBthree[0]["count"]);
+
+//         }
+//     });
+// }
+
+// function drawlines_against_geojson(response){
+
+//     if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
+//         for(var i=0; i<point_polylines_arr.length; i++){
+//             map.removeLayer(point_polylines_arr[i])
+//         }
+//     }
+    
+//     // map.removeLayer(polyline)
+//     if (filter_polylines_arr.length !== 0) {
+//         for(var i=0; i<filter_polylines_arr.length; i++){
+//             map.removeLayer(filter_polylines_arr[i])
+//         }
+//     }
+//     filter_polylines_arr=[];
+
+//     if(response.incoming){
+//         var incoming=response.incoming[0];
+//     }
+
+//     map.removeLayer(demand_point)
+//     // map.removeLayer(line_l1_l2_l3_markers)
+//     demand_point=L.geoJSON(JSON.parse(response.geojson),{
+//         pointToLayer: function (feature, latlng) {
+//             feature_point=feature;
+//             let arr = Array();
+//             if(feature_point.properties.l3_id){
+//                 var l3_id=feature_point.properties.l3_id
+//                 $.ajax({
+//                     url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+//                     type: "GET",
+//                     async: false,
+//                     dataType: "json",
+//                     contentType: "application/json; charset=utf-8",
+//                     success: function callback(response) {
+//                          // console.log(response);
+//                         //  arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+//                          var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+//                          arr.push(latlng3);
+//                          //  L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+//                          map.setView(latlng3, 18);
+//                      }
+//                 })
+//             }
+//             if(feature_point.properties.l2_id){
+//                 var l2_id=feature_point.properties.l2_id
+//                 $.ajax({
+//                     url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+//                     type: "GET",
+//                     async: false,
+//                     dataType: "json",
+//                     contentType: "application/json; charset=utf-8",
+//                     success: function callback(response) {
+//                         // console.log(response);
+//                         // arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+//                         var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+//                         arr.push(latlng2);
+//                         // L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+//                         map.setView(latlng2, 18);
+//                     }
+//                 })
+//             }
+//             if(feature_point.properties.l1_id){
+//                 var l1_id=feature_point.properties.l1_id
+//                 $.ajax({
+//                     url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+//                     type: "GET",
+//                     async: false,
+//                     dataType: "json",
+//                     contentType: "application/json; charset=utf-8",
+//                     success: function callback(response) {
+//                         // console.log(response);
+//                         // arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+//                         var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+//                         arr.push(latlng1);
+//                         // L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+//                         map.setView(latlng1, 18);
+//                     }
+//                 })
+//             }
+//             arr.push(latlng);
+//             var polyline = L.polyline(arr, {color: 'red'});
+//             filter_polylines_arr.push(polyline);
+
+//             if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
+//                 for(var i=0; i<filter_polylines_arr.length; i++){
+//                     map.addLayer(filter_polylines_arr[i])
+//                 }
+//             }
+
+//             // line_l1_l2_l3_markers.addTo(map);
+            
+//             // setTimeout(function(){ 
+//             //     var polyline = L.polyline(arr);
+//             //     setPolylineColors(polyline,['yellow','pink','green'])
+//             //     line_l1_l2_l3_markers.addTo(map);
+               
+//             //  }, 400);
+        
+        
+//             if(feature.properties.phase == "R"){
+//                 return L.circleMarker(latlng, {
+//                     radius: 8,
+//                     fillColor: "red",
+//                     color: "#000",
+//                     weight: 1,
+//                     opacity: 1,
+//                     fillOpacity: 0.8
+//                 });
+//             }
+//             if(feature.properties.phase == "Y"){
+//                 return L.circleMarker(latlng, {
+//                     radius: 8,
+//                     fillColor: "yellow",
+//                     color: "#000",
+//                     weight: 1,
+//                     opacity: 1,
+//                     fillOpacity: 0.8
+//                 });
+//             }if(feature.properties.phase == "B"){
+//                 return L.circleMarker(latlng, {
+//                     radius: 8,
+//                     fillColor: "blue",
+//                     color: "#000",
+//                     weight: 1,
+//                     opacity: 1,
+//                     fillOpacity: 0.8
+//                 });
+//             }if(feature.properties.phase == "RYB"){
+//                 return L.marker(latlng, {icon: ryb});
+//             }else{
+//                 return L.circleMarker(latlng, {
+//                     radius: 8,
+//                     fillColor: "black",
+//                     color: "#000",
+//                     weight: 1,
+//                     opacity: 1,
+//                     fillOpacity: 0.8
+//                 });
+//             }
+//         },
+//         onEachFeature: function (feature, layer) {
+
+//             if(current_dropdown_Lid !='a111' && current_dropdown_Lid !='a222'){
+//                 var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+//                 str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+//                 str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+//                 str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
+//                 str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
+//                 str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+//                 str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
+//                 str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
+//                 // str = str + '<tr><td> lvf1_fd  </td><td>' + incoming.lvf1_fd  + '</td></tr>'
+//                 // str = str + '<tr><td> lvf2_fd  </td><td>' + incoming.lvf2_fd  + '</td></tr>'
+//                 str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+//                 str = str + '</table></div>'
+//                 layer.bindPopup(str);
+//             }
+//             else{
+//                 var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+//                 str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+//                 str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+//                 str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
+//                 str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
+//                 str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+//                 str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
+//                 str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
+//                 str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+//                 str = str + '</table></div>'
+//                 layer.bindPopup(str);
+//             }
+			
+//             layer.on('click', function (e) {
+//                 map.removeLayer(line_l1_l2_l3_markers);
+//                 if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
+//                     for(var i=0; i<point_polylines_arr.length; i++){
+//                         map.removeLayer(point_polylines_arr[i]);
+//                     }
+//                 }
+                
+//                 // map.removeLayer(demand_point)
+//                 feature_point=layer.toGeoJSON();
+//                 // console.log(feature_point);
+//                 let arr = Array();
+//                 arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
+//                 if(feature_point.properties.l3_id){
+//                     var l3_id=feature_point.properties.l3_id
+//                     $.ajax({
+//                         url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+//                         type: "GET",
+//                         async: false,
+//                         dataType: "json",
+//                         contentType: "application/json; charset=utf-8",
+//                         success: function callback(response) {
+//                                 // console.log(response);
+                           
+//                                 arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+//                                 var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+//                              L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+//                          }
+//                     })
+//                 }
+//                 if(feature_point.properties.l2_id){
+//                     var l2_id=feature_point.properties.l2_id
+//                     $.ajax({
+//                         url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+//                         type: "GET",
+//                         async: false,
+//                         dataType: "json",
+//                         contentType: "application/json; charset=utf-8",
+//                         success: function callback(response) {
+                          
+//                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+//                             var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+//                             L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+//                         }
+//                     })
+//                 }
+//                 if(feature_point.properties.l1_id){
+//                     var l1_id=feature_point.properties.l1_id
+//                     $.ajax({
+//                         url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+//                         type: "GET",
+//                         async: false,
+//                         dataType: "json",
+//                         contentType: "application/json; charset=utf-8",
+//                         success: function callback(response) {
+//                             // console.log(response);
+                           
+//                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+//                             var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+//                             L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+//                         }
+//                     })
+//                 }
+                
+                
+//                 setTimeout(function(){ 
+//                     var polyline = L.polyline(arr);
+//                     setPolylineColors(polyline,['yellow','pink','green'])
+//                     // line_l1_l2_l3_markers.addTo(map);
+                   
+//                  }, 400);
+
+                
+                
+//             });
+            
+//         }
+        
+//     }).addTo(demand_point)
+
+//     demand_point.addTo(map);
+  
+// }
+
+
+
+
+
+
+
 
 // function retur_nmarker_and_color(latlng, color) {
 //     return L.circleMarker(latlng, {
