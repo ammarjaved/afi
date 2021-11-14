@@ -35,10 +35,7 @@ else {
 
             <div class="col-lg-12 npnm">
                 <div class="row npnm">
-                    <div class="col-lg-1 npnm">
-                    <a class="pull-left btn btn-info" onclick="mapreset()" style="margin-left: 0px !important; color: white; margin-top: 3px !important;">Home</a>
-                    </div>
-                    <div class="col-lg-11 npnm">
+                    <div class="col-lg-12 npnm">
                    
                         <img src="images/logo.png" width="150"  height="47" alt=""
                              class="d-inline-block align-middle mr-2">
@@ -206,6 +203,10 @@ else {
                     <!--</a>-->
                     <div id="r1p1" class="panel-collapse collapse in">
                         <div class="panel-body" id="map_div" style="padding: 0; height: 456px !important; margin-bottom: 0px !important;">
+
+                            <div id="clearlinesbtn" style="display:none; z-index: 1000000;position: relative;">
+                                <a class="pull-right btn btn-danger" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 100px !important;">Clear Lines</a>
+                            </div>
                             <!--Panel content-->
                             <!--Map will be here-->
                             <!-- Modal for non surved department-->
@@ -305,7 +306,20 @@ else {
     });
 
     function mapreset(){
-        location.reload();
+        if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
+            for(var i=0; i<point_polylines_arr.length; i++){
+                map.removeLayer(point_polylines_arr[i])
+                }
+        }
+
+        if (filter_polylines_arr.length !== 0) {
+            for(var i=0; i<filter_polylines_arr.length; i++){
+                map.removeLayer(filter_polylines_arr[i])
+            }
+        }
+        filter_polylines_arr=[];
+        point_polylines_arr=[];
+        $('#clearlinesbtn').hide();
     }
 
     function search_deviceid(){

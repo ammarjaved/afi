@@ -141,6 +141,10 @@ var overlays = {
 L.control.layers(baseLayers, overlays).addTo(map);
 
 
+var Icont = L.icon({
+    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
+    iconSize:     [0, 0] // size of the icon
+});
 var Icon1 = L.icon({
     iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
     iconSize:     [35, 35] // size of the icon
@@ -447,7 +451,11 @@ $(document).ready(function(){
                         str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
                         str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
                         str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                        str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+                        str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+                        str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
+                        str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
+                        str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
+                        str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
                         str = str + '</table></div>'
                         layer.bindPopup(str);
 
@@ -700,6 +708,7 @@ function get_dp_and_counts_against_fp_dvid(did){
 }
 
 function drawlines_against_fp_geojson(response){
+    
 
     if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
         for(var i=0; i<point_polylines_arr.length; i++){
@@ -713,6 +722,7 @@ function drawlines_against_fp_geojson(response){
         }
     }
     filter_polylines_arr=[];
+    point_polylines_arr=[];
     map.removeLayer(demand_point)
     console.log(JSON.parse(response.geojson));
     demand_point=L.geoJSON(JSON.parse(response.geojson),{
@@ -727,6 +737,7 @@ function drawlines_against_fp_geojson(response){
             if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
                 for(var i=0; i<filter_polylines_arr.length; i++){
                     map.addLayer(filter_polylines_arr[i])
+                    $('#clearlinesbtn').show();
                 }
             }
         
@@ -781,7 +792,11 @@ function drawlines_against_fp_geojson(response){
                 str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
                 str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
                 str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+                str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+                str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
+                str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
+                str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
+                str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
                 str = str + '</table></div>'
                 layer.bindPopup(str);
 
@@ -809,7 +824,7 @@ function drawlines_against_fp_geojson(response){
                              // console.log(response);
                              arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                             var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                             L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+                             L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                          }
                     })
                 }
@@ -825,7 +840,7 @@ function drawlines_against_fp_geojson(response){
                             // console.log(response);
                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                             var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                            L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+                            L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                         }
                     })
                 }
@@ -841,7 +856,7 @@ function drawlines_against_fp_geojson(response){
                             // console.log(response);
                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                             var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                            L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+                            L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                         }
                     })
                 }
@@ -851,7 +866,7 @@ function drawlines_against_fp_geojson(response){
                     // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
                     var polyline = L.polyline(arr);
                     setPolylineColors(polyline,['yellow','pink','green'])
-                    // line_l1_l2_l3_markers.addTo(map);
+                    line_l1_l2_l3_markers.addTo(map);
                     // point_polylines_arr.push(polyline);
                  }, 400);
             });
@@ -874,6 +889,7 @@ function setPolylineColors(line,colors){
           if(idx+1 < latlngs.length ){
            var polyline =  L.polyline([latlng,latlngs[idx+1]],{color: colors[idx]}).addTo(map);
            point_polylines_arr.push(polyline);
+           $('#clearlinesbtn').show();
        }
   })
 }
