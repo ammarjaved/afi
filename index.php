@@ -137,53 +137,47 @@ else {
         </div>   
      
 		<div class="row">	
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-md-4">
-                        
-                        <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
-                        <i class="fa fa-bolt"></i>
-                        <span class="count-numbers" id="sred"></span>
-                        <span class="count-name">Single Phase Red</span>
-                        </div>
+                <div class="col-md-3">
+                    
+                    <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
+                    <i class="fa fa-bolt"></i>
+                    <span class="count-numbers" id="sred"></span>
+                    <span class="count-name">Single Phase Red</span>
+                    </div>
 
+                </div>
+                
+                <div class="col-md-2">
+                    <div style="cursor:pointer; background-color:#FFC107!important;" class=" countdiv card-counter danger" id="Y">
+                        <i class="fa fa-bolt"></i>
+                        <span class="count-numbers" id="syellow"></span>
+                        <span class="count-name">Single Phase Yellow</span>
                     </div>
-                    
-                    <div class="col-md-4">
-                        <div style="cursor:pointer; background-color:#FFC107!important;" class=" countdiv card-counter danger" id="Y">
+                </div>
+                
+                <div class="col-md-2">
+                    <div style="cursor:pointer" class="countdiv card-counter primary" id="B">
+                        <i class="fa fa-bolt"></i>
+                        <span class="count-numbers" id="sblue"></span>
+                        <span class="count-name">Single Phase Blue</span>
+                    </div>
+                </div>
+            
+                <div class="col-md-2">
+                    <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
                             <i class="fa fa-bolt"></i>
-                            <span class="count-numbers" id="syellow"></span>
-                            <span class="count-name">Single Phase Yellow</span>
-                        </div>
+                            <span class="count-numbers" id="tryb"></span>
+                            <span class="count-name">Three Phase RYB</span>
                     </div>
-                    
-                    <div class="col-md-4">
-                        <div style="cursor:pointer" class="countdiv card-counter primary" id="B">
+                </div>
+                <div class="col-md-3">
+                    <div style="cursor:pointer" class="countdiv card-counter total_counts" id="total">
                             <i class="fa fa-bolt"></i>
-                            <span class="count-numbers" id="sblue"></span>
-                            <span class="count-name">Single Phase Blue</span>
-                        </div>
+                            <span class="count-numbers" id="total_count" ></span>
+                            <span class="count-name" >Total</span>
                     </div>
-                </div>    
-            </div>
-            <div class="col-lg-4">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
-                                <i class="fa fa-bolt"></i>
-                                <span class="count-numbers" id="tryb"></span>
-                                <span class="count-name">Three Phase RYB</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div style="cursor:pointer" class="countdiv card-counter total_counts" id="total">
-                                <i class="fa fa-bolt"></i>
-                                <span class="count-numbers" id="total_count" ></span>
-                                <span class="count-name" >Total</span>
-                        </div>
-                    </div>
-                </div>    
-            </div>
+                </div>
+              
         </div>
 
         <div class="row"  >
