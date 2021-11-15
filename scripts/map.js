@@ -172,6 +172,7 @@ function fillDropDowns(di,lyr){
         contentType: "application/json; charset=utf-8",
         success: function callback(data) {
             // var r=JSON.parse(response)
+            console.log(data)
             for(var j=0;j<data.count.length;j++){ 
                 if(data.count[j].phase=="R"){       
                 $("#sred").text(data.count[j].count);
@@ -186,6 +187,7 @@ function fillDropDowns(di,lyr){
                 $("#tryb").text(data.count[j].count);
                 }
               } 
+              $("#total_count").text(Number(data.count[0].count) + Number(data.count[1].count)  + Number(data.count[2].count)  + Number(data.count[3].count) );
             if(lyr=='fp'){
                 $('.load_options').remove();
                 //console.log(data.fp)
@@ -222,7 +224,7 @@ $('select[name="fp"]').on('change',function(e){
       //      // console.log(geojsonfromhiddenfld)
            
       //  }
-      e.preventDefault();
+    //   e.preventDefault();
       var l1_id= $(this).val();
       var spl1id=l1_id.split(',');
      // var did=spl1id[0];
@@ -232,6 +234,7 @@ $('select[name="fp"]').on('change',function(e){
           $("#syellow").text('');
           $("#sblue").text('');
           $("#tryb").text('');
+          $("#total_count").text('');
   
       fillDropDowns(spl1id[0],'sfp')
 
@@ -598,6 +601,7 @@ $('select[name="sfp"]').on('change',function(e){
     $("#syellow").text('');
     $("#sblue").text('');
     $("#tryb").text('');
+    $("#total_count").text('');
 
     $('#fd_details_div').show();
 
@@ -611,6 +615,7 @@ $('select[name="mfp"]').on('change',function(e){
     $("#syellow").text('');
     $("#sblue").text('');
     $("#tryb").text('');
+    $("#total_count").text('');
     // just blank show fd_details_div
     $('#fd_details_div').show();
 
@@ -679,6 +684,7 @@ function get_dp_and_counts_against_fp_dvid(did){
     $("#syellow").text('0');
     $("#sblue").text('0');
     $("#tryb").text('0');
+    $("#total_count").text('0');
     $.ajax({
         url: "services/get_demand_point_geojson.php?lid="+did + "&fd_no=%"+ "&phase=%",
         type: "GET",
@@ -702,6 +708,7 @@ function get_dp_and_counts_against_fp_dvid(did){
           $("#syellow").text(response.Ysingle[0]["count"]);
           $("#sblue").text(response.Bsingle[0]["count"]);
           $("#tryb").text(response.RYBthree[0]["count"]);
+          $("#total_count").text(Number(response.Rsingle[0]["count"])+Number(response.Ysingle[0]["count"])+Number(response.Bsingle[0]["count"])+Number(response.RYBthree[0]["count"]));
 
         }
     });

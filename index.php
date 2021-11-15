@@ -107,17 +107,20 @@ else {
                     
                     <div class="col-md-2 " >
                         <div class="radio">
-                        <label><input type="radio" name="optradio" id="fpradiobtn" value="fpl1" checked>FP</label>
+                        <label><input type="radio" name="optradio" onchange="typeaheadsearch()" id="fpradiobtn" value="fpl1" checked>FP</label>
                         </div>
                         <div class="radio">
-                        <label><input type="radio" name="optradio" id="sfpradiobtn" value="sfp_l2">SFP</label>
+                        <label><input type="radio" name="optradio" onchange="typeaheadsearch()" id="sfpradiobtn" value="sfp_l2">SFP</label>
                         </div>
                         <div class="radio disabled">
-                        <label><input type="radio" name="optradio" id="mfpradiobtn" value="mfp_l3">MFP</label>
+                        <label><input type="radio" name="optradio" onchange="typeaheadsearch()" id="mfpradiobtn" value="mfp_l3">MFP</label>
                         </div>
                     </div>
-                    <div id="search-bar" class="col-md-6 " style="margin-top:30px; margin-left:10px margin-right:10px;">
-                        <input type="text" id="search_input" name="search" placeholder="Search DeviceID..." class="typeahead">
+                    <div id="search-bar" class="col-md-6" style="margin-top:30px; margin-left:10px margin-right:10px;">
+                            <input type="text" id="search_input1" name="search1" placeholder="Search DeviceID..." class="typeahead" style="display:none">
+                            <input type="text" id="search_input2" name="search2" placeholder="Search DeviceID..." class="typeahead" style="display:none; margin-top:-20px !important;">
+                            <input type="text" id="search_input3" name="search3" placeholder="Search DeviceID..." class="typeahead" style="display:none; margin-top:-20px !important;">
+
                     </div>
                     <div class="col-md-2" style="margin-top:25px;">
                         <button  style="margin-right:50px;" id="ser" onclick="search_deviceid()" class="pull-left btn btn-success">Search</button>
@@ -131,43 +134,55 @@ else {
                     </div>
                 </div>
             </div> -->
-        </div>    
+        </div>   
+     
 		<div class="row">	
-
-            <div class="col-md-3">
-                
-                <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
-                <i class="fa fa-bolt"></i>
-                <span class="count-numbers" id="sred"></span>
-                <span class="count-name">Single Phase Red</span>
-                </div>
-
-            </div>
-			  
-            <div class="col-md-3">
-                <div style="cursor:pointer; background-color:#FFC107!important;" class=" countdiv card-counter danger" id="Y">
-                    <i class="fa fa-bolt"></i>
-                    <span class="count-numbers" id="syellow"></span>
-                    <span class="count-name">Single Phase Yellow</span>
-                </div>
-            </div>
-			
-            <div class="col-md-3">
-                <div style="cursor:pointer" class="countdiv card-counter primary" id="B">
-                    <i class="fa fa-bolt"></i>
-                    <span class="count-numbers" id="sblue"></span>
-                    <span class="count-name">Single Phase Blue</span>
-                </div>
-            </div>
-          
-            <div class="col-md-3">
-                <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
+            <div class="col-lg-8">
+                <div class="row">
+                    <div class="col-md-4">
+                        
+                        <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
                         <i class="fa fa-bolt"></i>
-                        <span class="count-numbers" id="tryb"></span>
-                        <span class="count-name">Three Phase RYB</span>
-                </div>
+                        <span class="count-numbers" id="sred"></span>
+                        <span class="count-name">Single Phase Red</span>
+                        </div>
 
-
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div style="cursor:pointer; background-color:#FFC107!important;" class=" countdiv card-counter danger" id="Y">
+                            <i class="fa fa-bolt"></i>
+                            <span class="count-numbers" id="syellow"></span>
+                            <span class="count-name">Single Phase Yellow</span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div style="cursor:pointer" class="countdiv card-counter primary" id="B">
+                            <i class="fa fa-bolt"></i>
+                            <span class="count-numbers" id="sblue"></span>
+                            <span class="count-name">Single Phase Blue</span>
+                        </div>
+                    </div>
+                </div>    
+            </div>
+            <div class="col-lg-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
+                                <i class="fa fa-bolt"></i>
+                                <span class="count-numbers" id="tryb"></span>
+                                <span class="count-name">Three Phase RYB</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div style="cursor:pointer" class="countdiv card-counter total_counts" id="total">
+                                <i class="fa fa-bolt"></i>
+                                <span class="count-numbers" id="total_count" ></span>
+                                <span class="count-name" >Total</span>
+                        </div>
+                    </div>
+                </div>    
             </div>
         </div>
 
@@ -281,19 +296,11 @@ else {
 <script>
 
     $(document).ready(function () {
-        var tblname= 'fpl1'
-            var radioValue = $("input[name='optradio']:checked").val();
-            if(radioValue){
-                tblname=radioValue;
-            }
         // $("#search_input").on('keyup', function(){
            
         // });
-            $('.typeahead').typeahead({
-                name: 'hce',
-                remote:'services/search.php?key=%QUERY'+ "&tblname="+ tblname,
-                limit: 5
-            });
+        typeaheadsearch()
+        
             
           //  setTimeout(function(){
                 // alert(tblname);
@@ -309,6 +316,42 @@ else {
         
        
     });
+    function typeaheadsearch(){
+        $('.typeahead').unbind('typeahead');
+        var tblname;
+        var radioValue = $("input[name='optradio']:checked").val();
+        // alert(radioValue)
+            if(radioValue=='fpl1'){
+                $('#search_input1').show();
+                $('#search_input2').hide();
+                $('#search_input3').hide();
+            }
+            if(radioValue=='sfp_l2'){
+                $('#search_input1').hide();
+                $('#search_input2').show();
+                $('#search_input3').hide();
+            }
+            if(radioValue=='mfp_l3'){
+                $('#search_input1').hide();
+                $('#search_input2').hide();
+                $('#search_input3').show();
+            }
+            $('#search_input1').typeahead({
+                name: 'hce1',
+                remote:'services/search.php?key=%QUERY'+ "&tblname=fpl1",
+                limit: 5
+            });
+            $('#search_input2').typeahead({
+                name: 'hce2',
+                remote:'services/search.php?key=%QUERY'+ "&tblname=sfp_l2",
+                limit: 5
+            });
+            $('#search_input3').typeahead({
+                name: 'hce3',
+                remote:'services/search.php?key=%QUERY'+ "&tblname=mfp_l3",
+                limit: 5
+            });
+        }
 
     function mapreset(){
         if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
@@ -328,14 +371,61 @@ else {
     }
 
     function search_deviceid(){
-        var deviceid = $("#search_input").val(); 
-        current_dropdown_Lid=deviceid;
-        $("#sred").text('');
-        $("#syellow").text('');
-        $("#sblue").text('');
-        $("#tryb").text('');
-        $('#fd_details_div').show();
-        loadfilterdata(deviceid);
+        var chktblname = $("input[name='optradio']:checked").val();
+        var deviceid = $(".typeahead").val(); 
+        
+        if(chktblname=='fpl1'){
+            $.ajax({
+                url: "services/get_lvdb_l1_geojson.php?l1_id="+deviceid,
+                type: "GET",
+                async: false,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function callback(response) {
+                    var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                    map.setView(latlng,19);
+                }
+            })
+        }
+        if(chktblname=='sfp_l2'){
+            $.ajax({
+                url: "services/get_SFP_L2_geojson.php?l2_id="+deviceid,
+                type: "GET",
+                async: false,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function callback(response) {
+                    var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                    map.setView(latlng,19);
+                }
+            })
+        }
+        if(chktblname=='mfp_l3'){
+             $.ajax({
+                url: "services/get_MFP_L3_geojson.php?l3_id="+deviceid,
+                type: "GET",
+                async: false,
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function callback(response) {
+                    var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                    map.setView(latlng,19);
+                    }
+            });
+        }
+            
+        // fillDropDowns(deviceid,tblname)
+
+             
+                
+        // current_dropdown_Lid=deviceid;
+        // $("#sred").text('');
+        // $("#syellow").text('');
+        // $("#sblue").text('');
+        // $("#tryb").text('');
+        // $("#total_count").text('');
+        // $('#fd_details_div').show();
+        // loadfilterdata(deviceid);
     }
    
    
