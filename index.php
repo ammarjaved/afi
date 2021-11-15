@@ -371,64 +371,38 @@ else {
     }
 
     function search_deviceid(){
+        var deviceid='';
         var chktblname = $("input[name='optradio']:checked").val();
-        var deviceid = $(".typeahead").val(); 
-
         if(chktblname=='fpl1'){
-            $.ajax({
-                url: "services/get_lvdb_l1_geojson.php?l1_id="+deviceid,
-                type: "GET",
-                async: false,
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function callback(response) {
-                    var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                    map.setView(latlng,19);
-                    L.marker(latlng).addTo(map);
-                }
-            })
+             deviceid = $("#search_input1").val(); 
         }
         if(chktblname=='sfp_l2'){
+             deviceid = $("#search_input2").val(); 
+        }
+        if(chktblname=='mfp_l2'){
+             deviceid = $("#search_input3").val(); 
+        }
+       
+        // alert(chktblname)
+
             $.ajax({
-                url: "services/get_SFP_L2_geojson.php?l2_id="+deviceid,
+                url: "services/returnxy.php?did="+ deviceid + "&lyr=" + chktblname,
                 type: "GET",
                 async: false,
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 success: function callback(response) {
-                    var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                   console.log(response);
+                   var latlng=[response[0].y, response[0].x]
                     map.setView(latlng,19);
                     L.marker(latlng).addTo(map);
                 }
-            })
-        }
-        if(chktblname=='mfp_l3'){
-             $.ajax({
-                url: "services/get_MFP_L3_geojson.php?l3_id="+deviceid,
-                type: "GET",
-                async: false,
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                success: function callback(response) {
-                    var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                    map.setView(latlng,19);
-                    L.marker(latlng).addTo(map);
-                    }
             });
-        }
-            
-        // fillDropDowns(deviceid,tblname)
 
-             
-                
-        // current_dropdown_Lid=deviceid;
-        // $("#sred").text('');
-        // $("#syellow").text('');
-        // $("#sblue").text('');
-        // $("#tryb").text('');
-        // $("#total_count").text('');
-        // $('#fd_details_div').show();
-        // loadfilterdata(deviceid);
+
+
+
+
     }
    
    

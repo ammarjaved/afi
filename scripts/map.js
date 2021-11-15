@@ -454,6 +454,13 @@ $(document).ready(function(){
                         str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
                         str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
                         str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
+                        str = str + '<tr><td> acc_no  </td><td>' + feature.properties.acc_no  + '</td></tr>'
+                        str = str + '<tr><td> address  </td><td>' + feature.properties.address  + '</td></tr>'
+                        str = str + '<tr><td> install_id  </td><td>' + feature.properties.install_id  + '</td></tr>'
+                        str = str + '<tr><td> meter_type  </td><td>' + feature.properties.meter_type  + '</td></tr>'
+                        str = str + '<tr><td> bcrm_eqp  </td><td>' + feature.properties.bcrm_eqp  + '</td></tr>'
+                        str = str + '<tr><td> site_eqp  </td><td>' + feature.properties.site_eqp  + '</td></tr>'
+                        str = str + '<tr><td> phase  </td><td>' + feature.properties.phase  + '</td></tr>'
                         str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
                         str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
                         str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
@@ -487,7 +494,7 @@ $(document).ready(function(){
                                          // console.log(response);
                                          arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                         var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                                         L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
+                                         L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                                      }
                                 })
                             }
@@ -503,7 +510,7 @@ $(document).ready(function(){
                                         // console.log(response);
                                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                         var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                                        L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
+                                        L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                                     }
                                 })
                             }
@@ -519,7 +526,7 @@ $(document).ready(function(){
                                         // console.log(response);
                                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                         var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                                        L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
+                                        L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                                     }
                                 })
                             }
@@ -529,7 +536,7 @@ $(document).ready(function(){
                                 // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
                                 var polyline = L.polyline(arr);
                                 setPolylineColors(polyline,['yellow','pink','green'])
-                                // line_l1_l2_l3_markers.addTo(map);
+                                line_l1_l2_l3_markers.addTo(map);
                                 // point_polylines_arr.push(polyline);
                              }, 400);
                             
@@ -791,21 +798,28 @@ function drawlines_against_fp_geojson(response){
         },
         onEachFeature: function (feature, layer) {
 
-                var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-                str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-                str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-                str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-                str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
-                str = str + '</table></div>'
-                layer.bindPopup(str);
+            var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+            str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+            str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
+            str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
+            str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+            str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
+            str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
+            str = str + '<tr><td> acc_no  </td><td>' + feature.properties.acc_no  + '</td></tr>'
+            str = str + '<tr><td> address  </td><td>' + feature.properties.address  + '</td></tr>'
+            str = str + '<tr><td> install_id  </td><td>' + feature.properties.install_id  + '</td></tr>'
+            str = str + '<tr><td> meter_type  </td><td>' + feature.properties.meter_type  + '</td></tr>'
+            str = str + '<tr><td> bcrm_eqp  </td><td>' + feature.properties.bcrm_eqp  + '</td></tr>'
+            str = str + '<tr><td> site_eqp  </td><td>' + feature.properties.site_eqp  + '</td></tr>'
+            str = str + '<tr><td> phase  </td><td>' + feature.properties.phase  + '</td></tr>'
+            str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+            str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
+            str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
+            str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
+            str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
+            str = str + '</table></div>'
+            layer.bindPopup(str);
 
             layer.on('click', function (e) {
                 if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
