@@ -373,7 +373,7 @@ else {
     function search_deviceid(){
         var chktblname = $("input[name='optradio']:checked").val();
         var deviceid = $(".typeahead").val(); 
-        
+
         if(chktblname=='fpl1'){
             $.ajax({
                 url: "services/get_lvdb_l1_geojson.php?l1_id="+deviceid,
@@ -384,6 +384,7 @@ else {
                 success: function callback(response) {
                     var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                     map.setView(latlng,19);
+                    L.marker(latlng).addTo(map);
                 }
             })
         }
@@ -397,6 +398,7 @@ else {
                 success: function callback(response) {
                     var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                     map.setView(latlng,19);
+                    L.marker(latlng).addTo(map);
                 }
             })
         }
@@ -410,6 +412,7 @@ else {
                 success: function callback(response) {
                     var latlng=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                     map.setView(latlng,19);
+                    L.marker(latlng).addTo(map);
                     }
             });
         }
