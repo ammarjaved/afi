@@ -136,8 +136,15 @@ else {
             </div> -->
         </div>   
      
-		<div class="row">	
+		<div class="row">
                 <div class="col-md-3">
+                    <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
+                            <i class="fa fa-bolt"></i>
+                            <span class="count-numbers" id="tryb"></span>
+                            <span class="count-name">Three Phase RYB</span>
+                    </div>
+                </div>	
+                <div class="col-md-2">
                     
                     <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
                     <i class="fa fa-bolt"></i>
@@ -163,13 +170,7 @@ else {
                     </div>
                 </div>
             
-                <div class="col-md-2">
-                    <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
-                            <i class="fa fa-bolt"></i>
-                            <span class="count-numbers" id="tryb"></span>
-                            <span class="count-name">Three Phase RYB</span>
-                    </div>
-                </div>
+                
                 <div class="col-md-3">
                     <div style="cursor:pointer" class="countdiv card-counter total_counts" id="total">
                             <i class="fa fa-bolt"></i>
@@ -310,6 +311,7 @@ else {
         
        
     });
+    
     function typeaheadsearch(){
         $('.typeahead').unbind('typeahead');
         var tblname;
@@ -347,26 +349,12 @@ else {
             });
         }
 
-    function mapreset(){
-        if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-            for(var i=0; i<point_polylines_arr.length; i++){
-                map.removeLayer(point_polylines_arr[i])
-                }
-        }
-
-        if (filter_polylines_arr.length !== 0) {
-            for(var i=0; i<filter_polylines_arr.length; i++){
-                map.removeLayer(filter_polylines_arr[i])
-            }
-        }
-        filter_polylines_arr=[];
-        point_polylines_arr=[];
-        $('#clearlinesbtn').hide();
-    }
+  
 
     function search_deviceid(){
         var deviceid='';
         var chktblname = $("input[name='optradio']:checked").val();
+
         if(chktblname=='fpl1'){
              deviceid = $("#search_input1").val(); 
         }
@@ -392,12 +380,35 @@ else {
                     L.marker(latlng).addTo(map);
                 }
             });
-
-
-
-
-
     }
+    function mapreset(){
+        if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
+            for(var i=0; i<point_polylines_arr.length; i++){
+                map.removeLayer(point_polylines_arr[i])
+                }
+        }
+
+        if (filter_polylines_arr.length !== 0) {
+            for(var i=0; i<filter_polylines_arr.length; i++){
+                map.removeLayer(filter_polylines_arr[i])
+            }
+        }
+        filter_polylines_arr=[];
+        point_polylines_arr=[];
+        $('#clearlinesbtn').hide();
+    }
+
+    // function typeaheadsearch(){
+    //     // $('.typeahead').unbind('typeahead');
+    //     var radioValue = $("input[name='optradio']:checked").val();
+    //     // alert(radioValue)
+    //         $('.typeahead').typeahead({
+    //             name: 'hce',
+    //             remote:'services/search.php?key=%QUERY'+ "&tblname="+radioValue,
+    //             limit: 5
+    //         });
+          
+    // }
    
    
 
