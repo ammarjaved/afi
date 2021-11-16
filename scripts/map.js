@@ -12,6 +12,7 @@ var filter_polylines_arr=Array();
 var point_polylines_arr=Array();
 var line_l1_l2_l3_markers = L.layerGroup();
 var current_dropdown_latlng;
+var identifyme='';
 
    
     var street   = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
@@ -84,10 +85,10 @@ function preNext(status){
                 "autoLoad": true
             });
 
-            // if(identifyme!=''){
-            //     map.removeLayer(identifyme)
-            // }
-            // identifyme = L.geoJSON(JSON.parse(data[0].geom)).addTo(map);
+            if(identifyme!=''){
+                map.removeLayer(identifyme)
+            }
+            identifyme = L.geoJSON(JSON.parse(data[0].geom)).addTo(map);
 
 
         }
@@ -154,10 +155,10 @@ function activeSelectedLayerPano() {
                         "compass": true,
                         "autoLoad": true
                     });
-                    // if(identifyme!=''){
-                    //     map.removeLayer(identifyme)
-                    // }
-                    // identifyme = L.geoJSON(data.features[0].geometry).addTo(map);
+                    if(identifyme!=''){
+                        map.removeLayer(identifyme)
+                    }
+                    identifyme = L.geoJSON(data.features[0].geometry).addTo(map);
 
                 }
 
