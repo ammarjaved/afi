@@ -11,7 +11,7 @@ class Tehsil extends connection {
 
     }
 
-    public function getTehsilExtent() {
+    public function getfp_l1() {
         $l1_id=$_REQUEST['l1_id'];
         if ($l1_id=="%"){
             $sql = "SELECT json_build_object('type', 'FeatureCollection','crs',  json_build_object('type','name', 'properties', json_build_object('name', 'EPSG:4326'  )),'features', json_agg(json_build_object('type','Feature','id',id,'geometry',ST_AsGeoJSON(geom)::json,
@@ -72,5 +72,5 @@ class Tehsil extends connection {
 
 $json = new Tehsil();
 //$json->closeConnection();
-echo $json->getTehsilExtent();
+echo $json->getfp_l1();
 

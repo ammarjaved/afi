@@ -30,6 +30,7 @@
     font-size: 2em;
 
 }
+.row{margin-left: 0px !important; margin-right: 0px !important;}
 #headings h3
 {
     color: #131630;
@@ -42,8 +43,8 @@
 }
 #content
 {
-    margin: 0 10px;
-    height: 100%;
+    /* margin: 0 10px; */
+    height: 200px;
 }
 .remove_row_margin
 {
@@ -455,6 +456,14 @@ table tr:nth-child(even) {
     background-color: #7d26cd;
     color: #FFF;
   }  
+  .card-counter.total_counts{
+    background-color: #118f26;
+    color: #FFF;
+  }  
+  /* .card-counter.total_counts{
+    background-color: rgb(37, 163, 26); // For browsers that do not support gradients 
+    background-image: linear-gradient(to right, red, yellow, blue, violet);
+  }   */
 
   .card-counter i{
     font-size: 5em;
@@ -468,6 +477,8 @@ table tr:nth-child(even) {
     font-size: 32px;
     display: block;
   }
+
+  
 
   .card-counter .count-name{
     position: absolute;
