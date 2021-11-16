@@ -31,7 +31,12 @@ else {
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
     <script type="text/javascript" src="libs/html5pano.js"></script>
 
-
+    <style>
+        #panorama {
+            width: 400px;
+            height: 400px;
+        }
+    </style>
 </head>
 <body class="claro">
  <nav class="navbar navbar-expand-lg py-1 navbar-light bg-light shadow-sm fixed-top" style="margin-bottom: 0px !important;">
