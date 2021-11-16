@@ -43,6 +43,7 @@ else {
 
             <div class="col-lg-12 npnm">
                 <div class="row npnm">
+
                     <div class="col-lg-12 npnm">
                    
                         <img src="images/logo.png" width="150"  height="47" alt=""
@@ -50,7 +51,12 @@ else {
 
                         <span class="text-uppercase font-weight-bold text-muted">AFI</span>
                         <a href="services/logout.php" class="pull-right btn btn-danger" style="color: white; margin-top: 3px !important;">Logout</a>
+                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
+
                     </div>
+
+
+
                    
                 </div>
 
@@ -225,6 +231,7 @@ else {
                             <div id="clearlinesbtn" style="display:none; z-index: 1000000;position: relative;">
                                 <a class="pull-left btn btn-danger btn-sm" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 20px !important;margin-left: 50px;">Clear Lines</a>
                             </div>
+
                             <!--Panel content-->
                             <!--Map will be here-->
                             <!-- Modal for non surved department-->
@@ -275,7 +282,6 @@ else {
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="layer_title" ></h4>
                 <!--<p style="text-align: right;"><img src="images/cornoa.jpg" width="80" height="75" alt=""/></p>-->
             </div>

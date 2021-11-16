@@ -18,9 +18,9 @@ var identifyme='';
     var street   = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
     dark  = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'),
     googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
-                    maxZoom: 20,
-                    subdomains:['mt0','mt1','mt2','mt3']
-                });
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
 
     var non_surveyed_dp = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
         layers: 'cite:demand_point_not_surveyed',
@@ -28,19 +28,21 @@ var identifyme='';
         maxZoom: 20,
         transparent: true
     });
-var pano_layer = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-    layers: 'cite:pano_afi',
-    format: 'image/png',
-    maxZoom: 20,
-    transparent: true
-});
-var map = L.map('map_div', {
-    center: [2.3773940674819998, 102.21967220306398],
-    // center: [31.5204, 74.3587],
-    zoom: 15,
-    layers: [googleSat, demand_point, non_surveyed_dp,pano_layer,lvdb_l1,SFP_L2,MFP_L3],
-    attributionControl:false 
-});
+
+    var pano_layer = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:pano_afi',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
+
+    var map = L.map('map_div', {
+        center: [2.3773940674819998, 102.21967220306398],
+        // center: [31.5204, 74.3587],
+        zoom: 15,
+        layers: [googleSat, demand_point, non_surveyed_dp,pano_layer,lvdb_l1,SFP_L2,MFP_L3],
+        attributionControl:false
+    });
 
 function preNext(status){
     $("#wg").html('');
@@ -215,16 +217,15 @@ function getFeatureInfoUrl(map, layer, latlng, params) {
     return url.toString();
 
 }
-function getProperties(layer){
-
-
+function getProperties(){
+    map.off('click');
     map.on('click', function(e) {
-     //   map.off('click');
+        map.off('click');
 
         // Build the URL for a GetFeatureInfo
         var url = getFeatureInfoUrl(
             map,
-            layer,
+            non_surveyed_dp,
             e.latlng,
             {
                 'info_format': 'application/json',
@@ -254,6 +255,7 @@ function getProperties(layer){
             }
         });
         $('#nonsurvedmodal').modal('show');
+        activeSelectedLayerPano();
     });
     
 }
@@ -406,7 +408,7 @@ $(document).ready(function(){
     //     }
     // });
     setTimeout(function(){
-     //   getProperties(non_surveyed_dp)
+
         activeSelectedLayerPano();
          //-----------fp dropdown ids----------  
         fillDropDowns('%','fp')
