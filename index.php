@@ -27,6 +27,8 @@ else {
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://coryasilva.github.io/Leaflet.ExtraMarkers/js/leaflet.extra-markers.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
 
 </head>
@@ -204,7 +206,7 @@ else {
 
 
         <div class="row">
-            <div class="col-md-12 ">
+            <div class="col-md-12 " style="z-index: 1;">
                 <div class="panel panel-default">
                     <!--<a data-toggle="collapse" data-parent="#accordionBar2" href="#r1p1" style="color: #000;">-->
                     <!--<div class="panel-heading" style="background: #EEEEEE; font-weight: bold;">Choropleth Map-->
@@ -212,7 +214,7 @@ else {
                     <!--</div>-->
                     <!--</a>-->
                     <div id="r1p1" class="panel-collapse collapse in">
-                        <div class="panel-body" id="map_div" style="padding: 0;  margin-bottom: 0px !important;">
+                        <div class="panel-body" id="map_div" style="padding: 0;  margin-bottom: 0px !important;z-index: 1;">
 
                             <div id="clearlinesbtn" style="display:none; z-index: 1000000;position: relative;">
                                 <a class="pull-left btn btn-danger btn-sm" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 20px !important;margin-left: 50px;">Clear Lines</a>
@@ -244,10 +246,18 @@ else {
                     </div>
                 </div>
             </div>
+        <div id="wg" class="windowGroup">
+
+        </div>
+
+        <div id="wg1" class="windowGroup">
+
+        </div>
         </div>
 
 
     </div>
+
 </div>
 
 
@@ -280,6 +290,8 @@ else {
 <link rel="stylesheet" href="libs/images_slider/css-view/lightbox.css" type="text/css" />
 <script src="libs/images_slider/js-view/lightbox-2.6.min.js"></script>
 <script src="libs/images_slider/js-view/jQueryRotate.js"></script>
+ <link rel="stylesheet" href="libs/window-engine.css" />
+ <script src="libs/window-engine.js"></script>
 
 
 

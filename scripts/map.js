@@ -27,13 +27,148 @@ var current_dropdown_latlng;
         maxZoom: 20,
         transparent: true
     });
+var pano_layer = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+    layers: 'cite:pano_afi',
+    format: 'image/png',
+    maxZoom: 20,
+    transparent: true
+});
 var map = L.map('map_div', {
     center: [2.3773940674819998, 102.21967220306398],
     // center: [31.5204, 74.3587],
     zoom: 15,
-    layers: [googleSat, demand_point, non_surveyed_dp,lvdb_l1,SFP_L2,MFP_L3],
+    layers: [googleSat, demand_point, non_surveyed_dp,pano_layer,lvdb_l1,SFP_L2,MFP_L3],
     attributionControl:false 
 });
+
+function preNext(status){
+    $("#wg").html('');
+    $.ajax({
+        url: 'services/pre_next.php?id='+selectedId+'&st='+status,
+        dataType: 'JSON',
+        //data: data,
+        method: 'GET',
+        async: false,
+        success: function callback(data) {
+
+            //  alert(data
+            var str='<div id="window1" class="window">' +
+                '<div class="green">' +
+                '<p class="windowTitle">Pano Images</p>' +
+                '</div>' +
+                '<div class="mainWindow">' +
+                // '<canvas id="canvas" width="400" height="480">' +
+                // '</canvas>' +
+                '<div id="panorama" width="400px" height="480px"></div>'+
+                '<div class="row"><button style="margin-left: 30%;" onclick=preNext("pre") class="btn btn-success">Previous</button><button  onclick=preNext("next")  style="float: right;margin-right: 35%;" class="btn btn-success">Next</button></div>'
+            '</div>' +
+            '</div>'
+
+            $("#wg").html(str);
+
+            createWindow(1);
+            console.log(data)
+            // var canvas = document.getElementById('canvas');
+            // var context = canvas.getContext('2d');
+            // context.clearRect(0,0 ,canvas.width,canvas.height)
+            //     img.src = data.features[0].properties.image_path;
+            //     init_pano('canvas')
+            // setTimeout(function () {
+            //     init_pano('canvas')
+            // },1000)=
+            selectedId=data[0].gid
+            pannellum.viewer('panorama', {
+                "type": "equirectangular",
+                "panorama": data[0].photo,
+                "compass": true,
+                "autoLoad": true
+            });
+
+            // if(identifyme!=''){
+            //     map.removeLayer(identifyme)
+            // }
+            // identifyme = L.geoJSON(JSON.parse(data[0].geom)).addTo(map);
+
+
+        }
+    });
+
+}
+
+function activeSelectedLayerPano() {
+//alert(val)
+    map.off('click');
+    map.on('click', function(e) {
+        //map.off('click');
+        $("#wg").html('');
+        // Build the URL for a GetFeatureInfo
+        var url = getFeatureInfoUrl(
+            map,
+            pano_layer,
+            e.latlng,
+            {
+                'info_format': 'application/json',
+                'propertyName': 'NAME,AREA_CODE,DESCRIPTIO'
+            }
+        );
+        $.ajax({
+            url: 'services/proxy.php?url='+encodeURIComponent(url),
+            dataType: 'JSON',
+            //data: data,
+            method: 'GET',
+            async: false,
+            success: function callback(data) {
+
+                //  alert(data
+                var str='<div id="window1" class="window">' +
+                    '<div class="green">' +
+                    '<p class="windowTitle">Pano Images</p>' +
+                    '</div>' +
+                    '<div class="mainWindow">' +
+                    // '<canvas id="canvas" width="400" height="480">' +
+                    // '</canvas>' +
+                    '<div id="panorama" width="400px" height="480px"></div>'+
+                    '<div class="row"><button style="margin-left: 30%;" onclick=preNext("pre") class="btn btn-success">Previous</button><button  onclick=preNext("next")  style="float: right;margin-right: 35%;" class="btn btn-success">Next</button></div>'
+
+                '</div>' +
+                '</div>'
+
+                $("#wg").html(str);
+
+
+                console.log(data)
+                if(data.features.length!=0){
+                    createWindow(1);
+                    selectedId=data.features[0].id.split('.')[1];
+                    // var canvas = document.getElementById('canvas');
+                    // var context = canvas.getContext('2d');
+                    // context.clearRect(0,0 ,canvas.width,canvas.height)
+                    //     img.src = data.features[0].properties.image_path;
+                    //     init_pano('canvas')
+                    // setTimeout(function () {
+                    //     init_pano('canvas')
+                    // },1000)
+                    pannellum.viewer('panorama', {
+                        "type": "equirectangular",
+                        "panorama": data.features[0].properties.photo,
+                        "compass": true,
+                        "autoLoad": true
+                    });
+                    // if(identifyme!=''){
+                    //     map.removeLayer(identifyme)
+                    // }
+                    // identifyme = L.geoJSON(data.features[0].geometry).addTo(map);
+
+                }
+
+            }
+        });
+
+
+
+
+    });
+}
 
 function getFeatureInfoUrl(map, layer, latlng, params) {
 
@@ -136,6 +271,7 @@ var overlays = {
     "MFP_L3&nbsp&nbsp<img src='images/3.png' width='30' height='30'>": MFP_L3,
     "Surveyed Demand Points &nbsp&nbsp<img src='images/layer.jpg' width='30' height='30'>": demand_point,
     "Non Surveyed D/P": non_surveyed_dp,
+    "Pano Layer":pano_layer
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -269,7 +405,8 @@ $(document).ready(function(){
     //     }
     // });
     setTimeout(function(){
-        getProperties(non_surveyed_dp)
+     //   getProperties(non_surveyed_dp)
+        activeSelectedLayerPano();
          //-----------fp dropdown ids----------  
         fillDropDowns('%','fp')
       
