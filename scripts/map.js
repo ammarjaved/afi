@@ -14,6 +14,11 @@ var line_l1_l2_l3_markers = L.layerGroup();
 var current_dropdown_latlng;
 var identifyme='';
 
+var color1='red'
+var color2='yellow'
+var color3='blue'
+var linescolor=['white','orange','grey']
+
    
     var street   = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
     dark  = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_all/{z}/{x}/{y}.png'),
@@ -432,6 +437,11 @@ $(document).ready(function(){
                             var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
                             str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
                             str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                            str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+                            str = str + '<tr><td> status  </td><td>' + feature.properties.status  + '</td></tr>'
+                            str = str + '<tr><td> pe_fl  </td><td>' + feature.properties.pe_fl  + '</td></tr>'
+                            str = str + '<tr><td> tx1_fl  </td><td>' + feature.properties.tx1_fl  + '</td></tr>'
+                            str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>' 
                             str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
                             str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
                             str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
@@ -470,8 +480,14 @@ $(document).ready(function(){
                         },
                         onEachFeature: function (feature, layer) {
                             var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
                             str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                            str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+                            str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
+                            str = str + '<tr><td> status  </td><td>' + feature.properties.status  + '</td></tr>'
+                            str = str + '<tr><td> pe_fl  </td><td>' + feature.properties.pe_fl  + '</td></tr>'
+                            str = str + '<tr><td> tx1_fl  </td><td>' + feature.properties.tx1_fl  + '</td></tr>'
+                            str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>' 
                             str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
                             str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
                             str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
@@ -510,8 +526,15 @@ $(document).ready(function(){
                         },
                         onEachFeature: function (feature, layer) {
                             var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
                             str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                            str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+                            str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
+                            str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
+                            str = str + '<tr><td> status  </td><td>' + feature.properties.status  + '</td></tr>'
+                            str = str + '<tr><td> pe_fl  </td><td>' + feature.properties.pe_fl  + '</td></tr>'
+                            str = str + '<tr><td> tx1_fl  </td><td>' + feature.properties.tx1_fl  + '</td></tr>'
+                            str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>' 
                             str = str + '<tr><td> image_1  </td><td><a href="'+feature.properties.image_1 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_1  + '" width="20px" height="20px"></a></td></tr>'
                             str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image_2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_2  + '" width="20px" height="20px"></a></td></tr>'
                             str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image_3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image_3  + '" width="20px" height="20px"></a></td></tr>'
@@ -547,7 +570,7 @@ $(document).ready(function(){
                         if(feature.properties.phase == "R"){
                             return L.circleMarker(latlng, {
                                 radius: 8,
-                                fillColor: "red",
+                                fillColor: color1,
                                 color: "#000",
                                 weight: 1,
                                 opacity: 1,
@@ -557,7 +580,7 @@ $(document).ready(function(){
                         if(feature.properties.phase == "Y"){
                             return L.circleMarker(latlng, {
                                 radius: 8,
-                                fillColor: "yellow",
+                                fillColor: color2,
                                 color: "#000",
                                 weight: 1,
                                 opacity: 1,
@@ -566,7 +589,7 @@ $(document).ready(function(){
                         }if(feature.properties.phase == "B"){
                             return L.circleMarker(latlng, {
                                 radius: 8,
-                                fillColor: "#007BFF",
+                                fillColor: color3,
                                 color: "#000",
                                 weight: 1,
                                 opacity: 1,
@@ -675,7 +698,7 @@ $(document).ready(function(){
                             setTimeout(function(){ 
                                 // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
                                 var polyline = L.polyline(arr);
-                                setPolylineColors(polyline,['yellow','pink','green'])
+                                setPolylineColors(polyline,linescolor)
                                 line_l1_l2_l3_markers.addTo(map);
                                 // point_polylines_arr.push(polyline);
                              }, 400);
@@ -877,7 +900,7 @@ function drawlines_against_fp_geojson(response){
     }
     filter_polylines_arr=[];
     point_polylines_arr=[];
-    map.removeLayer(demand_point)
+    // map.removeLayer(demand_point)
     console.log(JSON.parse(response.geojson));
     demand_point=L.geoJSON(JSON.parse(response.geojson),{
 
@@ -898,7 +921,7 @@ function drawlines_against_fp_geojson(response){
             if(feature.properties.phase == "R"){
                 return L.circleMarker(latlng, {
                     radius: 8,
-                    fillColor: "red",
+                    fillColor: color1,
                     color: "#000",
                     weight: 1,
                     opacity: 1,
@@ -908,7 +931,7 @@ function drawlines_against_fp_geojson(response){
             if(feature.properties.phase == "Y"){
                 return L.circleMarker(latlng, {
                     radius: 8,
-                    fillColor: "yellow",
+                    fillColor: color2,
                     color: "#000",
                     weight: 1,
                     opacity: 1,
@@ -917,7 +940,7 @@ function drawlines_against_fp_geojson(response){
             }if(feature.properties.phase == "B"){
                 return L.circleMarker(latlng, {
                     radius: 8,
-                    fillColor: "blue",
+                    fillColor: color3,
                     color: "#000",
                     weight: 1,
                     opacity: 1,
@@ -1026,7 +1049,7 @@ function drawlines_against_fp_geojson(response){
                 setTimeout(function(){ 
                     // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
                     var polyline = L.polyline(arr);
-                    setPolylineColors(polyline,['yellow','pink','green'])
+                    setPolylineColors(polyline,linescolor)
                     line_l1_l2_l3_markers.addTo(map);
                     // point_polylines_arr.push(polyline);
                  }, 400);

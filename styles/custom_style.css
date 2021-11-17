@@ -521,4 +521,27 @@ table tr:nth-child(even) {
     z-index: 1040;
     background-color: #000000;
 }
- 
+
+
+.cenablebtn  {
+    background-color: #85cf6e;
+    color: rgb(12, 10, 10); 
+}
+.cenablebtn:hover {
+    
+    background-color: #fcfcfc;
+    color: rgb(7, 7, 7);    
+  }
+
+  .color1{
+    background-color: red; 
+    color: #FFF;
+  }
+  .color2{
+    background-color: rgb(224, 204, 17); 
+    color: #FFF;
+  }
+  .color3{
+    background-color: blue; 
+    color: #FFF;
+  }

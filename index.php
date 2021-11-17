@@ -51,7 +51,7 @@ else {
 
                         <span class="text-uppercase font-weight-bold text-muted">AFI</span>
                         <a href="services/logout.php" class="pull-right btn btn-danger" style="color: white; margin-top: 3px !important;">Logout</a>
-                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
+                        <a class="cenablebtn pull-right btn btn-basic btn-sm" style="margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
 
                     </div>
 
@@ -160,7 +160,7 @@ else {
                 </div>	
                 <div class="col-md-2">
                     
-                    <div style="cursor:pointer" class="countdiv card-counter danger" id="R">
+                    <div style="cursor:pointer" class="countdiv card-counter color1" id="R">
                     <i class="fa fa-bolt"></i>
                     <span class="count-numbers" id="sred"></span>
                     <span class="count-name">Single Phase Red</span>
@@ -169,7 +169,7 @@ else {
                 </div>
                 
                 <div class="col-md-2">
-                    <div style="cursor:pointer; background-color:#FFC107!important;" class=" countdiv card-counter danger" id="Y">
+                    <div style="cursor:pointer;" class=" countdiv card-counter color2" id="Y">
                         <i class="fa fa-bolt"></i>
                         <span class="count-numbers" id="syellow"></span>
                         <span class="count-name">Single Phase Yellow</span>
@@ -177,7 +177,7 @@ else {
                 </div>
                 
                 <div class="col-md-2">
-                    <div style="cursor:pointer" class="countdiv card-counter primary" id="B">
+                    <div style="cursor:pointer" class="countdiv card-counter color3" id="B">
                         <i class="fa fa-bolt"></i>
                         <span class="count-numbers" id="sblue"></span>
                         <span class="count-name">Single Phase Blue</span>
@@ -420,6 +420,7 @@ else {
         filter_polylines_arr=[];
         point_polylines_arr=[];
         $('#clearlinesbtn').hide();
+        // map.addLayer(demand_point)
     }
 
     // function typeaheadsearch(){
