@@ -642,9 +642,11 @@ $(document).ready(function(){
                             
                             // map.removeLayer(demand_point)
                             feature_point=layer.toGeoJSON();
-                            // console.log(feature_point);
-                            let arr = Array();
-                            arr.push([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
+                            // console.log(e);
+                            // console.log(layer);
+                            var darr = Array();
+                            darr.push([e.latlng.lat, e.latlng.lng])
+                            console.log([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
                             if(feature_point.properties.l3_id){
                                 var l3_id=feature_point.properties.l3_id
                                 $.ajax({
@@ -655,7 +657,7 @@ $(document).ready(function(){
                                     contentType: "application/json; charset=utf-8",
                                     success: function callback(response) {
                                          // console.log(response);
-                                         arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                                         darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                         var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                                          L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                                      }
@@ -671,7 +673,7 @@ $(document).ready(function(){
                                     contentType: "application/json; charset=utf-8",
                                     success: function callback(response) {
                                         // console.log(response);
-                                        arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                                        darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                         var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                                         L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
                                     }
@@ -687,9 +689,11 @@ $(document).ready(function(){
                                     contentType: "application/json; charset=utf-8",
                                     success: function callback(response) {
                                         // console.log(response);
-                                        arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                                        darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                         var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                                         L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                        // console.log([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+
                                     }
                                 })
                             }
@@ -697,7 +701,8 @@ $(document).ready(function(){
 							
                             setTimeout(function(){ 
                                 // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
-                                var polyline = L.polyline(arr);
+                                var polyline = L.polyline(darr);
+                                // console.log(darr)
                                 setPolylineColors(polyline,linescolor)
                                 line_l1_l2_l3_markers.addTo(map);
                                 // point_polylines_arr.push(polyline);
@@ -995,7 +1000,7 @@ function drawlines_against_fp_geojson(response){
                 feature_point=layer.toGeoJSON();
                 // console.log(feature_point);
                 let arr = Array();
-                arr.push([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
+                arr.push([e.latlng.lat, e.latlng.lng])
                 if(feature_point.properties.l3_id){
                     var l3_id=feature_point.properties.l3_id
                     $.ajax({
