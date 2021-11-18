@@ -52,6 +52,7 @@ else {
                         <span class="text-uppercase font-weight-bold text-muted">AFI</span>
                         <a href="services/logout.php" class="pull-right btn btn-danger" style="color: white; margin-top: 3px !important;">Logout</a>
                         <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
+                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="exportExcel()">Export Excel</a>
 
                     </div>
 
@@ -438,6 +439,6 @@ else {
 
 
 </script>
-
+ <div id="myDiv" style="display: none;"></div>
 </body>
 </html>

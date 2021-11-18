@@ -1426,6 +1426,27 @@ function setPolylineColors(line,colors){
 //     }
 // });
 
+function exportExcel(){
+    $.ajax({
+        url : 'services/lib/create_excel.php',
+        type : "GET",
+        success:function(res){
+            var mydiv = document.getElementById("myDiv");
+            $(mydiv).html('');
+            var aTag = document.createElement('a');
+            aTag.setAttribute('href',"services/lib/"+res+".xlsx");
+            aTag.setAttribute('id',"exp11");
+            aTag.innerText = "link text";
+            mydiv.appendChild(aTag);
+
+                $("#exp11")[0].click();
+         
+
+
+        }
+    });
+}
+
 
 
 

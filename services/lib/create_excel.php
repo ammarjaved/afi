@@ -1,64 +1,101 @@
 <?php
+include '../connection.php';
+require 'vendor/autoload.php';
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-use office\src;
 
-//require __DIR__ . '/../Header.php';
-
-//$helper->log('Create new Spreadsheet object');
 $spreadsheet = new Spreadsheet();
 
-// Set document properties
-$helper->log('Set document properties');
-$spreadsheet->getProperties()
-    ->setCreator('Maarten Balliauw')
-    ->setLastModifiedBy('Maarten Balliauw')
-    ->setTitle('PhpSpreadsheet Test Document')
-    ->setSubject('PhpSpreadsheet Test Document')
-    ->setDescription('Test document for PhpSpreadsheet, generated using PHP classes.')
-    ->setKeywords('office PhpSpreadsheet php')
-    ->setCategory('Test result file');
+
 
 // Add some data
-$helper->log('Add some data');
+//$helper->log('Add some data');
 $spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A1', 'Hello')
-    ->setCellValue('B2', 'world!')
-    ->setCellValue('C1', 'Hello')
-    ->setCellValue('D2', 'world!');
+    ->setCellValue('B2', 'Date SO Generation')
+    ->setCellValue('B3', 'SO Number')
+    ->setCellValue('B4', 'Created by');
 
-// Miscellaneous glyphs, UTF-8
+
+
 $spreadsheet->setActiveSheetIndex(0)
-    ->setCellValue('A4', 'Miscellaneous glyphs')
-    ->setCellValue('A5', 'éàèùâêîôûëïüÿäöüç');
+    ->setCellValue('A6', "NO.")
+	->setCellValue('B6', "PE Name")
+	->setCellValue('C6', "PE FL")
+	->setCellValue('D6', "FP ID")
+	->setCellValue('E6', "SFP ID")
+	->setCellValue('F6', "MFP ID")
+	->setCellValue('G6', "CD No.")
+	->setCellValue('H6', "Phase")
+	->setCellValue('I6', "Feeder")
+	->setCellValue('J6', "Meter No.")
+	->setCellValue('K6', "Installation ID")
+	->setCellValue('L6', "Meter Location")
+	->setCellValue('M6', "Image Link")
+	->setCellValue('N6', "FI Execution Start Date")
+	->setCellValue('O6', "FI Execution End Date")
+	->setCellValue('P6', "Remark")
+	->setCellValue('Q6', "Status")
+	->setCellValue('R6', "Percentage Done (%)")
+	->setCellValue('S6', "Total Customer")
+    ->setCellValue('T6', "Date Handover to TNB ES");
+$output=array();
+$sql = "with foo as(select * from fpl1 where status='Completed')
+select a.* from public.demand_point a,foo b where  b.l1_id=a.l1_id;";
+$query = pg_query($sql);
+if($query) {
+    $output = pg_fetch_all($query);
+}
 
-$spreadsheet->getActiveSheet()
-    ->setCellValue('A8', "Hello\nWorld");
-$spreadsheet->getActiveSheet()
-    ->getRowDimension(8)
-    ->setRowHeight(-1);
-$spreadsheet->getActiveSheet()
-    ->getStyle('A8')
-    ->getAlignment()
-    ->setWrapText(true);
-
-$value = "-ValueA\n-Value B\n-Value C";
-$spreadsheet->getActiveSheet()
-    ->setCellValue('A10', $value);
-$spreadsheet->getActiveSheet()
-    ->getRowDimension(10)
-    ->setRowHeight(-1);
-$spreadsheet->getActiveSheet()
-    ->getStyle('A10')
-    ->getAlignment()
-    ->setWrapText(true);
-$spreadsheet->getActiveSheet()
-    ->getStyle('A10')
-    ->setQuotePrefix(true);
-
+$comp=$output;
+//print_r($comp);
+$j=6;
+for($i=0;$i<sizeof($comp);$i++) {
+   // echo $comp[$i]['pe_name'] ;
+    $j=$j+1;
+    $no=$i+1;
+    $spreadsheet->setActiveSheetIndex(0)
+    ->setCellValue('A'.$j,$no )
+        ->setCellValue('B'.$j, $comp[$i]['pe_name'])
+        ->setCellValue('C'.$j, '')
+        ->setCellValue('D'.$j, $comp[$i]['l1_id'])
+        ->setCellValue('E'.$j, $comp[$i]['l2_id'])
+        ->setCellValue('F'.$j, $comp[$i]['l3_id'])
+        ->setCellValue('G'.$j, $comp[$i]['cd_id'])
+        ->setCellValue('H'.$j, $comp[$i]['phase'])
+        ->setCellValue('I'.$j, $comp[$i]['fd_no'])
+        ->setCellValue('J'.$j, $comp[$i]['bcrm_eqp'])
+        ->setCellValue('K'.$j, $comp[$i]['install_id'])
+        ->setCellValue('L'.$j, '')
+        ->setCellValue('M'.$j, '')
+        ->setCellValue('N'.$j, '')
+        ->setCellValue('O'.$j, '')
+        ->setCellValue('P'.$j, '')
+        ->setCellValue('Q'.$j, '')
+        ->setCellValue('R'.$j, '')
+        ->setCellValue('S'.$j, '')
+        ->setCellValue('T'.$j,  date("l jS \of F Y h:i:s A"));
+}
+//$spreadsheet->getStyle('A6:C6')->getFill()
+    //->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+  //  ->getStartColor()->setARGB('FFA0A0A0');
+//NO.																			
+//$spreadsheet->setActiveSheetIndex(0)
+//    ->setCellValue('B'.$j+2, "SO Total Customer")
+//    ->setCellValue('B'.$j+3, "Total Customer Submited")
+//    ->setCellValue('B'.$j+4, "Total Customer")
+//    ->setCellValue('B'.$j+5, "% Completed")
+//    ->setCellValue('B'.$j+7, "Preapred By")
+//    ->setCellValue('B'.$j+8, "Date")
+//    ->setCellValue('B'.$j+11, "Accepted By")
+//    ->setCellValue('B'.$j+11, "Date");
 // Rename worksheet
-$helper->log('Rename worksheet');
+//$helper->log('Rename worksheet');
 $spreadsheet->getActiveSheet()
-    ->setTitle('Simple');
-
+    ->setTitle('report');
+$name='report'.rand();
+$writer = new Xlsx($spreadsheet);	
+$writer->save($name.'.xlsx');
+echo $name;
 // Save
-$helper->write($spreadsheet, __FILE__, ['Xlsx', 'Xls', 'Ods']);
+//$helper->write($spreadsheet, __FILE__, ['Xlsx', 'Xls', 'Ods']);
