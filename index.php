@@ -51,8 +51,9 @@ else {
 
                         <span class="text-uppercase font-weight-bold text-muted">AFI</span>
                         <a href="services/logout.php" class="pull-right btn btn-danger" style="color: white; margin-top: 3px !important;">Logout</a>
-                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
-                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="exportExcel()">Export Excel</a>
+<!--                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>-->
+                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="exportExcel()">Export Complete Excel</a>
+                        <a href="afi_report.php" class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" target="_blank">Export FP Excel</a>
 
                         <a class="cenablebtn pull-right btn btn-basic btn-sm" style="margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
 
