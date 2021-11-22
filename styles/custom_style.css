@@ -460,7 +460,11 @@ table tr:nth-child(even) {
   .card-counter.total_counts{
     background-color: #118f26;
     color: #FFF;
-  }  
+  }
+.card-counter.total_counts_p{
+    background-color: #F42667;
+    color: #FFF;
+}
   /* .card-counter.total_counts{
     background-color: rgb(37, 163, 26); // For browsers that do not support gradients 
     background-image: linear-gradient(to right, red, yellow, blue, violet);

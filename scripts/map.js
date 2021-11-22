@@ -246,8 +246,14 @@ function getProperties(){
             success: function callback(data) {
                 console.log(data.features[0].properties.acc_no)
                 var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+                str = str + '<tr><td> id </td><td>' + data.features[0].properties.gid + '</td></tr>';
                 str = str + '<tr><td> Account No. </td><td>' + data.features[0].properties.acc_no + '</td></tr>';
-                str = str + '<tr><td> pe_name  </td><td>' + data.features[0].properties.pe_name  + '</td></tr>'
+                str = str + '<tr><td> Pe Name  </td><td>' + data.features[0].properties.pe_name  + '</td></tr>'
+                str = str + '<tr><td> Address  </td><td>' + data.features[0].properties.address  + '</td></tr>'
+                str = str + '<tr><td> Meter no  </td><td>' + data.features[0].properties.bcrm_eqp  + '</td></tr>'
+                str = str + '<tr><td> Device id  </td><td>' + data.features[0].properties.device_id  + '</td></tr>'
+                str = str + '<tr><td> Installation id  </td><td>' + data.features[0].properties.install_id  + '</td></tr>'
+                str = str + '<tr><td> Meter Type  </td><td>' + data.features[0].properties.meter_type  + '</td></tr>'
                 str = str + '<tr><td> cd_id  </td><td>' + data.features[0].properties.cd_id  + '</td></tr>'
                 str = str + '<tr><td> fd_no  </td><td>' + data.features[0].properties.fd_no  + '</td></tr>'
                 str = str + '<tr><td> l1_id  </td><td>' + data.features[0].properties.l1_id  + '</td></tr>'
@@ -277,7 +283,7 @@ var overlays = {
     "FPL_L1&nbsp&nbsp<img src='images/1.png' width='30' height='30'>": lvdb_l1,
     "SFP_L2&nbsp&nbsp<img src='images/2.png' width='30' height='30'>": SFP_L2,
     "MFP_L3&nbsp&nbsp<img src='images/3.png' width='30' height='30'>": MFP_L3,
-    "Surveyed Demand Points &nbsp&nbsp<img src='images/layer.jpg' width='30' height='30'>": demand_point,
+    "Surveyed Demand Points &nbsp&nbsp ": demand_point,
     "Non Surveyed D/P": non_surveyed_dp,
     "Pano Layer":pano_layer
 };
@@ -330,8 +336,10 @@ function fillDropDowns(di,lyr){
                 if(data.count[j].phase=="RYB"){
                 $("#tryb").text(data.count[j].count);
                 }
-              } 
-              $("#total_count").text(Number(data.count[0].count) + Number(data.count[1].count)  + Number(data.count[2].count)  + Number(data.count[3].count) );
+              }
+              var total_sum=Number(data.count[0].count) + Number(data.count[1].count)  + Number(data.count[2].count)  + Number(data.count[3].count);
+              $("#total_count").text(total_sum );
+            $("#total_count_p").text((total_sum*100)/10000);
             if(lyr=='fp'){
                 $('.load_options').remove();
                 //console.log(data.fp)

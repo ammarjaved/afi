@@ -18,6 +18,8 @@ public function fillDropdown(){
 
         } else if ($lyr == 'mfp_l3') {
             $sql = "select st_x(geom) as x,st_y(geom) as y from public.mfp_l3 where l3_id='$did';";
+        } else if ($lyr == 'dp') {
+            $sql = "select st_x(geom) as x,st_y(geom) as y from public.demand_point where gid='$did';";
         }else{
             'not found';
         }

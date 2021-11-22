@@ -55,7 +55,7 @@ else {
                         <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="exportExcel()">Export Complete Excel</a>
                         <a href="afi_report.php" class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" target="_blank">Export FP Excel</a>
 
-                        <a class="cenablebtn pull-right btn btn-basic btn-sm" style="margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
+                        <a class="cenablebtn pull-right btn btn-basic btn-sm" style="margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Unsurveyed DP</a>
 
 
                     </div>
@@ -131,14 +131,19 @@ else {
                         <div class="radio">
                         <label><input type="radio" name="optradio" onchange="typeaheadsearch()" id="sfpradiobtn" value="sfp_l2">SFP</label>
                         </div>
-                        <div class="radio disabled">
+                        <div class="radio">
                         <label><input type="radio" name="optradio" onchange="typeaheadsearch()" id="mfpradiobtn" value="mfp_l3">MFP</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" name="optradio" onchange="typeaheadsearch()" id="mfpradiobtn" value="dp">DP</label>
                         </div>
                     </div>
                     <div id="search-bar" class="col-md-6" style="margin-top:30px; margin-left:10px margin-right:10px;">
                             <input type="text" id="search_input1" name="search1" placeholder="Search DeviceID..." class="typeahead" style="display:none">
                             <input type="text" id="search_input2" name="search2" placeholder="Search DeviceID..." class="typeahead" style="display:none; margin-top:-20px !important;">
                             <input type="text" id="search_input3" name="search3" placeholder="Search DeviceID..." class="typeahead" style="display:none; margin-top:-20px !important;">
+                            <input type="text" id="search_input4" name="search4" placeholder="Search DeviceID..." class="typeahead" style="display:none; margin-top:-20px !important;">
+
 
                     </div>
                     <div class="col-md-2" style="margin-top:25px;">
@@ -156,7 +161,7 @@ else {
         </div>   
      
 		<div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div style="cursor:pointer" class="countdiv card-counter info" id="RYB">
                             <i class="fa fa-bolt"></i>
                             <span class="count-numbers" id="tryb"></span>
@@ -190,13 +195,21 @@ else {
                 </div>
             
                 
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <div style="cursor:pointer" class="countdiv card-counter total_counts" id="total">
                             <i class="fa fa-bolt"></i>
                             <span class="count-numbers" id="total_count" ></span>
                             <span class="count-name" >Total</span>
                     </div>
                 </div>
+
+            <div class="col-md-2">
+                <div style="cursor:pointer" class="countdiv card-counter total_counts_p" id="total">
+                    <i class="fa fa-bolt"></i>
+                    <span class="count-numbers" id="total_count_p" ></span>
+                    <span class="count-name" >Total Complete Percent</span>
+                </div>
+            </div>
               
         </div>
 
@@ -350,30 +363,48 @@ else {
                 $('#search_input1').show();
                 $('#search_input2').hide();
                 $('#search_input3').hide();
+                $('#search_input4').hide();
             }
             if(radioValue=='sfp_l2'){
                 $('#search_input1').hide();
                 $('#search_input2').show();
                 $('#search_input3').hide();
+                $('#search_input4').hide();
             }
             if(radioValue=='mfp_l3'){
                 $('#search_input1').hide();
                 $('#search_input2').hide();
                 $('#search_input3').show();
+                $('#search_input4').hide();
             }
+            if(radioValue=='dp'){
+                $('#search_input1').hide();
+                $('#search_input2').hide();
+                $('#search_input3').hide();
+                $('#search_input4').show();
+            }
+
             $('#search_input1').typeahead({
                 name: 'hce1',
                 remote:'services/search.php?key=%QUERY'+ "&tblname=fpl1",
                 limit: 5
             });
+
             $('#search_input2').typeahead({
                 name: 'hce2',
                 remote:'services/search.php?key=%QUERY'+ "&tblname=sfp_l2",
                 limit: 5
             });
+
             $('#search_input3').typeahead({
                 name: 'hce3',
                 remote:'services/search.php?key=%QUERY'+ "&tblname=mfp_l3",
+                limit: 5
+            });
+
+            $('#search_input4').typeahead({
+                name: 'hce4',
+                remote:'services/search.php?key=%QUERY'+ "&tblname=dp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     ",
                 limit: 5
             });
         }
@@ -391,7 +422,10 @@ else {
              deviceid = $("#search_input2").val(); 
         }
         if(chktblname=='mfp_l2'){
-             deviceid = $("#search_input3").val(); 
+             deviceid = $("#search_input3").val();
+        }
+        if(chktblname=='dp'){
+            deviceid = $("#search_input4").val();
         }
        
         // alert(chktblname)

@@ -20,6 +20,8 @@ class Divisions extends connection
             $sql = "select l2_id from public.sfp_l2 where l2_id ilike '%{$key}%' limit 5;";
         } else if ($tblname == 'mfp_l3') {
             $sql = "select l3_id from public.mfp_l3 where l3_id ilike '%{$key}%' limit 5;";
+        } else if ($tblname == 'dp') {
+            $sql = "select gid from public.demand_point where gid>=$key limit 5;";
         }
 
         $output = array();
@@ -36,6 +38,8 @@ class Divisions extends connection
                     $output[] = $row['l2_id'];
                 } else if ($tblname == 'mfp_l3') {
                     $output[] = $row['l3_id'];
+                }else if ($tblname == 'dp') {
+                    $output[] = $row['gid'];
                 }
             }
         }
