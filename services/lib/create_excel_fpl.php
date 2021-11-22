@@ -38,11 +38,12 @@ $spreadsheet->setActiveSheetIndex(0)
 	->setCellValue('Q6', "Status")
 	->setCellValue('R6', "Percentage Done (%)")
 	->setCellValue('S6', "Total Customer")
-    ->setCellValue('T6', "Date Handover to TNB ES");
+    ->setCellValue('T6', "Date Handover to TNB ES")
+    ->setCellValue('U6', "Customer ID");
 $output=array();
 $l1id=$_REQUEST['l1_id'];
 $sql = "with foo as(select * from fpl1 where status='Completed' and l1_id='$l1id')
-select a.* from public.demand_point a,foo b where  b.l1_id=a.l1_id;";
+select a.*,st_astext(a.geom) as location,images||','||image2||','||image3||','||image4||','||image5 as pic from public.demand_point a,foo b where  b.l1_id=a.l1_id;";
 $query = pg_query($sql);
 if($query) {
     $output = pg_fetch_all($query);
@@ -65,17 +66,18 @@ for($i=0;$i<sizeof($comp);$i++) {
         ->setCellValue('G'.$j, $comp[$i]['cd_id'])
         ->setCellValue('H'.$j, $comp[$i]['phase'])
         ->setCellValue('I'.$j, $comp[$i]['fd_no'])
-        ->setCellValue('J'.$j, $comp[$i]['bcrm_eqp'])
+        ->setCellValue('J'.$j, $comp[$i]['site_eqp'])
         ->setCellValue('K'.$j, $comp[$i]['install_id'])
-        ->setCellValue('L'.$j, '')
-        ->setCellValue('M'.$j, '')
+        ->setCellValue('L'.$j, $comp[$i]['location'])
+        ->setCellValue('M'.$j, $comp[$i]['pic'])
         ->setCellValue('N'.$j, '')
         ->setCellValue('O'.$j, '')
         ->setCellValue('P'.$j, '')
         ->setCellValue('Q'.$j, '')
-        ->setCellValue('R'.$j, '')
-        ->setCellValue('S'.$j, '')
-        ->setCellValue('T'.$j,  date("l jS \of F Y h:i:s A"));
+        ->setCellValue('R'.$j, (sizeof($comp))*100/10000)
+        ->setCellValue('S'.$j, '10000')
+        ->setCellValue('T'.$j,  date("l jS \of F Y h:i:s A"))
+        ->setCellValue('U'.$j, $comp[$i]['gid']);
 }
 //$spreadsheet->getStyle('A6:C6')->getFill()
     //->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
