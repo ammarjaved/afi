@@ -339,7 +339,7 @@ function fillDropDowns(di,lyr){
               }
               var total_sum=Number(data.count[0].count) + Number(data.count[1].count)  + Number(data.count[2].count)  + Number(data.count[3].count);
               $("#total_count").text(total_sum );
-            $("#total_count_p").text((total_sum*100)/10000);
+            $("#total_count_p").text(((total_sum*100)/10000)+'%');
             if(lyr=='fp'){
                 $('.load_options').remove();
                 //console.log(data.fp)
