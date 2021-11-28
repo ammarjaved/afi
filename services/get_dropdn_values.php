@@ -15,12 +15,12 @@ public function fillDropdown(){
             $sql = "select l1_id,id,pe_name,st_x(geom) as x,st_y(geom) as y from public.fpl1 where status='Completed';";
             $sql2="select count(*),phase from public.demand_point where phase is not null group by phase";
         } else if ($lyr == 'sfp') {
-            $sql = "select l2_id,gid,pe_name from public.sfp_l2 where l1_id='$di';";
+            $sql = "select l2_id,gid,pe_name,st_x(geom) as x,st_y(geom) as y from public.sfp_l2 where l1_id='$di';";
             $sql2="select count(*),phase from public.demand_point where phase is not null and l1_id='$di' group by phase";
             
 
         } else if ($lyr == 'mfp') {
-            $sql = "select l3_id,gid,pe_name from public.mfp_l3 where l2_id='$di';";
+            $sql = "select l3_id,gid,pe_name,st_x(geom) as x,st_y(geom) as y from public.mfp_l3 where l2_id='$di';";
             $sql2="select count(*),phase from public.demand_point where phase is not null and l2_id='$di' group by phase";
         }else{
             $sql2="select count(*),phase from public.demand_point where phase is not null and l3_id='$di' group by phase";

@@ -105,7 +105,7 @@ else {
                 <div class="panel panel-default">
                     <div class="panel-body panel_body_style">
                         <label style="font-weight: bold;">SFP</label>
-                        <select class="form-control formControlWIdth"name="sfp" id="sfpdropdown">
+                        <select class="form-control formControlWIdth" name="sfp" id="sfpdropdown">
                             <option selected disabled value="0">--Select ID--</option>
                         </select>
                     </div>
