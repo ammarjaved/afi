@@ -351,14 +351,14 @@ function fillDropDowns(di,lyr){
             }
             else if(lyr=='sfp'){
                 if(data.sfp!="false"){
-                for(var i=0;i<data.length;i++){  
-                    $('select[name="sfp"]').append('<option class="load_options" value="'+ data[i].l2_id +'">'+data[i].l2_id+' ( '+data[i].pe_name+')'+'</option>');
+                for(var i=0;i<data.sfp.length;i++){  
+                    $('select[name="sfp"]').append('<option class="load_options" value="'+ data.sfp[i].l2_id +'">'+data.sfp[i].l2_id+' ( '+data.sfp[i].pe_name+')'+'</option>');
                 }
             }
             }else if(lyr=='mfp') {
                 if(data.mfp!="false"){
-                for (var i = 0; i < data.length; i++) {
-                    $('select[name="mfp"]').append('<option class="load_options" value="' + data[i].l3_id + '">' + data[i].l3_id+' ('+data[i].pe_name+')'+'</option>');
+                for (var i = 0; i < data.mfp.length; i++) {
+                    $('select[name="mfp"]').append('<option class="load_options" value="' + data.mfp[i].l3_id + '">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>');
                 }
             }
         }
@@ -391,10 +391,7 @@ $('select[name="fp"]').on('change',function(e){
       fillDropDowns(spl1id[0],'sfp')
 
      // current_phase_val= spl1id[0].split(",")[0];
-     
-   
-      
-      
+
       $('#fd_details_div').show();
       current_dropdown_Lid=spl1id[0];
       current_dropdown_latlng=[spl2id[1],spl2id[0]];
@@ -488,7 +485,7 @@ $(document).ready(function(){
                         },
                         onEachFeature: function (feature, layer) {
                             var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                            str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
                             str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
                             str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
                             str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
@@ -534,7 +531,7 @@ $(document).ready(function(){
                         },
                         onEachFeature: function (feature, layer) {
                             var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                            str = str + '<tr><td> ID </td><td>' + feature.properties.id  + '</td></tr>';
+                            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
                             str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
                             str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
                             str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
@@ -777,21 +774,50 @@ function addRemoveLayer(name){
 
 
 $('select[name="sfp"]').on('change',function(e){
-    e.preventDefault();
-    var l2id= $(this).val();
-    fillDropDowns(l2id,'mfp')
-    $("#sred").text('');
-    $("#syellow").text('');
-    $("#sblue").text('');
-    $("#tryb").text('');
-    $("#total_count").text('');
-
+    var l1_id= $(this).val();
+    var spl1id=l1_id.split(',');
+    spl2id=spl1id[1].split('-');
+    map.setView([spl2id[1],spl2id[0]],19);
+          $("#sred").text('');
+        $("#syellow").text('');
+        $("#sblue").text('');
+        $("#tryb").text('');
+        $("#total_count").text('');
+    fillDropDowns(spl1id[0],'mfp')
     $('#fd_details_div').show();
+    current_dropdown_Lid=spl1id[0];
+    current_dropdown_latlng=[spl2id[1],spl2id[0]];
 
-    current_dropdown_Lid=l2id;
-    get_dp_and_counts_against_dvid(l2id);
+
+    // e.preventDefault();
+    // var l2id= $(this).val();
+    // fillDropDowns(l2id,'mfp')
+    // $("#sred").text('');
+    // $("#syellow").text('');
+    // $("#sblue").text('');
+    // $("#tryb").text('');
+    // $("#total_count").text('');
+
+    // $('#fd_details_div').show();
+
+    // current_dropdown_Lid=l2id;
+    // get_dp_and_counts_against_dvid(l2id);
 });
 $('select[name="mfp"]').on('change',function(e){
+    var l1_id= $(this).val();
+    var spl1id=l1_id.split(',');
+    spl2id=spl1id[1].split('-');
+    map.setView([spl2id[1],spl2id[0]],19);
+          $("#sred").text('');
+        $("#syellow").text('');
+        $("#sblue").text('');
+        $("#tryb").text('');
+        $("#total_count").text('');
+    fillDropDowns(spl1id[0],'mfp')
+    $('#fd_details_div').show();
+    current_dropdown_Lid=spl1id[0];
+    current_dropdown_latlng=[spl2id[1],spl2id[0]];
+
     e.preventDefault();
     var l3id= $(this).val();
     $("#sred").text('');
