@@ -42,8 +42,8 @@ $spreadsheet->setActiveSheetIndex(0)
 //	->setCellValue('Q6', "Status")
 
 $output=array();
-$sql = "with foo as(select * from fpl1 where status='Completed')
-select a.*,st_x((ST_Dump(a.geom)).geom)||','||st_y((ST_Dump(a.geom)).geom) as location,images||','||image2||','||image3||','||image4||','||image5 as pic from public.demand_point a,foo b where  b.l1_id=a.l1_id;";
+$sql = "with foo as(select * from fpl1)
+select a.*,st_x((ST_Dump(a.geom)).geom)||','||st_y((ST_Dump(a.geom)).geom) as location,images||','||image2||','||image3||','||image4||','||image5 as pic from public.demand_point a";
 $query = pg_query($sql);
 if($query) {
     $output = pg_fetch_all($query);
