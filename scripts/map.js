@@ -351,18 +351,20 @@ function fillDropDowns(di,lyr){
             }
             else if(lyr=='sfp'){
                 if(data.sfp!="false"){
+                    $('.load_options').remove();
                 for(var i=0;i<data.sfp.length;i++){  
                     $('select[name="sfp"]').append('<option class="load_options" value="'+ data.sfp[i].l2_id+","+data.sfp[i].x+"-"+data.sfp[i].y+'">'+data.sfp[i].l2_id+' ( '+data.sfp[i].pe_name+')'+'</option>');
                 }
             }
             }else if(lyr=='mfp') {
                 if(data.mfp!="false"){
-                for (var i = 0; i < data.mfp.length; i++) {
-                    $('select[name="mfp"]').append('<option class="load_options" value="'+ data.mfp[i].l3_id+","+data.mfp[i].x+"-"+data.mfp[i].y+'">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>');
+                    $('.load_options').remove();
+                    for (var i = 0; i < data.mfp.length; i++) {
+                        $('select[name="mfp"]').append('<option class="load_options" value="'+ data.mfp[i].l3_id+","+data.mfp[i].x+"-"+data.mfp[i].y+'">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>');
+                    }
                 }
             }
         }
-    }
     });
 }
 
