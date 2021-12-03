@@ -337,6 +337,7 @@ function fillDropDowns(di,lyr){
                 $("#tryb").text(data.count[j].count);
                 }
               }
+              var total_sum=0;
               var total_sum=Number(data.count[0].count) + Number(data.count[1].count)  + Number(data.count[2].count)  + Number(data.count[3].count);
               $("#total_count").text(total_sum );
             $("#total_count_p").text(((total_sum*100)/10000)+'%');

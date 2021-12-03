@@ -13,7 +13,7 @@ public function fillDropdown(){
 
         if ($lyr == 'fp') {
             $sql = "select l1_id,id,pe_name,st_x(geom) as x,st_y(geom) as y from public.fpl1 where status='Completed';";
-            $sql2="select count(*),phase from public.demand_point where phase is not null group by phase";
+            $sql2="select count(*),phase from public.demand_point where phase is not null and phase<>'' group by phase";
         } else if ($lyr == 'sfp') {
             $sql = "select l2_id,gid,pe_name,st_x(geom) as x,st_y(geom) as y from public.sfp_l2 where l1_id='$di';";
             $sql2="select count(*),phase from public.demand_point where phase is not null and l1_id='$di' group by phase";
