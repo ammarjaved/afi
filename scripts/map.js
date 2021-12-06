@@ -342,27 +342,30 @@ function fillDropDowns(di,lyr){
               $("#total_count").text(total_sum );
             $("#total_count_p").text(((total_sum*100)/10000)+'%');
             if(lyr=='fp'){
-                $('.load_options').remove();
+                var str='<option>Select FP</option>'
                 //console.log(data.fp)
                 if(data.fp!="false"){
                 for(var i=0;i<data.fp.length;i++){
-                    $('select[name="fp"]').append('<option value="'+ data.fp[i].l1_id+","+data.fp[i].x+"-"+data.fp[i].y+'">'+data.fp[i].l1_id+' ('+data.fp[i].pe_name+')'+'</option>');
+                    str=str+'<option value="'+ data.fp[i].l1_id+","+data.fp[i].x+"-"+data.fp[i].y+'">'+data.fp[i].l1_id+' ('+data.fp[i].pe_name+')'+'</option>';
                 }
+                $('select[name="fp"]').html(str)
             }
             }
             else if(lyr=='sfp'){
                 if(data.sfp!="false"){
-                    $('.load_options').remove();
+                    var str='<option>Select SFP</option>'
                 for(var i=0;i<data.sfp.length;i++){  
-                    $('select[name="sfp"]').append('<option class="load_options" value="'+ data.sfp[i].l2_id+","+data.sfp[i].x+"-"+data.sfp[i].y+'">'+data.sfp[i].l2_id+' ( '+data.sfp[i].pe_name+')'+'</option>');
+                    str=str+'<option class="load_options" value="'+ data.sfp[i].l2_id+","+data.sfp[i].x+"-"+data.sfp[i].y+'">'+data.sfp[i].l2_id+' ( '+data.sfp[i].pe_name+')'+'</option>';
                 }
+                $('select[name="sfp"]').html(str)
             }
             }else if(lyr=='mfp') {
                 if(data.mfp!="false"){
-                    $('.load_options').remove();
+                    var str='<option>Select MFP</option>'
                     for (var i = 0; i < data.mfp.length; i++) {
-                        $('select[name="mfp"]').append('<option class="load_options" value="'+ data.mfp[i].l3_id+","+data.mfp[i].x+"-"+data.mfp[i].y+'">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>');
+                        str=str+'<option class="load_options" value="'+ data.mfp[i].l3_id+","+data.mfp[i].x+"-"+data.mfp[i].y+'">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>';
                     }
+                    $('select[name="mfp"]').html(str)
                 }
             }
         }
@@ -425,10 +428,15 @@ $(document).ready(function(){
         activeSelectedLayerPano();
          //-----------fp dropdown ids----------  
         fillDropDowns('%','fp')
+        get_lvdb_l1_geojson('%');
+        get_SFP_L2_geojson('%');
+        get_MFP_L3_geojson('%');
+        get_demand_point_geojson('%','%','%');
       
         //-----------geojson of layers----------  
+    function get_lvdb_l1_geojson(l1_id){
         $.ajax({
-            url: "services/get_lvdb_l1_geojson.php?l1_id=%",
+            url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
             type: "GET",
             dataType: "json",
             //data: JSON.stringify(geom,layer.geometry),
@@ -473,8 +481,10 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+    function get_SFP_L2_geojson(l2_id){
         $.ajax({
-            url: "services/get_SFP_L2_geojson.php?l2_id=%",
+            url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -519,8 +529,10 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+    function get_MFP_L3_geojson(l3_id){
         $.ajax({
-            url: "services/get_MFP_L3_geojson.php?l3_id=%",
+            url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -566,8 +578,10 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+    function get_demand_point_geojson(lid,phase,fd){
         $.ajax({
-            url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=%"+ "&phase=" + current_phase_val,
+            url: "services/get_demand_point_geojson.php?lid="+lid + "&fd_no="+fd+ "&phase=" + phase,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -722,6 +736,7 @@ $(document).ready(function(){
                 }).addTo(demand_point)
             }
         });
+    }
        
        
 }, 2000);
