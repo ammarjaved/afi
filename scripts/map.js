@@ -521,7 +521,7 @@ $(document).ready(function(){
                             layer.on('click', function (e) {
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
-                                var did=feature.properties.l1_id;
+                                var did=feature.properties.l2_id;
                                 get_dp_and_counts_against_fp_dvid(did)
                             });
                         }
@@ -570,7 +570,7 @@ $(document).ready(function(){
                             layer.on('click', function (e) {
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
-                                var did=feature.properties.l1_id;
+                                var did=feature.properties.l3_id;
                                 get_dp_and_counts_against_fp_dvid(did)
                             });
                         }
