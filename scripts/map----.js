@@ -45,7 +45,7 @@ var linescolor=['white','orange','grey']
         center: [2.3773940674819998, 102.21967220306398],
         // center: [31.5204, 74.3587],
         zoom: 15,
-        layers: [googleSat, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3],
+        layers: [googleSat, demand_point, non_surveyed_dp,pano_layer,lvdb_l1,SFP_L2,MFP_L3],
         attributionControl:false
     });
 
@@ -338,37 +338,34 @@ function fillDropDowns(di,lyr){
                 }
               }
               var total_sum=0;
-              var total_sum=Number(checkIncomingValue(data,0)) + Number(checkIncomingValue(data,1))  + Number(checkIncomingValue(data,2))  + Number(checkIncomingValue(data,3));
+              var total_sum=Number(data.count[0].count) + Number(data.count[1].count)  + Number(data.count[2].count)  + Number(data.count[3].count);
               $("#total_count").text(total_sum );
             $("#total_count_p").text(((total_sum*100)/10000)+'%');
             if(lyr=='fp'){
-               // $('.load_options').remove();
+                var str='<option>Select FP</option>'
                 //console.log(data.fp)
-                var str1='<option value="reset">select FP</option>'
                 if(data.fp!="false"){
                 for(var i=0;i<data.fp.length;i++){
-                    str1=str1+'<option value="'+ data.fp[i].l1_id+","+data.fp[i].x+"-"+data.fp[i].y+'">'+data.fp[i].l1_id+' ('+data.fp[i].pe_name+')'+'</option>';
+                    str=str+'<option value="'+ data.fp[i].l1_id+","+data.fp[i].x+"-"+data.fp[i].y+'">'+data.fp[i].l1_id+' ('+data.fp[i].pe_name+')'+'</option>';
                 }
-                    $('select[name="fp"]').html(str1);
+                $('select[name="fp"]').html(str)
             }
             }
             else if(lyr=='sfp'){
                 if(data.sfp!="false"){
-                   // $('.load_options').remove();
-                   var str2='<option>select SFP</option>'
-                for(var i=0;i<data.sfp.length;i++){
-                    str2=str2+'<option class="load_options" value="'+ data.sfp[i].l2_id+","+data.sfp[i].x+"-"+data.sfp[i].y+'">'+data.sfp[i].l2_id+' ( '+data.sfp[i].pe_name+')'+'</option>';
+                    var str='<option>Select SFP</option>'
+                for(var i=0;i<data.sfp.length;i++){  
+                    str=str+'<option class="load_options" value="'+ data.sfp[i].l2_id+","+data.sfp[i].x+"-"+data.sfp[i].y+'">'+data.sfp[i].l2_id+' ( '+data.sfp[i].pe_name+')'+'</option>';
                 }
-                    $('select[name="sfp"]').html(str2);
+                $('select[name="sfp"]').html(str)
             }
             }else if(lyr=='mfp') {
                 if(data.mfp!="false"){
-                    var str3='<option>select MFP</option>'
-                  //  $('.load_options').remove();
+                    var str='<option>Select MFP</option>'
                     for (var i = 0; i < data.mfp.length; i++) {
-                        str3=str3+'<option class="load_options" value="'+ data.mfp[i].l3_id+","+data.mfp[i].x+"-"+data.mfp[i].y+'">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>';
+                        str=str+'<option class="load_options" value="'+ data.mfp[i].l3_id+","+data.mfp[i].x+"-"+data.mfp[i].y+'">' + data.mfp[i].l3_id+' ('+data.mfp[i].pe_name+')'+'</option>';
                     }
-                    $('select[name="mfp"]').html(str3);
+                    $('select[name="mfp"]').html(str)
                 }
             }
         }
@@ -386,31 +383,24 @@ $('select[name="fp"]').on('change',function(e){
            
       //  }
     //   e.preventDefault();
-
       var l1_id= $(this).val();
-      if(l1_id=='reset'){
-          resetAllDashboard();
-      }else {
-
-
-          var spl1id = l1_id.split(',');
-          // var did=spl1id[0];
-          spl2id = spl1id[1].split('-');
-          map.setView([spl2id[1], spl2id[0]], 19);
-          $("#sred").text('');
+      var spl1id=l1_id.split(',');
+     // var did=spl1id[0];
+      spl2id=spl1id[1].split('-');
+      map.setView([spl2id[1],spl2id[0]],19);
+            $("#sred").text('');
           $("#syellow").text('');
           $("#sblue").text('');
           $("#tryb").text('');
           $("#total_count").text('');
+  
+      fillDropDowns(spl1id[0],'sfp')
 
-          fillDropDowns(spl1id[0], 'sfp')
+     // current_phase_val= spl1id[0].split(",")[0];
 
-          // current_phase_val= spl1id[0].split(",")[0];
-
-          $('#fd_details_div').show();
-          current_dropdown_Lid = spl1id[0];
-          current_dropdown_latlng = [spl2id[1], spl2id[0]];
-      }
+      $('#fd_details_div').show();
+      current_dropdown_Lid=spl1id[0];
+      current_dropdown_latlng=[spl2id[1],spl2id[0]];
       //get_dp_and_counts_against_dvid(l1_id); 
      // clickTopDropDowns(l1_id);
   });
@@ -438,10 +428,15 @@ $(document).ready(function(){
         activeSelectedLayerPano();
          //-----------fp dropdown ids----------  
         fillDropDowns('%','fp')
+        get_lvdb_l1_geojson('%');
+        get_SFP_L2_geojson('%');
+        get_MFP_L3_geojson('%');
+        get_demand_point_geojson('%','%','%');
       
         //-----------geojson of layers----------  
+    function get_lvdb_l1_geojson(l1_id){
         $.ajax({
-            url: "services/get_lvdb_l1_geojson.php?l1_id=%",
+            url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
             type: "GET",
             dataType: "json",
             //data: JSON.stringify(geom,layer.geometry),
@@ -486,8 +481,10 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+    function get_SFP_L2_geojson(l2_id){
         $.ajax({
-            url: "services/get_SFP_L2_geojson.php?l2_id=%",
+            url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -532,8 +529,10 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+    function get_MFP_L3_geojson(l3_id){
         $.ajax({
-            url: "services/get_MFP_L3_geojson.php?l3_id=%",
+            url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -579,8 +578,10 @@ $(document).ready(function(){
                 }
             }
         });
+    }
+    function get_demand_point_geojson(lid,phase,fd){
         $.ajax({
-            url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=%"+ "&phase=" + current_phase_val,
+            url: "services/get_demand_point_geojson.php?lid="+lid + "&fd_no="+fd+ "&phase=" + phase,
             type: "GET",
             dataType: "json",
             contentType: "application/json; charset=utf-8",
@@ -735,6 +736,7 @@ $(document).ready(function(){
                 }).addTo(demand_point)
             }
         });
+    }
        
        
 }, 2000);
@@ -1525,22 +1527,6 @@ function exportExcel(){
     });
 }
 
-
-function checkIncomingValue(val,num){
-    if(val.count[num]){
-        return val.count[num].count;
-    }else{
-        return 0
-    }
-
-}
-
-
-function resetAllDashboard(){
-    fillDropDowns('%','fp')
-    $('select[name="sfp"]').html('<option>select sfp</option>');
-    $('select[name="mfp"]').html('<option>select mfp</option>');
-}
 
 
 
