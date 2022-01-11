@@ -250,6 +250,10 @@ else {
                                 <a class="pull-left btn btn-danger btn-sm" onclick="mapreset()" style="z-index: 1000 !important; color: white; margin-top: 20px !important;margin-left: 50px;">Clear Lines</a>
                             </div>
 
+                            <div id="clearlinesbtn1" style="z-index: 1000000;position:absolute;">
+                                <a class="pull-left btn btn-success btn-sm" onclick="resetAllDashboard()" style="z-index: 1000 !important; color: white; margin-top: 80px !important;margin-left: 10px;">Reset</a>
+                            </div>
+
                             <!--Panel content-->
                             <!--Map will be here-->
                             <!-- Modal for non surved department-->
