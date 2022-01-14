@@ -319,7 +319,7 @@ else {
     </div>
 </div>
 
-<script src="libs/jquery-1.8.3.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="libs/bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="libs/images_slider/css-view/lightbox.css" type="text/css" />
 <script src="libs/images_slider/js-view/lightbox-2.6.min.js"></script>

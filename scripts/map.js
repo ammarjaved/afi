@@ -533,7 +533,7 @@ $(document).ready(function(){
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
                                 var did=feature.properties.l2_id;
-                                get_dp_and_counts_against_fp_dvid(did)
+                                get_dp_and_counts_against_sfp_dvid(did)
                             });
                         }
                     }).addTo(SFP_L2)
@@ -580,7 +580,7 @@ $(document).ready(function(){
                                 var dlatlng=[feature.geometry.coordinates[1], feature.geometry.coordinates[0]];
                                 current_dropdown_latlng= dlatlng;
                                 var did=feature.properties.l3_id;
-                                get_dp_and_counts_against_fp_dvid(did)
+                                get_dp_and_counts_against_mfp_dvid(did)
                             });
                         }
                     }).addTo(MFP_L3)
@@ -934,18 +934,62 @@ function get_dp_and_counts_against_fp_dvid(did){
     $("#tryb").text('0');
     $("#total_count").text('0');
     $.ajax({
-        url: "services/get_demand_point_geojson.php?lid="+did + "&fd_no=%"+ "&phase=%",
+        url: "services/get_demand_point_geojson_fp_in_malay.php?lid="+did + "&fd_no=%"+ "&phase=%",
         type: "GET",
         dataType: "json",
         async: false,
         contentType: "application/json; charset=utf-8",
         success: function callback(response) {
-
-            drawlines_against_fp_geojson(response)
+            addCountToDashboard(did,'fp')
+            drawlines_against_fp_geojson(response,did,'fpl1')
         }
     });
+   
+}
+
+function get_dp_and_counts_against_sfp_dvid(did){
+    $("#sred").text('0');
+    $("#syellow").text('0');
+    $("#sblue").text('0');
+    $("#tryb").text('0');
+    $("#total_count").text('0');
     $.ajax({
-        url: "services/get_total_counts_values.php?lid="+did,
+        url: "services/get_demand_point_geojson_sfp_in_malay.php?lid="+did + "&fd_no=%"+ "&phase=%",
+        type: "GET",
+        dataType: "json",
+        async: false,
+        contentType: "application/json; charset=utf-8",
+        success: function callback(response) {
+            addCountToDashboard(did,'sfp')
+            drawlines_against_fp_geojson(response,did,'sfp_l2')
+        }
+    });
+   
+}
+
+function get_dp_and_counts_against_mfp_dvid(did){
+    $("#sred").text('0');
+    $("#syellow").text('0');
+    $("#sblue").text('0');
+    $("#tryb").text('0');
+    $("#total_count").text('0');
+    $.ajax({
+        url: "services/get_demand_point_geojson_mfp_in_malay.php?lid="+did + "&fd_no=%"+ "&phase=%",
+        type: "GET",
+        dataType: "json",
+        async: false,
+        contentType: "application/json; charset=utf-8",
+        success: function callback(response) {
+            addCountToDashboard(did,'mfp')
+            drawlines_against_fp_geojson(response,did,'mfp_l3')
+        }
+    });
+   
+}
+
+function addCountToDashboard(did,level){
+    $.ajax({
+        url: "services/get_total_counts_values.php?lid="+did+"&level="+level,
         type: "GET",
         dataType: "json",
         async: false,
@@ -962,7 +1006,7 @@ function get_dp_and_counts_against_fp_dvid(did){
     });
 }
 
-function drawlines_against_fp_geojson(response){
+function drawlines_against_fp_geojson(response,did,table){
     
 
     if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
@@ -978,168 +1022,153 @@ function drawlines_against_fp_geojson(response){
     }
     filter_polylines_arr=[];
     point_polylines_arr=[];
-    // map.removeLayer(demand_point)
-    console.log(JSON.parse(response.geojson));
-    demand_point=L.geoJSON(JSON.parse(response.geojson),{
-
-        pointToLayer: function (feature, latlng) {
-            let arr = Array();
-            arr.push(current_dropdown_latlng);
-            arr.push(latlng);
-            var polyline = L.polyline(arr, {color: 'red'});
-            filter_polylines_arr.push(polyline);
-
+   //var c_line_res= L.geoJSON(JSON.parse(response.geojson),{
+    var res_dp=JSON.parse(response.geojson);
+          
+        //pointToLayer: function (feature, latlng) {
+            for(var i=0;i<res_dp.features.length;i++){ 
+                    let arr = Array();
+                    let arr1=Array()
+                    arr.push(current_dropdown_latlng);
+                    if(res_dp.features[i].geometry.type=="MultiPoint"){
+                        arr1.push(res_dp.features[i].geometry.coordinates[0][1])
+                        arr1.push(res_dp.features[i].geometry.coordinates[0][0])
+                    }else{
+                        arr1.push(res_dp.features[i].geometry.coordinates[1])
+                        arr1.push(res_dp.features[i].geometry.coordinates[0])
+                    }
+                    arr.push(arr1);
+                    var linecolor='';
+                    if(res_dp.features[i].properties.phase=="B"){
+                        var linecolor='blue';
+                    }else if(res_dp.features[i].properties.phase=="Y"){
+                        var linecolor='yellow';
+                    }else if(res_dp.features[i].properties.phase=="R"){
+                        var linecolor='red';
+                    }else if(res_dp.features[i].properties.phase=="RYB"){
+                        var linecolor='purple';
+                    }
+                    var polyline = L.polyline(arr, {color: linecolor});
+                    filter_polylines_arr.push(polyline);
+            } 
             if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
                 for(var i=0; i<filter_polylines_arr.length; i++){
                     map.addLayer(filter_polylines_arr[i])
-                    $('#clearlinesbtn').show();
+                }
+                $('#clearlinesbtn').show();
+                if(table=='fpl1'){
+                drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,did,'sfp_l2')
+                }else if(table=='sfp_l2'){
+                drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,did,'mfp_l3')
                 }
             }
-        
-            if(feature.properties.phase == "R"){
-                return L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: color1,
-                    color: "#000",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                });
-            }
-            if(feature.properties.phase == "Y"){
-                return L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: color2,
-                    color: "#000",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                });
-            }if(feature.properties.phase == "B"){
-                return L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: color3,
-                    color: "#000",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                });
-            }if(feature.properties.phase == "RYB"){
-                return L.marker(latlng, {icon: ryb});
-            }else{
-                return L.circleMarker(latlng, {
-                    radius: 8,
-                    fillColor: "black",
-                    color: "#000",
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
-                });
-            }
-        },
-        onEachFeature: function (feature, layer) {
-
-            var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-            str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-            str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-            str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-            str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-            str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-            str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-            str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-            str = str + '<tr><td> acc_no  </td><td>' + feature.properties.acc_no  + '</td></tr>'
-            str = str + '<tr><td> address  </td><td>' + feature.properties.address  + '</td></tr>'
-            str = str + '<tr><td> install_id  </td><td>' + feature.properties.install_id  + '</td></tr>'
-            str = str + '<tr><td> meter_type  </td><td>' + feature.properties.meter_type  + '</td></tr>'
-            str = str + '<tr><td> bcrm_eqp  </td><td>' + feature.properties.bcrm_eqp  + '</td></tr>'
-            str = str + '<tr><td> site_eqp  </td><td>' + feature.properties.site_eqp  + '</td></tr>'
-            str = str + '<tr><td> phase  </td><td>' + feature.properties.phase  + '</td></tr>'
-            str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-            str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
-            str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
-            str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
-            str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
-            str = str + '</table></div>'
-            layer.bindPopup(str);
-
-            layer.on('click', function (e) {
-                if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-                    for(var i=0; i<point_polylines_arr.length; i++){
-                        map.removeLayer(point_polylines_arr[i]);
-                    }
-                }
-                
-                // map.removeLayer(demand_point)
-                feature_point=layer.toGeoJSON();
-                // console.log(feature_point);
-                let arr = Array();
-                arr.push([e.latlng.lat, e.latlng.lng])
-                if(feature_point.properties.l3_id){
-                    var l3_id=feature_point.properties.l3_id
-                    $.ajax({
-                        url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                             // console.log(response);
-                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                            var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                             L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
-                         }
-                    })
-                }
-                if(feature_point.properties.l2_id){
-                    var l2_id=feature_point.properties.l2_id
-                    $.ajax({
-                        url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                            // console.log(response);
-                            arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                            var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                            L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
-                        }
-                    })
-                }
-                if(feature_point.properties.l1_id){
-                    var l1_id=feature_point.properties.l1_id
-                    $.ajax({
-                        url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-                        type: "GET",
-                        async: false,
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        success: function callback(response) {
-                            // console.log(response);
-                            arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                            var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                            L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
-                        }
-                    })
-                }
-                
-                
-                setTimeout(function(){ 
-                    // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
-                    var polyline = L.polyline(arr);
-                    setPolylineColors(polyline,linescolor)
-                    line_l1_l2_l3_markers.addTo(map);
-                    // point_polylines_arr.push(polyline);
-                 }, 400);
-            });
-            
-        }
-        
-    }).addTo(demand_point)
-
-    demand_point.addTo(map);
+    //}     
+      //  },   
+    //})
+  
   
 }
+
+
+function drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,did,table){
+    
+    $.ajax({
+        url: "services/get_SFP_L2_geojson_connectivity.php?lid="+did+"&table="+table,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        contentType: "application/json; charset=utf-8",
+        success: function callback(response) {
+    
+    var res_dp=JSON.parse(response.geojson);
+          
+        //pointToLayer: function (feature, latlng) {
+    for(var i=0;i<res_dp.features.length;i++){ 
+            let arr = Array();
+            let arr1=Array()
+            arr.push(current_dropdown_latlng);
+            if(res_dp.features[i].geometry.type=="MultiPoint"){
+                arr1.push(res_dp.features[i].geometry.coordinates[0][1])
+                arr1.push(res_dp.features[i].geometry.coordinates[0][0])
+            }else{
+                arr1.push(res_dp.features[i].geometry.coordinates[1])
+                arr1.push(res_dp.features[i].geometry.coordinates[0])
+            }
+            arr.push(arr1);
+            var linecolor='orange';
+            if(table=='sfp_l2'){
+                drawlines_connectivity_lines_next_level(filter_polylines_arr,point_polylines_arr,res_dp.features[i].properties.l2_id,'sfp',arr1)
+            }else{
+                drawlines_connectivity_lines_next_level(filter_polylines_arr,point_polylines_arr,res_dp.features[i].properties.l3_id,'mfp',arr1)
+            }
+           
+            var polyline = L.polyline(arr, {color: linecolor});
+            filter_polylines_arr.push(polyline);
+    } 
+            if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
+                for(var i=0; i<filter_polylines_arr.length; i++){
+                    map.addLayer(filter_polylines_arr[i])
+                }
+                $('#clearlinesbtn').show();
+            }
+
+                  
+        }
+    });
+    //}     
+      //  },   
+    //})
+  
+  
+}
+
+function drawlines_connectivity_lines_next_level(filter_polylines_arr,point_polylines_arr,did,level,curp){
+    
+    $.ajax({
+        url: "services/get_demand_point_geojson_next_line.php?lid="+did+"&level="+level,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        contentType: "application/json; charset=utf-8",
+        success: function callback(response) {
+    
+    var res_dp=JSON.parse(response.geojson);
+          
+        //pointToLayer: function (feature, latlng) {
+    for(var i=0;i<res_dp.features.length;i++){ 
+            let arr = Array();
+            let arr1=Array()
+            arr.push(curp);
+            if(res_dp.features[i].geometry.type=="MultiPoint"){
+                arr1.push(res_dp.features[i].geometry.coordinates[0][1])
+                arr1.push(res_dp.features[i].geometry.coordinates[0][0])
+            }else{
+                arr1.push(res_dp.features[i].geometry.coordinates[1])
+                arr1.push(res_dp.features[i].geometry.coordinates[0])
+            }
+            arr.push(arr1);
+            var linecolor='red';
+           
+            var polyline = L.polyline(arr, {color: linecolor});
+            filter_polylines_arr.push(polyline);
+    } 
+            if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
+                for(var i=0; i<filter_polylines_arr.length; i++){
+                    map.addLayer(filter_polylines_arr[i])
+                }
+                $('#clearlinesbtn').show();
+            }
+
+                  
+        }
+    });
+    //}     
+      //  },   
+    //})
+  
+  
+}
+
 
 
 
@@ -1158,374 +1187,6 @@ function setPolylineColors(line,colors){
 
 
 
-
-
-// function get_dp_and_counts_against_dvid(lid){
-//     $.ajax({
-//         url: "services/get_demand_point_geojson.php?lid="+lid + "&fd_no=%"+ "&phase=%",
-//         type: "GET",
-//         dataType: "json",
-//         async: false,
-//         contentType: "application/json; charset=utf-8",
-//         success: function callback(response) {
-
-//             drawlines_against_geojson(response)
-//         }
-//     });
-//     $.ajax({
-//         url: "services/get_total_counts_values.php?lid="+lid,
-//         type: "GET",
-//         dataType: "json",
-//         async: false,
-//         //data: JSON.stringify(geom,layer.geometry),
-//         contentType: "application/json; charset=utf-8",
-//         success: function callback(response) {
-//           $("#sred").text(response.Rsingle[0]["count"]);
-//           $("#syellow").text(response.Ysingle[0]["count"]);
-//           $("#sblue").text(response.Bsingle[0]["count"]);
-//           $("#tryb").text(response.RYBthree[0]["count"]);
-
-//         }
-//     });
-// }
-
-// function drawlines_against_geojson(response){
-
-//     if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-//         for(var i=0; i<point_polylines_arr.length; i++){
-//             map.removeLayer(point_polylines_arr[i])
-//         }
-//     }
-    
-//     // map.removeLayer(polyline)
-//     if (filter_polylines_arr.length !== 0) {
-//         for(var i=0; i<filter_polylines_arr.length; i++){
-//             map.removeLayer(filter_polylines_arr[i])
-//         }
-//     }
-//     filter_polylines_arr=[];
-
-//     if(response.incoming){
-//         var incoming=response.incoming[0];
-//     }
-
-//     map.removeLayer(demand_point)
-//     // map.removeLayer(line_l1_l2_l3_markers)
-//     demand_point=L.geoJSON(JSON.parse(response.geojson),{
-//         pointToLayer: function (feature, latlng) {
-//             feature_point=feature;
-//             let arr = Array();
-//             if(feature_point.properties.l3_id){
-//                 var l3_id=feature_point.properties.l3_id
-//                 $.ajax({
-//                     url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-//                     type: "GET",
-//                     async: false,
-//                     dataType: "json",
-//                     contentType: "application/json; charset=utf-8",
-//                     success: function callback(response) {
-//                          // console.log(response);
-//                         //  arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-//                          var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-//                          arr.push(latlng3);
-//                          //  L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-//                          map.setView(latlng3, 18);
-//                      }
-//                 })
-//             }
-//             if(feature_point.properties.l2_id){
-//                 var l2_id=feature_point.properties.l2_id
-//                 $.ajax({
-//                     url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-//                     type: "GET",
-//                     async: false,
-//                     dataType: "json",
-//                     contentType: "application/json; charset=utf-8",
-//                     success: function callback(response) {
-//                         // console.log(response);
-//                         // arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-//                         var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-//                         arr.push(latlng2);
-//                         // L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-//                         map.setView(latlng2, 18);
-//                     }
-//                 })
-//             }
-//             if(feature_point.properties.l1_id){
-//                 var l1_id=feature_point.properties.l1_id
-//                 $.ajax({
-//                     url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-//                     type: "GET",
-//                     async: false,
-//                     dataType: "json",
-//                     contentType: "application/json; charset=utf-8",
-//                     success: function callback(response) {
-//                         // console.log(response);
-//                         // arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-//                         var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-//                         arr.push(latlng1);
-//                         // L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-//                         map.setView(latlng1, 18);
-//                     }
-//                 })
-//             }
-//             arr.push(latlng);
-//             var polyline = L.polyline(arr, {color: 'red'});
-//             filter_polylines_arr.push(polyline);
-
-//             if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
-//                 for(var i=0; i<filter_polylines_arr.length; i++){
-//                     map.addLayer(filter_polylines_arr[i])
-//                 }
-//             }
-
-//             // line_l1_l2_l3_markers.addTo(map);
-            
-//             // setTimeout(function(){ 
-//             //     var polyline = L.polyline(arr);
-//             //     setPolylineColors(polyline,['yellow','pink','green'])
-//             //     line_l1_l2_l3_markers.addTo(map);
-               
-//             //  }, 400);
-        
-        
-//             if(feature.properties.phase == "R"){
-//                 return L.circleMarker(latlng, {
-//                     radius: 8,
-//                     fillColor: "red",
-//                     color: "#000",
-//                     weight: 1,
-//                     opacity: 1,
-//                     fillOpacity: 0.8
-//                 });
-//             }
-//             if(feature.properties.phase == "Y"){
-//                 return L.circleMarker(latlng, {
-//                     radius: 8,
-//                     fillColor: "yellow",
-//                     color: "#000",
-//                     weight: 1,
-//                     opacity: 1,
-//                     fillOpacity: 0.8
-//                 });
-//             }if(feature.properties.phase == "B"){
-//                 return L.circleMarker(latlng, {
-//                     radius: 8,
-//                     fillColor: "blue",
-//                     color: "#000",
-//                     weight: 1,
-//                     opacity: 1,
-//                     fillOpacity: 0.8
-//                 });
-//             }if(feature.properties.phase == "RYB"){
-//                 return L.marker(latlng, {icon: ryb});
-//             }else{
-//                 return L.circleMarker(latlng, {
-//                     radius: 8,
-//                     fillColor: "black",
-//                     color: "#000",
-//                     weight: 1,
-//                     opacity: 1,
-//                     fillOpacity: 0.8
-//                 });
-//             }
-//         },
-//         onEachFeature: function (feature, layer) {
-
-//             if(current_dropdown_Lid !='a111' && current_dropdown_Lid !='a222'){
-//                 var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-//                 str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-//                 str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-//                 str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-//                 str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-//                 str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-//                 str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-//                 str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-//                 // str = str + '<tr><td> lvf1_fd  </td><td>' + incoming.lvf1_fd  + '</td></tr>'
-//                 // str = str + '<tr><td> lvf2_fd  </td><td>' + incoming.lvf2_fd  + '</td></tr>'
-//                 str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-//                 str = str + '</table></div>'
-//                 layer.bindPopup(str);
-//             }
-//             else{
-//                 var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-//                 str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-//                 str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-//                 str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-//                 str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-//                 str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-//                 str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-//                 str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-//                 str = str + '<tr><td> image  </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-//                 str = str + '</table></div>'
-//                 layer.bindPopup(str);
-//             }
-			
-//             layer.on('click', function (e) {
-//                 map.removeLayer(line_l1_l2_l3_markers);
-//                 if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-//                     for(var i=0; i<point_polylines_arr.length; i++){
-//                         map.removeLayer(point_polylines_arr[i]);
-//                     }
-//                 }
-                
-//                 // map.removeLayer(demand_point)
-//                 feature_point=layer.toGeoJSON();
-//                 // console.log(feature_point);
-//                 let arr = Array();
-//                 arr.push([feature_point.geometry.coordinates[0][1], feature_point.geometry.coordinates[0][0]])
-//                 if(feature_point.properties.l3_id){
-//                     var l3_id=feature_point.properties.l3_id
-//                     $.ajax({
-//                         url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-//                         type: "GET",
-//                         async: false,
-//                         dataType: "json",
-//                         contentType: "application/json; charset=utf-8",
-//                         success: function callback(response) {
-//                                 // console.log(response);
-                           
-//                                 arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-//                                 var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-//                              L.marker(latlng3, {icon: Icon3}).addTo(line_l1_l2_l3_markers);
-//                          }
-//                     })
-//                 }
-//                 if(feature_point.properties.l2_id){
-//                     var l2_id=feature_point.properties.l2_id
-//                     $.ajax({
-//                         url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-//                         type: "GET",
-//                         async: false,
-//                         dataType: "json",
-//                         contentType: "application/json; charset=utf-8",
-//                         success: function callback(response) {
-                          
-//                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-//                             var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-//                             L.marker(latlng2, {icon: Icon2}).addTo(line_l1_l2_l3_markers);
-//                         }
-//                     })
-//                 }
-//                 if(feature_point.properties.l1_id){
-//                     var l1_id=feature_point.properties.l1_id
-//                     $.ajax({
-//                         url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-//                         type: "GET",
-//                         async: false,
-//                         dataType: "json",
-//                         contentType: "application/json; charset=utf-8",
-//                         success: function callback(response) {
-//                             // console.log(response);
-                           
-//                             arr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-//                             var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-//                             L.marker(latlng1, {icon: Icon1}).addTo(line_l1_l2_l3_markers);
-//                         }
-//                     })
-//                 }
-                
-                
-//                 setTimeout(function(){ 
-//                     var polyline = L.polyline(arr);
-//                     setPolylineColors(polyline,['yellow','pink','green'])
-//                     // line_l1_l2_l3_markers.addTo(map);
-                   
-//                  }, 400);
-
-                
-                
-//             });
-            
-//         }
-        
-//     }).addTo(demand_point)
-
-//     demand_point.addTo(map);
-  
-// }
-
-
-
-
-
-
-
-
-// function retur_nmarker_and_color(latlng, color) {
-//     return L.circleMarker(latlng, {
-//         radius: 8,
-//         fillColor: color,
-//         color: "#000",
-//         weight: 1,
-//         opacity: 1,
-//         fillOpacity: 0.8
-//     });
-// }
-
-// if(feature.properties.phase == "R"){
-//     var color="R"
-//     retur_nmarker_and_color(latlng, color)
-// }if(feature.properties.phase == "Y"){
-//     var color="Y"
-//     retur_nmarker_and_color(latlng, color)
-// }if(feature.properties.phase == "B"){
-//     var color="B"
-//     retur_nmarker_and_color(latlng, color)
-// }if(feature.properties.phase == "RYB"){
-//     var color="RYB"
-//     retur_nmarker_and_color(latlng, color)
-// }else{
-//     var color="white"
-//     retur_nmarker_and_color(latlng, color)
-// }
-
-// $('#filterbtn').on('click',function(){
-
-//     var fdatarr={
-//             // page: page,
-//             phase_color: $('#phase_color').val(),
-//             fp: $('#fp').val(),
-//             sfp: $('#sfp').val(),
-//             mfp: $('#mfp').val(),
-//         };
-//             console.log(fdatarr)
-//     $.ajax({
-//         url : 'services/filterdata.php?fdatarr='+JSON.stringify(fdatarr),
-//         type : "GET",
-//         success:function(data){
-//             console.log(data);
-//         }
-//     });
-// });
-
-
-
-
-// $('select[name="phase_color"]').on('change',function(e){
-//     e.preventDefault();
-//     var phase_color= $(this).val();
-//     // console.log(phase_color);
-//     if(phase_color)
-//     {
-//         $.ajax({
-//             url : 'services/get_fp_device_ids.php?phase_color='+phase_color,
-//             type : "GET",
-//             dataType : "json",
-//             success:function(data){
-//                 console.log(data);
-//                 $('select[name="fp"]').empty();
-//                 for(var i=0;i<data.length;i++){
-//                     $('select[name="fp"]').append('<option value="'+ data[i].device_id +'">'+ data[i].device_id +'</option>');
-//                 }
-//             }
-//         });
-//     }
-//     else
-//     {
-//         $('select[name="fp"]').empty();
-//     }
-// });
 
 function exportExcel(){
     $.ajax({

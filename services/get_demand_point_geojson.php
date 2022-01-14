@@ -116,25 +116,7 @@ class Tehsil extends connection {
                     $output['geojson'] = $geojson;
                     
         }
-        if($lid=='a333' || $lid=='a444'){
-            $q="select lvf1_fd,lvf2_fd from sfp_l2 where lid='$lid'";
-            $result_query = pg_query($q);
-            if ($result_query) {
-                $arrq = pg_fetch_all($result_query);
-                $arr =$arrq;
-                $output['incoming'] = $arr;
-            }
-        }
-
-        if($lid=='a555' || $lid=='a666'){
-            $q="select lvf1_fd,lvf2_fd from mfp_l3 where lid='$lid'";
-            $result_query = pg_query($q);
-            if ($result_query) {
-                $arrq = pg_fetch_all($result_query);
-                $arr =$arrq;
-                $output['incoming'] = $arr;
-            }
-        }
+      
 
         
 
