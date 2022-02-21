@@ -56,6 +56,8 @@ else {
                         <a href="afi_report.php" class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" target="_blank">Export FP Excel</a>
 
                         <a class="cenablebtn pull-right btn btn-basic btn-sm" style="margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Unsurveyed DP</a>
+					    <a href="http://121.121.232.54:88/afi_dashboard/" class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" target="_blank">Afi Dashboard</a>
+
 
 
                     </div>

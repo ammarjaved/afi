@@ -47,12 +47,33 @@ var phase_val="";
         maxZoom: 20,
         transparent: true
     });
+	
+	var dp_submitted = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:dp_submitted',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
 
+	var boundry = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:boundary_alor_gajah',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
+	
+	var grid = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:grid_alor_gajah',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
+	
     var map = L.map('map_div', {
         center: [2.3773940674819998, 102.21967220306398],
         // center: [31.5204, 74.3587],
-        zoom: 15,
-        layers: [googleSat,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3],
+        zoom: 12,
+        layers: [googleSat,dp_submitted,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid],
         attributionControl:false
     });
 
@@ -293,7 +314,10 @@ var overlays = {
     "Surveyed Demand Points &nbsp&nbsp ": demand_point,
     "Non Surveyed D/P": non_surveyed_dp,
     "Pano Layer":pano_layer,
-	"CD Tracking":cd_track
+	"CD Tracking":cd_track,
+	"DP Submitted":dp_submitted,
+	"Alor Gaja Boundary":boundry,
+	"Alor Gaja Grid":grid
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
@@ -1147,7 +1171,16 @@ function drawlines_connectivity_lines_next_level(filter_polylines_arr,point_poly
                 arr1.push(res_dp.features[i].geometry.coordinates[0])
             }
             arr.push(arr1);
-            var linecolor='red';
+            var linecolor='';
+                    if(res_dp.features[i].properties.phase=="B"){
+                        var linecolor='blue';
+                    }else if(res_dp.features[i].properties.phase=="Y"){
+                        var linecolor='yellow';
+                    }else if(res_dp.features[i].properties.phase=="R"){
+                        var linecolor='red';
+                    }else if(res_dp.features[i].properties.phase=="RYB"){
+                        var linecolor='purple';
+                    }
            
             var polyline = L.polyline(arr, {color: linecolor});
             filter_polylines_arr.push(polyline);
