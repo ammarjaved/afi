@@ -27,6 +27,13 @@ var phase_val="";
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3']
     });
+	
+	var dp_submitted = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:dp_submitted',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
 
     var non_surveyed_dp = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
         layers: 'cite:demand_point_not_surveyed',
@@ -48,12 +55,7 @@ var phase_val="";
         transparent: true
     });
 	
-	var dp_submitted = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:dp_submitted',
-        format: 'image/png',
-        maxZoom: 20,
-        transparent: true
-    });
+	
 
 	var boundry = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
         layers: 'cite:boundary_alor_gajah',
@@ -73,9 +75,10 @@ var phase_val="";
         center: [2.3773940674819998, 102.21967220306398],
         // center: [31.5204, 74.3587],
         zoom: 12,
-        layers: [googleSat,dp_submitted,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid],
+        layers: [googleSat,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid,dp_submitted],
         attributionControl:false
     });
+	
 
 function preNext(status){
     $("#wg").html('');
@@ -372,7 +375,7 @@ function fillDropDowns(di,lyr){
               var total_sum=0;
               var total_sum=Number(checkIncomingValue(data,0)) + Number(checkIncomingValue(data,1))  + Number(checkIncomingValue(data,2))  + Number(checkIncomingValue(data,3));
               $("#total_count").text(total_sum );
-            $("#total_count_p").text(((total_sum*100)/10000)+'%');
+            $("#total_count_p").text(parseInt(((total_sum*100)/50000))+'%');
             if(lyr=='fp'){
                // $('.load_options').remove();
                 //console.log(data.fp)
@@ -767,6 +770,19 @@ $(document).ready(function(){
                         });
                     }
                 }).addTo(demand_point)
+				//console.log(demand_point.getZIndex())
+				//console.log(dp_submitted.getZIndex())
+				demand_point.setZIndex(0);
+			demand_point.bringToBack();
+			dp_submitted.bringToFront();
+				map.removeLayer(dp_submitted)
+				//dp_submitted.setZIndex(demand_point.getZIndex()+1)
+				//dp_submitted.addTo(map);
+
+			
+
+				
+				
             }
         });
        

@@ -427,7 +427,7 @@ else {
         if(chktblname=='sfp_l2'){
              deviceid = $("#search_input2").val(); 
         }
-        if(chktblname=='mfp_l2'){
+        if(chktblname=='mfp_l3'){
              deviceid = $("#search_input3").val();
         }
         if(chktblname=='dp'){
