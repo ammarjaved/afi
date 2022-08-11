@@ -149,7 +149,9 @@ else {
 
                     </div>
                     <div class="col-md-2" style="margin-top:25px;">
-                        <button  style="margin-right:50px;" id="ser" onclick="search_deviceid()" class="pull-left btn btn-success">Search</button>
+                        <button  style="margin-right:50px;" id="ser" onclick="search_deviceid()" class="pull-left btn btn-success">Search</button><br />
+                        <button  style="margin-right:50px;margin-top:5px;" id="ser" onclick="searchSLD()" class="pull-left btn btn-success">SLD</button>
+                        <a href="" id="yourlinkId" target="_blank" style="display:none;">click me</a>
                     </div>
                 </div>
             </div>

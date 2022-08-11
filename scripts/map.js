@@ -1286,3 +1286,12 @@ var value_img=0;
       }
 
 
+      function searchSLD(){
+          var fp=$("#search_input1").val();
+         // alert(fp);
+          var a = document.getElementById('yourlinkId'); //or grab it by tagname etc
+          a.href = "http://121.121.232.54:88/sld_dia/index.php?fp="+fp;
+          $('#yourlinkId')[0].click();
+      }
+
+
