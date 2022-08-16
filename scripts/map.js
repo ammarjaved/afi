@@ -78,6 +78,57 @@ var phase_val="";
         layers: [googleSat,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid,dp_submitted],
         attributionControl:false
     });
+
+map.on('zoomend', function() {
+
+    callextentfunction()
+})
+
+
+ function callextentfunction(){
+    var bounds=map.getBounds();
+    var poly=createPolygonFromBounds(bounds)
+    var wkt=toWKT(poly).toString();
+    addDemandPointAtZoomLevel(wkt);
+    console.log(wkt);
+}
+
+function toWKT(layer) {
+    var lng, lat, coords = [];
+    if (layer instanceof L.Polygon || layer instanceof L.Polyline) {
+        var latlngs = layer.getLatLngs()[0];
+        for (var i = 0; i < latlngs.length; i++) {
+            latlngs[i]
+            coords.push(latlngs[i].lng + " " + latlngs[i].lat);
+            if (i === 0) {
+                lng = latlngs[i].lng;
+                lat = latlngs[i].lat;
+            }
+        };
+        if (layer instanceof L.Polygon) {
+            return "POLYGON((" + coords.join(",") + "," + lng + " " + lat + "))";
+        } else if (layer instanceof L.Polyline) {
+            return "LINESTRING(" + coords.join(",") + ")";
+        }
+    } else if (layer instanceof L.Marker) {
+        return "POINT(" + layer.getLatLng().lng + " " + layer.getLatLng().lat + ")";
+    }
+}
+function createPolygonFromBounds(latLngBounds) {
+    var center = latLngBounds.getCenter()
+    latlngs = [];
+
+    latlngs.push(latLngBounds.getSouthWest());//bottom left
+    latlngs.push({ lat: latLngBounds.getSouth(), lng: center.lng });//bottom center
+    latlngs.push(latLngBounds.getSouthEast());//bottom right
+    latlngs.push({ lat: center.lat, lng: latLngBounds.getEast() });// center right
+    latlngs.push(latLngBounds.getNorthEast());//top right
+    latlngs.push({ lat: latLngBounds.getNorth(), lng: map.getCenter().lng });//top center
+    latlngs.push(latLngBounds.getNorthWest());//top left
+    latlngs.push({ lat: map.getCenter().lat, lng: latLngBounds.getWest() });//center left
+
+    return new L.polygon(latlngs);
+}
 	
 
 function preNext(status){
@@ -614,181 +665,194 @@ $(document).ready(function(){
                 }
             }
         });
-        $.ajax({
-            url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=%"+ "&phase=" + current_phase_val,
-            type: "GET",
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            success: function callback(response) {
-                console.log(response);
-                demand_point=L.geoJSON(JSON.parse(response.geojson),{
-                    pointToLayer: function (feature, latlng) {
-                        if(feature.properties.phase == "R"){
-                            return L.circleMarker(latlng, {
-                                radius: 8,
-                                fillColor: color1,
-                                color: "#000",
-                                weight: 1,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            });
-                        }
-                        if(feature.properties.phase == "Y"){
-                            return L.circleMarker(latlng, {
-                                radius: 8,
-                                fillColor: color2,
-                                color: "#000",
-                                weight: 1,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            });
-                        }if(feature.properties.phase == "B"){
-                            return L.circleMarker(latlng, {
-                                radius: 8,
-                                fillColor: color3,
-                                color: "#000",
-                                weight: 1,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            });
-                        }if(feature.properties.phase == "RYB"){
-                            return L.marker(latlng, {icon: ryb});
-                        }else{
-                            return L.circleMarker(latlng, {
-                                radius: 8,
-                                fillColor: "white",
-                                color: "#000",
-                                weight: 1,
-                                opacity: 1,
-                                fillOpacity: 0.8
-                            });
-                        }
-                    },
-                    onEachFeature: function (feature, layer) {
-                        var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
-                        str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
-                        str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
-                        str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
-                        str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
-                        str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
-                        str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
-                        str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
-                        str = str + '<tr><td> acc_no  </td><td>' + feature.properties.acc_no  + '</td></tr>'
-                        str = str + '<tr><td> address  </td><td>' + feature.properties.address  + '</td></tr>'
-                        str = str + '<tr><td> install_id  </td><td>' + feature.properties.install_id  + '</td></tr>'
-                        str = str + '<tr><td> meter_type  </td><td>' + feature.properties.meter_type  + '</td></tr>'
-                        str = str + '<tr><td> bcrm_eqp  </td><td>' + feature.properties.bcrm_eqp  + '</td></tr>'
-                        str = str + '<tr><td> site_eqp  </td><td>' + feature.properties.site_eqp  + '</td></tr>'
-                        str = str + '<tr><td> phase  </td><td>' + feature.properties.phase  + '</td></tr>'
-                        str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
-                        str = str + '</table></div>'
-                        layer.bindPopup(str);
+        callextentfunction()
+    }, 2000);
+});
 
-                        
+function addDemandPointAtZoomLevel(extent){
 
-                        layer.on('click', function (e) {
-                            // map.removeLayer(line_l1_l2_l3_markers);
-                            if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
-                                for(var i=0; i<point_polylines_arr.length; i++){
-                                    map.removeLayer(point_polylines_arr[i]);
-                                }
-                            }
-                            
-                            // map.removeLayer(demand_point)
-                            feature_point=layer.toGeoJSON();
-                            // console.log(e);
-                            // console.log(layer);
-                            var darr = Array();
-                            darr.push([e.latlng.lat, e.latlng.lng])
-                            console.log([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
-                            if(feature_point.properties.l3_id){
-                                var l3_id=feature_point.properties.l3_id
-                                $.ajax({
-                                    url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
-                                    type: "GET",
-                                    async: false,
-                                    dataType: "json",
-                                    contentType: "application/json; charset=utf-8",
-                                    success: function callback(response) {
-                                         // console.log(response);
-                                         darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                                        var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                                         L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
-                                     }
-                                })
-                            }
-                            if(feature_point.properties.l2_id){
-                                var l2_id=feature_point.properties.l2_id
-                                $.ajax({
-                                    url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
-                                    type: "GET",
-                                    async: false,
-                                    dataType: "json",
-                                    contentType: "application/json; charset=utf-8",
-                                    success: function callback(response) {
-                                        // console.log(response);
-                                        darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                                        var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                                        L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
-                                    }
-                                })
-                            }
-							if(feature_point.properties.l1_id){
-                                var l1_id=feature_point.properties.l1_id
-                                $.ajax({
-                                    url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
-                                    type: "GET",
-                                    async: false,
-                                    dataType: "json",
-                                    contentType: "application/json; charset=utf-8",
-                                    success: function callback(response) {
-                                        // console.log(response);
-                                        darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-                                        var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
-                                        L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
-                                        // console.log([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
-
-                                    }
-                                })
-                            }
-							
-							
-                            setTimeout(function(){ 
-                                // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
-                                var polyline = L.polyline(darr);
-                                // console.log(darr)
-                                setPolylineColors(polyline,linescolor)
-                                line_l1_l2_l3_markers.addTo(map);
-                                // point_polylines_arr.push(polyline);
-                             }, 400);
-                            
-                            
+    $.ajax({
+        url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=%"+ "&phase=" + current_phase_val+"&extent="+extent,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json; charset=utf-8",
+        success: function callback(response) {
+            console.log(response);
+            if(demand_point) {
+                map.removeLayer(demand_point);
+            }
+            demand_point=L.geoJSON(JSON.parse(response.geojson),{
+                pointToLayer: function (feature, latlng) {
+                    if(feature.properties.phase == "R"){
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: color1,
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
                         });
                     }
-                }).addTo(demand_point)
-				//console.log(demand_point.getZIndex())
-				//console.log(dp_submitted.getZIndex())
-				demand_point.setZIndex(0);
-			demand_point.bringToBack();
-			dp_submitted.bringToFront();
-				map.removeLayer(dp_submitted)
-				//dp_submitted.setZIndex(demand_point.getZIndex()+1)
-				//dp_submitted.addTo(map);
+                    if(feature.properties.phase == "Y"){
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: color2,
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        });
+                    }if(feature.properties.phase == "B"){
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: color3,
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        });
+                    }if(feature.properties.phase == "RYB"){
+                        return L.marker(latlng, {icon: ryb});
+                    }else{
+                        return L.circleMarker(latlng, {
+                            radius: 8,
+                            fillColor: "white",
+                            color: "#000",
+                            weight: 1,
+                            opacity: 1,
+                            fillOpacity: 0.8
+                        });
+                    }
+                },
+                onEachFeature: function (feature, layer) {
+                    var str='<div style="height:200px; width:250px; overflow-y:scroll;"><table class="table table-bordered">';
+                    str = str + '<tr><td> ID </td><td>' + feature.properties.gid  + '</td></tr>';
+                    str = str + '<tr><td> pe_name  </td><td>' + feature.properties.pe_name  + '</td></tr>'
+                    str = str + '<tr><td> cd_id  </td><td>' + feature.properties.cd_id  + '</td></tr>'
+                    str = str + '<tr><td> fd_no  </td><td>' + feature.properties.fd_no  + '</td></tr>'
+                    str = str + '<tr><td> l1_id  </td><td>' + feature.properties.l1_id  + '</td></tr>'
+                    str = str + '<tr><td> l2_id  </td><td>' + feature.properties.l2_id  + '</td></tr>'
+                    str = str + '<tr><td> l3_id  </td><td>' + feature.properties.l3_id  + '</td></tr>'
+                    str = str + '<tr><td> acc_no  </td><td>' + feature.properties.acc_no  + '</td></tr>'
+                    str = str + '<tr><td> address  </td><td>' + feature.properties.address  + '</td></tr>'
+                    str = str + '<tr><td> install_id  </td><td>' + feature.properties.install_id  + '</td></tr>'
+                    str = str + '<tr><td> meter_type  </td><td>' + feature.properties.meter_type  + '</td></tr>'
+                    str = str + '<tr><td> bcrm_eqp  </td><td>' + feature.properties.bcrm_eqp  + '</td></tr>'
+                    str = str + '<tr><td> site_eqp  </td><td>' + feature.properties.site_eqp  + '</td></tr>'
+                    str = str + '<tr><td> phase  </td><td>' + feature.properties.phase  + '</td></tr>'
+                    str = str + '<tr><td> image_1 </td><td><a href="'+feature.properties.images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.images  + '" width="20px" height="20px"></a></td></tr>'
+                    str = str + '<tr><td> image_2  </td><td><a href="'+feature.properties.image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image2  + '" width="20px" height="20px"></a></td></tr>'
+                    str = str + '<tr><td> image_3  </td><td><a href="'+feature.properties.image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image3  + '" width="20px" height="20px"></a></td></tr>'
+                    str = str + '<tr><td> image_4  </td><td><a href="'+feature.properties.image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image4  + '" width="20px" height="20px"></a></td></tr>'
+                    str = str + '<tr><td> image_5  </td><td><a href="'+feature.properties.image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;&lt;button class=&quot;primary &quot; onclick= imageZoomUrl("' + feature.properties.images  + '")  &gt;Zoom image&lt;/button&gt;\'><img src="' + feature.properties.image5  + '" width="20px" height="20px"></a></td></tr>'
+                    str = str + '</table></div>'
+                    layer.bindPopup(str);
 
-			
 
-				
-				
-            }
-        });
-       
-       
-}, 2000);
-});
+
+                    layer.on('click', function (e) {
+                        // map.removeLayer(line_l1_l2_l3_markers);
+                        if (point_polylines_arr !== undefined && point_polylines_arr.length !== 0) {
+                            for(var i=0; i<point_polylines_arr.length; i++){
+                                map.removeLayer(point_polylines_arr[i]);
+                            }
+                        }
+
+                        // map.removeLayer(demand_point)
+                        feature_point=layer.toGeoJSON();
+                        // console.log(e);
+                        // console.log(layer);
+                        var darr = Array();
+                        darr.push([e.latlng.lat, e.latlng.lng])
+                        console.log([feature_point.geometry.coordinates[1], feature_point.geometry.coordinates[0]])
+                        if(feature_point.properties.l3_id){
+                            var l3_id=feature_point.properties.l3_id
+                            $.ajax({
+                                url: "services/get_MFP_L3_geojson.php?l3_id="+l3_id,
+                                type: "GET",
+                                async: false,
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                success: function callback(response) {
+                                    // console.log(response);
+                                    darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                                    var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                                    L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                }
+                            })
+                        }
+                        if(feature_point.properties.l2_id){
+                            var l2_id=feature_point.properties.l2_id
+                            $.ajax({
+                                url: "services/get_SFP_L2_geojson.php?l2_id="+l2_id,
+                                type: "GET",
+                                async: false,
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                success: function callback(response) {
+                                    // console.log(response);
+                                    darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                                    var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                                    L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                }
+                            })
+                        }
+                        if(feature_point.properties.l1_id){
+                            var l1_id=feature_point.properties.l1_id
+                            $.ajax({
+                                url: "services/get_lvdb_l1_geojson.php?l1_id="+l1_id,
+                                type: "GET",
+                                async: false,
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                success: function callback(response) {
+                                    // console.log(response);
+                                    darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+                                    var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
+                                    L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                    // console.log([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
+
+                                }
+                            })
+                        }
+
+
+                        setTimeout(function(){
+                            // var polyline = L.polyline(arr, {color: 'white', weight: '8'}).addTo(map);
+                            var polyline = L.polyline(darr);
+                            // console.log(darr)
+                            setPolylineColors(polyline,linescolor)
+                            line_l1_l2_l3_markers.addTo(map);
+                            // point_polylines_arr.push(polyline);
+                        }, 400);
+
+
+                    });
+                }
+            })
+
+            map.addLayer(demand_point)
+            //console.log(demand_point.getZIndex())
+            //console.log(dp_submitted.getZIndex())
+            demand_point.setZIndex(0);
+            demand_point.bringToBack();
+            dp_submitted.bringToFront();
+            map.removeLayer(dp_submitted)
+            //dp_submitted.setZIndex(demand_point.getZIndex()+1)
+            //dp_submitted.addTo(map);
+
+
+
+
+
+        }
+    });
+
+
+
+}
+
+
 //-----------add remove geojson----------  
 function addRemoveLayer(name){
     if(name=='lvdb_l1'){
