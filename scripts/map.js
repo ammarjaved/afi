@@ -84,6 +84,10 @@ map.on('zoomend', function() {
     callextentfunction()
 })
 
+map.on('dragend', function() {
+    callextentfunction()
+})
+
 
  function callextentfunction(){
     var bounds=map.getBounds();
@@ -1197,7 +1201,15 @@ function drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,d
     for(var i=0;i<res_dp.features.length;i++){ 
             let arr = Array();
             let arr1=Array()
+            //arr.push(current_dropdown_latlng);
+        let arr4=Array()
+        if(current_dropdown_latlng[1].length) {
+            arr4.push(current_dropdown_latlng[1][1])
+            arr4.push(current_dropdown_latlng[1][0])
+            arr.push(arr4);
+        }else{
             arr.push(current_dropdown_latlng);
+        }
             if(res_dp.features[i].geometry.type=="MultiPoint"){
                 arr1.push(res_dp.features[i].geometry.coordinates[0][1])
                 arr1.push(res_dp.features[i].geometry.coordinates[0][0])

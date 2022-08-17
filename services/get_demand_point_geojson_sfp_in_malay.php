@@ -42,14 +42,14 @@ class Tehsil extends connection {
                 'image5', image5
                 ))))
                 FROM (SELECT gid, cd_id, pe_name, l1_id, l2_id, l3_id, acc_no, address, install_id, meter_type, bcrm_eqp, site_eqp, phase, fd_no, images, id1, device_id, image2, image3, image4, image5, geom
-               FROM public.demand_point where phase like '$phase' and l2_id ilike '$lid'  and l3_id is null and fd_no::TEXT LIKE '$fd_no') as tbl1;";
+               FROM public.demand_point where phase like '$phase' and l2_id ilike '$lid'  and l3_id='' and fd_no::TEXT LIKE '$fd_no') as tbl1;";
         
 
 
 
 
-        //    echo $sql;
-        //     exit();
+//           echo $sql;
+//            exit();
         $output = array();
         $result_query = pg_query($sql);
         if ($result_query) {
