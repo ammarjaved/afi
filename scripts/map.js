@@ -1134,49 +1134,52 @@ function drawlines_against_fp_geojson(response,did,table){
     var res_dp=JSON.parse(response.geojson);
           
         //pointToLayer: function (feature, latlng) {
-            for(var i=0;i<res_dp.features.length;i++){ 
-                    let arr = Array();
-                    let arr1=Array()
-                    let arr4=Array()
-                  if(current_dropdown_latlng[1].length) {
-                      arr4.push(current_dropdown_latlng[1][1])
-                      arr4.push(current_dropdown_latlng[1][0])
-                      arr.push(arr4);
-                  }else{
-                      arr.push(current_dropdown_latlng);
-                  }
-                    if(res_dp.features[i].geometry.type=="MultiPoint"){
-                        arr1.push(res_dp.features[i].geometry.coordinates[0][1])
-                        arr1.push(res_dp.features[i].geometry.coordinates[0][0])
-                    }else{
-                        arr1.push(res_dp.features[i].geometry.coordinates[1])
-                        arr1.push(res_dp.features[i].geometry.coordinates[0])
-                    }
-                    arr.push(arr1);
-                    var linecolor='';
-                    if(res_dp.features[i].properties.phase=="B"){
-                        var linecolor='blue';
-                    }else if(res_dp.features[i].properties.phase=="Y"){
-                        var linecolor='yellow';
-                    }else if(res_dp.features[i].properties.phase=="R"){
-                        var linecolor='red';
-                    }else if(res_dp.features[i].properties.phase=="RYB"){
-                        var linecolor='purple';
-                    }
-                    var polyline = L.polyline(arr, {color: linecolor});
-                    filter_polylines_arr.push(polyline);
-            } 
-            if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
-                for(var i=0; i<filter_polylines_arr.length; i++){
-                    map.addLayer(filter_polylines_arr[i])
-                }
-                $('#clearlinesbtn').show();
-                if(table=='fpl1'){
-                drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,did,'sfp_l2')
-                }else if(table=='sfp_l2'){
-                drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,did,'mfp_l3')
-                }
+    if(res_dp.features!=null) {
+        for (var i = 0; i < res_dp.features.length; i++) {
+            let arr = Array();
+            let arr1 = Array()
+            let arr4 = Array()
+            if (current_dropdown_latlng[1].length) {
+                arr4.push(current_dropdown_latlng[1][1])
+                arr4.push(current_dropdown_latlng[1][0])
+                arr.push(arr4);
+            } else {
+                arr.push(current_dropdown_latlng);
             }
+            if (res_dp.features[i].geometry.type == "MultiPoint") {
+                arr1.push(res_dp.features[i].geometry.coordinates[0][1])
+                arr1.push(res_dp.features[i].geometry.coordinates[0][0])
+            } else {
+                arr1.push(res_dp.features[i].geometry.coordinates[1])
+                arr1.push(res_dp.features[i].geometry.coordinates[0])
+            }
+            arr.push(arr1);
+            var linecolor = '';
+            if (res_dp.features[i].properties.phase == "B") {
+                var linecolor = 'blue';
+            } else if (res_dp.features[i].properties.phase == "Y") {
+                var linecolor = 'yellow';
+            } else if (res_dp.features[i].properties.phase == "R") {
+                var linecolor = 'red';
+            } else if (res_dp.features[i].properties.phase == "RYB") {
+                var linecolor = 'purple';
+            }
+            var polyline = L.polyline(arr, {color: linecolor});
+            filter_polylines_arr.push(polyline);
+        }
+    }
+        if (filter_polylines_arr !== undefined) {
+            for (var i = 0; i < filter_polylines_arr.length; i++) {
+                map.addLayer(filter_polylines_arr[i])
+            }
+            $('#clearlinesbtn').show();
+            if (table == 'fpl1') {
+                drawlines_connectivity_lines(filter_polylines_arr, point_polylines_arr, did, 'sfp_l2')
+            } else if (table == 'sfp_l2') {
+                drawlines_connectivity_lines(filter_polylines_arr, point_polylines_arr, did, 'mfp_l3')
+            }
+        }
+
     //}     
       //  },   
     //})
