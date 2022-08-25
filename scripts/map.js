@@ -70,7 +70,7 @@ var phase_val="";
         maxZoom: 20,
         transparent: true
     });
-	
+
     var map = L.map('map_div', {
         center: [2.3773940674819998, 102.21967220306398],
         // center: [31.5204, 74.3587],
@@ -779,9 +779,15 @@ function addDemandPointAtZoomLevel(extent){
                                 contentType: "application/json; charset=utf-8",
                                 success: function callback(response) {
                                     // console.log(response);
+                                    if(response.features[0].geometry.type=="MultiPoint"){
+                                    darr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                                    var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                                    L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                    }else{
                                     darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                     var latlng3=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                                     L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                    }
                                 }
                             })
                         }
@@ -795,9 +801,15 @@ function addDemandPointAtZoomLevel(extent){
                                 contentType: "application/json; charset=utf-8",
                                 success: function callback(response) {
                                     // console.log(response);
+                                    if(response.features[0].geometry.type=="MultiPoint"){
+                                        darr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                                        var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                                        L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                        }else{
                                     darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                     var latlng2=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                                     L.marker(latlng2, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                        }
                                 }
                             })
                         }
@@ -811,9 +823,15 @@ function addDemandPointAtZoomLevel(extent){
                                 contentType: "application/json; charset=utf-8",
                                 success: function callback(response) {
                                     // console.log(response);
+                                    if(response.features[0].geometry.type=="MultiPoint"){
+                                        darr.push([response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]])
+                                        var latlng3=[response.features[0].geometry.coordinates[0][1], response.features[0].geometry.coordinates[0][0]]
+                                        L.marker(latlng3, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                        }else{
                                     darr.push([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
                                     var latlng1=[response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]]
                                     L.marker(latlng1, {icon: Icont}).addTo(line_l1_l2_l3_markers);
+                                        }
                                     // console.log([response.features[0].geometry.coordinates[1], response.features[0].geometry.coordinates[0]])
 
                                 }
@@ -1200,45 +1218,110 @@ function drawlines_connectivity_lines(filter_polylines_arr,point_polylines_arr,d
     
     var res_dp=JSON.parse(response.geojson);
           
-        //pointToLayer: function (feature, latlng) {
-    for(var i=0;i<res_dp.features.length;i++){ 
-            let arr = Array();
-            let arr1=Array()
-            //arr.push(current_dropdown_latlng);
-        let arr4=Array()
-        if(current_dropdown_latlng[1].length) {
-            arr4.push(current_dropdown_latlng[1][1])
-            arr4.push(current_dropdown_latlng[1][0])
-            arr.push(arr4);
-        }else{
-            arr.push(current_dropdown_latlng);
-        }
-            if(res_dp.features[i].geometry.type=="MultiPoint"){
-                arr1.push(res_dp.features[i].geometry.coordinates[0][1])
-                arr1.push(res_dp.features[i].geometry.coordinates[0][0])
-            }else{
-                arr1.push(res_dp.features[i].geometry.coordinates[1])
-                arr1.push(res_dp.features[i].geometry.coordinates[0])
-            }
-            arr.push(arr1);
-            var linecolor='orange';
-            if(table=='sfp_l2'){
-                drawlines_connectivity_lines_next_level(filter_polylines_arr,point_polylines_arr,res_dp.features[i].properties.l2_id,'sfp',arr1)
-            }else{
-                drawlines_connectivity_lines_next_level(filter_polylines_arr,point_polylines_arr,res_dp.features[i].properties.l3_id,'mfp',arr1)
-            }
-           
-            var polyline = L.polyline(arr, {color: linecolor});
-            filter_polylines_arr.push(polyline);
-    } 
-            if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
-                for(var i=0; i<filter_polylines_arr.length; i++){
-                    map.addLayer(filter_polylines_arr[i])
-                }
-                $('#clearlinesbtn').show();
-            }
+        //pointToLayer: function (feature, latlng)
+            if(res_dp.features!=null) {
+                for (var i = 0; i < res_dp.features.length; i++) {
+                    let arr = Array();
+                    let arr1 = Array()
+                    //arr.push(current_dropdown_latlng);
+                    let arr4 = Array()
+                    if (current_dropdown_latlng[1].length) {
+                        arr4.push(current_dropdown_latlng[1][1])
+                        arr4.push(current_dropdown_latlng[1][0])
+                        arr.push(arr4);
+                    } else {
+                        arr.push(current_dropdown_latlng);
+                    }
+                    if (res_dp.features[i].geometry.type == "MultiPoint") {
+                        arr1.push(res_dp.features[i].geometry.coordinates[0][1])
+                        arr1.push(res_dp.features[i].geometry.coordinates[0][0])
+                    } else {
+                        arr1.push(res_dp.features[i].geometry.coordinates[1])
+                        arr1.push(res_dp.features[i].geometry.coordinates[0])
+                    }
+                    arr.push(arr1);
+                    var linecolor = 'orange';
+                    if (table == 'sfp_l2') {
+                        drawlines_connectivity_lines_next_level(filter_polylines_arr, point_polylines_arr, res_dp.features[i].properties.l2_id, 'sfp', arr1)
+                        drawlines_connectivity_lines_EXTEND(filter_polylines_arr, point_polylines_arr, res_dp.features[i].properties.l2_id, 'mfp_l3',res_dp.features[i].properties.x,res_dp.features[i].properties.y )
+                    } else {
+                        drawlines_connectivity_lines_next_level(filter_polylines_arr, point_polylines_arr, res_dp.features[i].properties.l3_id, 'mfp', arr1)
+                    }
 
-                  
+                    var polyline = L.polyline(arr, {color: linecolor});
+                    filter_polylines_arr.push(polyline);
+                }
+                if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
+                    for (var i = 0; i < filter_polylines_arr.length; i++) {
+                        map.addLayer(filter_polylines_arr[i])
+                    }
+                    $('#clearlinesbtn').show();
+                }
+
+            }
+        }
+    });
+    //}     
+      //  },   
+    //})
+  
+  
+}
+
+
+
+function drawlines_connectivity_lines_EXTEND(filter_polylines_arr,point_polylines_arr,did,table,x,y){
+    
+    $.ajax({
+        url: "services/get_SFP_L2_geojson_connectivity.php?lid="+did+"&table="+table,
+        type: "GET",
+        dataType: "json",
+        async: false,
+        contentType: "application/json; charset=utf-8",
+        success: function callback(response) {
+    
+    var res_dp=JSON.parse(response.geojson);
+          
+        //pointToLayer: function (feature, latlng)
+            if(res_dp.features!=null) {
+                for (var i = 0; i < res_dp.features.length; i++) {
+                    let arr = Array();
+                    let arr1 = Array()
+                    //arr.push(current_dropdown_latlng);
+                    let arr4 = Array()
+                    if (current_dropdown_latlng[1].length) {
+                        arr4.push(parseFloat(y));
+                        arr4.push(parseFloat(x))
+                        arr.push(arr4);
+                    } else {
+                        arr.push(current_dropdown_latlng);
+                    }
+                    if (res_dp.features[i].geometry.type == "MultiPoint") {
+                        arr1.push(res_dp.features[i].geometry.coordinates[0][1])
+                        arr1.push(res_dp.features[i].geometry.coordinates[0][0])
+                    } else {
+                        arr1.push(res_dp.features[i].geometry.coordinates[1])
+                        arr1.push(res_dp.features[i].geometry.coordinates[0])
+                    }
+                    arr.push(arr1);
+                    var linecolor = 'white';
+                    if (table == 'sfp_l2') {
+                        drawlines_connectivity_lines_next_level(filter_polylines_arr, point_polylines_arr, res_dp.features[i].properties.l2_id, 'sfp', arr1)
+                    } else {
+                        drawlines_connectivity_lines_next_level(filter_polylines_arr, point_polylines_arr, res_dp.features[i].properties.l3_id, 'mfp', arr1)
+                    }
+
+                    var polyline = L.polyline(arr, {color: linecolor});
+                    filter_polylines_arr.push(polyline);
+                }
+                if (filter_polylines_arr !== undefined && filter_polylines_arr.length !== 0) {
+                    for (var i = 0; i < filter_polylines_arr.length; i++) {
+                        map.addLayer(filter_polylines_arr[i])
+                    }
+                    $('#clearlinesbtn').show();
+                }
+
+            }
         }
     });
     //}     

@@ -41,7 +41,7 @@ class Tehsil extends connection {
                 'image5', image5
                 ))))
                 FROM (SELECT gid, cd_id, pe_name, l1_id, l2_id, l3_id, acc_no, address, install_id, meter_type, bcrm_eqp, site_eqp, phase, fd_no, images, id1, device_id, image2, image3, image4, image5, geom
-               FROM public.demand_point where  l2_id ilike '$lid') as tbl1;";
+               FROM public.demand_point where  l2_id ilike '$lid' and l3_id='') as tbl1;";
         }else{
             $sql = "SELECT json_build_object('type', 'FeatureCollection','crs',  json_build_object('type','name', 'properties', json_build_object('name', 'EPSG:4326'  )),'features', json_agg(json_build_object('type','Feature','gid',gid,'geometry',ST_AsGeoJSON(geom)::json,
             'properties', json_build_object(

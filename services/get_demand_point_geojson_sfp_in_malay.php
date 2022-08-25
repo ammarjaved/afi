@@ -48,8 +48,8 @@ class Tehsil extends connection {
 
 
 
-//           echo $sql;
-//            exit();
+           //echo $sql;
+           //exit();
         $output = array();
         $result_query = pg_query($sql);
         if ($result_query) {
