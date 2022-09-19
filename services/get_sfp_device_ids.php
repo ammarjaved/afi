@@ -2,7 +2,8 @@
 session_start();
 include 'connection.php';
 $output = array();
-
+$con = new Connection();
+$con->connectionDB();
 
 $fp_id=$_REQUEST['fp_id'];
 
@@ -20,7 +21,7 @@ if($query1)
 {
     $output = pg_fetch_all($query1);
 }
-
+$con->closeConnection();
 echo  json_encode($output);
 
 ?>

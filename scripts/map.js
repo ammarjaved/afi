@@ -1462,5 +1462,13 @@ var value_img=0;
           a.href = "http://121.121.232.54:88/sld_dia/index.php?fp="+fp;
           $('#yourlinkId')[0].click();
       }
+	  
+	  function searchSLDExcel(){
+          var fp=$("#search_input1").val();
+         // alert(fp);
+          var a = document.getElementById('yourlinkId1'); //or grab it by tagname etc
+          a.href = "http://121.121.232.54:8888/for_afi/lib/test12.php?l1_id="+fp;
+          $('#yourlinkId1')[0].click();
+      }
 
 

@@ -2,7 +2,8 @@
 session_start();
 include 'connection.php';
 $output = array();
-
+$con = new Connection();
+$con->connectionDB();
 $lid=$_GET['lid'];
 $level=$_GET['level'];
 
@@ -53,6 +54,8 @@ if($query4)
 {
     $output['RYBthree'] = pg_fetch_all($query4);
 }
+$con->closeConnection();
+
 echo  json_encode($output);
 
 ?>

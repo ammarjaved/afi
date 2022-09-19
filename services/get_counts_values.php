@@ -2,6 +2,8 @@
 session_start();
 include 'connection.php';
 $output = array();
+$con = new Connection();
+$con->connectionDB();
 
 $cd_id=$_GET['cd_id'];
 
@@ -33,6 +35,9 @@ if($query4)
 {
     $output['RYBthree'] = pg_fetch_all($query4);
 }
+$con->closeConnection();
+//$con = new Connection();
+//$con->closeConnection();
 echo  json_encode($output);
 
 ?>

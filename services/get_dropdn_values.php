@@ -3,9 +3,13 @@ session_start();
 include 'connection.php';
 $output = array();
 
-Class Dropdowns
+Class Dropdowns extends connection
 {
+function __construct()
+    {
+        $this->connectionDB();
 
+    }
 public function fillDropdown(){
     $lyr = $_REQUEST['lyr'];
     $di = $_REQUEST['di'];
@@ -63,7 +67,7 @@ public function fillDropdown(){
 
         
          
-          
+         $this->closeConnection();  
        
         return $output;
 //if($query2)

@@ -63,11 +63,11 @@ class Tehsil extends connection {
                     
         }
       
-        
+        $this->closeConnection();
 
         return json_encode($output);
 
-        $this->closeConnection();
+        
     }
 }
 

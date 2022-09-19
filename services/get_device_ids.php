@@ -3,7 +3,8 @@ session_start();
 include 'connection.php';
 $output = array();
 
-
+$con = new Connection();
+$con->connectionDB();
 
 $sql1="select cd_id from public.fpl1;";
 $sql2="select cd_id from public.sfp_l2;";
@@ -31,7 +32,8 @@ if($query3)
 {
     $output['mfp'] = pg_fetch_all($query3);
 }
-
+$con->closeConnection();
+//$con->closeConnection();
 echo  json_encode($output);
 
 ?>

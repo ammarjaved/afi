@@ -27,6 +27,6 @@ class Connection
     }
 }
 
-$con = new Connection();
-echo $con->connectionDB();
+//$con = new Connection();
+//echo $con->connectionDB();
 ?>

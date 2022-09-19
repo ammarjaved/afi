@@ -4,7 +4,8 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
-
+$con = new Connection();
+$con->connectionDB();
 $spreadsheet = new Spreadsheet();
 
 
@@ -88,6 +89,7 @@ for($i=0;$i<sizeof($comp);$i++) {
 //    ->setCellValue('B'.$j+11, "Date");
 // Rename worksheet
 //$helper->log('Rename worksheet');
+$con->closeConnection();
 $spreadsheet->getActiveSheet()
     ->setTitle('report');
 $name='report'.rand();

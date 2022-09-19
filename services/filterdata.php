@@ -2,7 +2,8 @@
 session_start();
 include 'connection.php';
 $output = array();
-
+$con = new Connection();
+$con->connectionDB();
 
 $fdatarr=$_REQUEST['fdatarr'];
 
@@ -16,7 +17,9 @@ $output['fp']= $a->fp;
 $output['sfp']= $a->sfp;
 $output['mfp']= $a->mfp;
 
-
+$con->closeConnection();
+//$con = new Connection();
+//$con->closeConnection();
 echo  json_encode($output);
 
 ?>

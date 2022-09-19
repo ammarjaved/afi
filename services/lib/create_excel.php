@@ -3,8 +3,8 @@ include '../connection.php';
 require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-
-
+$con = new Connection();
+$con->connectionDB();
 $spreadsheet = new Spreadsheet();
 
 
@@ -46,7 +46,9 @@ $sql = "with foo as(select * from fpl1)
 select a.*,st_x((ST_Dump(a.geom)).geom)||','||st_y((ST_Dump(a.geom)).geom) as location,images||','||image2||','||image3||','||image4||','||image5 as pic from public.demand_point a";
 $query = pg_query($sql);
 if($query) {
+	ini_set('memory_limit', '1024M');
     $output = pg_fetch_all($query);
+	
 }
 
 $comp=$output;
@@ -96,6 +98,7 @@ for($i=0;$i<sizeof($comp);$i++) {
 //    ->setCellValue('B'.$j+11, "Date");
 // Rename worksheet
 //$helper->log('Rename worksheet');
+$con->closeConnection();
 $spreadsheet->getActiveSheet()
     ->setTitle('report');
 $name='report'.rand();

@@ -151,7 +151,9 @@ else {
                     <div class="col-md-2" style="margin-top:25px;">
                         <button  style="margin-right:50px;" id="ser" onclick="search_deviceid()" class="pull-left btn btn-success">Search</button><br />
                         <button  style="margin-right:50px;margin-top:5px;" id="ser" onclick="searchSLD()" class="pull-left btn btn-success">SLD</button>
+						<button  style="margin-right:50px;margin-top:5px;" id="ser" onclick="searchSLDExcel()" class="pull-left btn btn-success">SLD Excel</button>
                         <a href="" id="yourlinkId" target="_blank" style="display:none;">click me</a>
+						 <a href="" id="yourlinkId1" target="_blank" style="display:none;">click me</a>
                     </div>
                 </div>
             </div>
@@ -285,15 +287,15 @@ else {
                     </div>
                 </div>
             </div>
-        <div id="wg" class="windowGroup">
+        
+        </div>
+<div id="wg" class="windowGroup">
 
         </div>
 
         <div id="wg1" class="windowGroup">
 
         </div>
-        </div>
-
 
     </div>
 

@@ -80,10 +80,12 @@ class Tehsil extends connection {
                     $geojson=$g;
                     $output = $geojson;
         }
+		
+		$this->closeConnection();
 
         return $output;
 
-        $this->closeConnection();
+        
     }
 }
 

@@ -5,11 +5,17 @@ require 'vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 // $output = array();
+$con = new Connection();
+$con->connectionDB();
+   $my_l1_id=$_REQUEST['l1_id'];
+  
+ //  echo $my_l1_id;
+   
+   $sql98="SELECT  l1_id from fpl1 where l1_id in (select distinct l1_id from dp_submitted where l1_id='$my_l1_id')";
+   
+  // echo $sql98;
 
-
-
-
-	$users =  pg_query("SELECT  l1_id from fpl1 where l1_id in (select distinct l1_id from dp_submitted)");
+	$users =  pg_query($sql98);
 		$user = pg_fetch_all($users);
 
 	  $GLOBALS['recursive']=0;
@@ -21,8 +27,11 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 			function create_excel($perm,$user,$len){
 								//echo $GLOBALS['recursive'];
 
-				$reader = new PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+				$reader = new PhpOffice\PhpSpreadsheet\Reader\Xls();
+				$reader->load("afi_data.xls");
+				exit();
 				$spreadsheet = $reader->load("afi_data.xlsx");
+				
 				$users_2=	pg_query("SELECT * from fpl1 where l1_id='$perm'");
 				
 				$spreadsheet->setActiveSheetIndex(0)
@@ -625,7 +634,8 @@ function clean($string) {
 			endwhile;
 
 			
-			
+			$con->connectionDB();
+			 closeConnection();
 				$writer = new Xlsx($spreadsheet);	
 				$writer->save($name_file.'.xlsx');
 				//$writer->save($user[$GLOBALS['recursive']]['pe_name'].'.xlsx');

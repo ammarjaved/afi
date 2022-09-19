@@ -2,7 +2,8 @@
 session_start();
 include 'connection.php';
 $output = array();
-
+$con = new Connection();
+$con->connectionDB();
 
 
 $sql1="select id,status,pe_name,l1_id,cd_id from public.fpl1 where status='Completed';";
@@ -22,7 +23,7 @@ if($query1)
     $output= pg_fetch_all($query1);
 }
 
-
+$con->closeConnection();
 echo  json_encode($output);
 
 ?><?php

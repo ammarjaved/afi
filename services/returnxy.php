@@ -3,8 +3,14 @@ session_start();
 include 'connection.php';
 $output = array();
 
-Class Dropdowns
+Class Dropdowns extends connection
 {
+	
+function __construct()
+    {
+        $this->connectionDB();
+
+    }	
 
 public function fillDropdown(){
     $lyr = $_REQUEST['lyr'];
@@ -31,6 +37,8 @@ public function fillDropdown(){
 
     $query1 = pg_query($sql);
         $output = pg_fetch_all($query1);
+		
+		$this->closeConnection();
         return $output;
 }
 }

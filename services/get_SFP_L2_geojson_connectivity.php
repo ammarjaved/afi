@@ -88,10 +88,12 @@ class Tehsil extends connection {
                     $geojson=$g;
                     $output['geojson'] = $geojson;
         }
+		
+		 $this->closeConnection();
 
         return json_encode($output);
 
-        $this->closeConnection();
+       
     }
 }
 
