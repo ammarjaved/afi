@@ -39,7 +39,35 @@ else {
     </style>
 </head>
 <body class="claro">
- <nav class="navbar navbar-expand-lg py-1 navbar-light bg-light shadow-sm fixed-top" style="margin-bottom: 0px !important;">
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+     
+      <img src="images/logo.png" width="150"  height="47" alt="" class="d-inline-block align-middle mr-2"/>
+      <span class="text-uppercase font-weight-bold text-muted">AFI</span>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Main Menu <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li> <a  onclick="exportExcel()">Export Complete Excel</a></li>
+            <li><a href="afi_report.php"  target="_blank">Export FP Excel</a></li>
+            <li> <a onclick="getProperties()">Unsurveyed DP</a></li>
+            <li> <a href="http://121.121.232.54:88/afi_dashboard/" target="_blank">Afi Dashboard</a></li>
+            <li> <a data-toggle="collapse" data-target="#filter_div">search and filters</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="services/logout.php">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+ <!-- <nav class="navbar navbar-expand-lg py-1 navbar-light bg-light shadow-sm fixed-top" style="margin-bottom: 0px !important;">
 
             <div class="col-lg-12 npnm">
                 <div class="row npnm">
@@ -51,13 +79,13 @@ else {
 
                         <span class="text-uppercase font-weight-bold text-muted">AFI</span>
                         <a href="services/logout.php" class="pull-right btn btn-danger" style="color: white; margin-top: 3px !important;">Logout</a>
-<!--                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>-->
+<!--                        <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Enable Customer</a>
                         <a class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" onclick="exportExcel()">Export Complete Excel</a>
                         <a href="afi_report.php" class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" target="_blank">Export FP Excel</a>
 
                         <a class="cenablebtn pull-right btn btn-basic btn-sm" style="margin-top: 10px !important;margin-right: 10px;" onclick="getProperties()">Unsurveyed DP</a>
 					    <a href="http://121.121.232.54:88/afi_dashboard/" class="pull-right btn btn-danger btn-sm" style="color: white; margin-top: 10px !important;margin-right: 10px;" target="_blank">Afi Dashboard</a>
-
+                      
 
 
                     </div>
@@ -70,6 +98,8 @@ else {
             </div>
 
     </nav>
+   -->
+
 <div class="container-fluid" style="padding:0 0 0 0;">
    
 
@@ -77,7 +107,7 @@ else {
     <div id="content">
        
         <!-- Header -->
-        <div class="row" id="filter_div" style="margin-left: 0px !important; margin-right: 0px !important;">
+        <div class="row collapse" id="filter_div" style="margin-left: 0px !important; margin-right: 0px !important;">
             <!-- <div class="col-md-3 remove_right_padding">
                 <div class="panel panel-default">
                     <div class="panel-body panel_body_style">
@@ -356,7 +386,7 @@ else {
            setTimeout(() => {
                //alert($(window).height());
                //alert($("#content").height());
-            $("#map_div").height($(window).height()-266);
+            $("#map_div").height($(window).height()-170);
             map.invalidateSize();
            }, 100);
             
