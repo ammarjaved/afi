@@ -315,6 +315,38 @@ function getFeatureInfoUrl(map, layer, latlng, params) {
     return url.toString();
 
 }
+
+function getHighRise(){
+    map.off('click');
+    map.on('click', function(e) {
+        map.off('click');
+
+        // Build the URL for a GetFeatureInfo
+        var url = getFeatureInfoUrl(
+            map,
+            high_rise,
+            e.latlng,
+            {
+                'info_format': 'application/json',
+                'propertyName': 'NAME,AREA_CODE,DESCRIPTIO'
+            }
+        );
+        $.ajax({
+            url: 'services/proxy.php?url='+encodeURIComponent(url),
+            dataType: 'JSON',
+            //data: data,
+            method: 'GET',
+            async: false,
+            success: function callback(data) {
+               console.log(data);
+
+            }
+        });
+        $('#nonsurvedmodal').modal('show');
+        activeSelectedLayerPano();
+    });
+}
+
 function getProperties(){
     map.off('click');
     map.on('click', function(e) {
