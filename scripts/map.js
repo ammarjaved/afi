@@ -338,12 +338,27 @@ function getHighRise(){
             method: 'GET',
             async: false,
             success: function callback(data) {
-               console.log(data);
+               console.log(data.features[0].properties.gid);
+               getAllHighriseCustomers(data.features[0].properties.gid)
 
             }
         });
-        $('#nonsurvedmodal').modal('show');
+      //  $('#nonsurvedmodal').modal('show');
         activeSelectedLayerPano();
+    });
+}
+
+function getAllHighriseCustomers(id){
+    $.ajax({
+        url: 'services/highrise.php?gid='+id,
+        dataType: 'JSON',
+        //data: data,
+        method: 'GET',
+        async: false,
+        success: function callback(data) {
+           console.log(data);
+
+        }
     });
 }
 
