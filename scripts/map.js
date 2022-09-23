@@ -70,12 +70,19 @@ var phase_val="";
         maxZoom: 20,
         transparent: true
     });
+	
+	var high_rise = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+        layers: 'cite:high_rise',
+        format: 'image/png',
+        maxZoom: 20,
+        transparent: true
+    });
 
     var map = L.map('map_div', {
         center: [2.3773940674819998, 102.21967220306398],
         // center: [31.5204, 74.3587],
         zoom: 12,
-        layers: [googleSat,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid,dp_submitted],
+        layers: [googleSat,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid,high_rise,dp_submitted],
         attributionControl:false
     });
 
@@ -375,7 +382,8 @@ var overlays = {
 	"CD Tracking":cd_track,
 	"DP Submitted":dp_submitted,
 	"Alor Gaja Boundary":boundry,
-	"Alor Gaja Grid":grid
+	"Alor Gaja Grid":grid,
+	"High Rise":high_rise
 };
 
 L.control.layers(baseLayers, overlays).addTo(map);
