@@ -56,9 +56,10 @@ else {
           <ul class="dropdown-menu">
             <li> <a  onclick="exportExcel()">Export Complete Excel</a></li>
             <li><a href="afi_report.php"  target="_blank">Export FP Excel</a></li>
-            <li> <a onclick="getProperties()">Unsurveyed DP</a></li>
+            <li> <a onclick="getProperties()" style="cursor: pointer;">Unsurveyed DP</a></li>
             <li> <a href="http://121.121.232.54:88/afi_dashboard/" target="_blank">Afi Dashboard</a></li>
-            <li> <a data-toggle="collapse" data-target="#filter_div">search and filters</a></li>
+            <li> <a data-toggle="collapse" data-target="#filter_div" style="cursor: pointer;">Search and Filters</a></li>
+            <li> <a onclick="getHighRise()" style="cursor: pointer;">High Rise Map click</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="services/logout.php">Logout</a></li>
           </ul>
@@ -354,6 +355,53 @@ else {
 
     </div>
 </div>
+
+<div class="modal" id="high_rise_able" role="dialog" style="">
+                                <div class="modal-dialog">
+                                
+                                <!-- Modal content-->
+                                <div class="modal-content" style="width: max-content; height:auto;">
+                                    <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">High Rise Data</h4>
+                                    </div>
+                                    <div class="modal-body" style= 'width:700px; height:400px; overflow-y:scroll;'>
+                                    <table  id='userTable' class="table table-bordered table-striped" style="width:max-content; height:max-content; overflow-x:scroll; overflow-y:scroll;">
+                                    <thead>   
+                                        <tr>
+                                            <th>pk_id</th>
+                                            <th>cd_id</th>
+                                            <th>pe_name</th>
+                                            <th>l1_id</th>
+                                            <th>l2_id</th>
+                                            <th>l3_id</th>
+                                            <th>acc_no</th>
+                                            <th>address</th>
+                                            <th>install_id</th>
+                                            <th>meter_type</th>
+                                            <th>bcrm_eqp</th>
+                                            <th>site_eqp</th>
+                                            <th>phase</th>
+                                            <th>image_1</th>
+                                            <th>image_2</th>
+                                            <th>image_3</th>
+                                            <th>image_4</th>
+                                            <th>image_5</th>
+                                            <th>gid</th>
+                                        </tr>
+
+                                    </thead> 
+                                        <tbody id="hir_data" style="width:700px; height:500px;">
+
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                                
+                                </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="libs/bootstrap/js/bootstrap.min.js"></script>

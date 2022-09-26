@@ -339,7 +339,9 @@ function getHighRise(){
             async: false,
             success: function callback(data) {
                console.log(data.features[0].properties.gid);
+               
                getAllHighriseCustomers(data.features[0].properties.gid)
+               
 
             }
         });
@@ -356,7 +358,34 @@ function getAllHighriseCustomers(id){
         method: 'GET',
         async: false,
         success: function callback(data) {
-           console.log(data);
+            $('#high_rise_able').modal('show');
+            var str='';
+            for(var i=0;i<data.length;i++){    
+               // str=str+data[i].
+               str=str+'<tr>'+
+               '<td>'+data[i].pk_id+'</td>'+
+               '<td>'+data[i].cd_id+'</td>'+
+               '<td>'+data[i].pe_name+'</td>'+
+               '<td>'+data[i].l1_id+'</td>'+
+               '<td>'+data[i].l2_id+'</td>'+
+               '<td>'+data[i].l3_id+'</td>'+
+               '<td>'+data[i].acc_no+'</td>'+
+               '<td>'+data[i].address+'</td>'+
+               '<td>'+data[i].install_id+'</td>'+
+               '<td>'+data[i].meter_type+'</td>'+
+               '<td>'+data[i].bcrm_eqp+'</td>'+
+               '<td>'+data[i].site_eqp+'</td>'+
+               '<td>'+data[i].phase+'</td>'+
+               '<td><a href="'+data[i].images +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + data[i].images + '" width="20px" height="20px"></a></td>'+
+               '<td><a href="'+data[i].image2 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + data[i].image2 + '" width="20px" height="20px"></a></td>'+
+               '<td><a href="'+data[i].image3 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + data[i].image3 + '" width="20px" height="20px"></a></td>'+
+               '<td><a href="'+data[i].image4 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + data[i].image4 + '" width="20px" height="20px"></a></td>'+
+               '<td><a href="'+data[i].image5 +'" class=\'example-image-link\' data-lightbox=\'example-set\' title=\'&lt;button class=&quot;primary &quot; onclick= rotate_img(&quot;pic1&quot)  &gt;Rotate image&lt;/button&gt;\'><img src="' + data[i].image5 + '" width="20px" height="20px"></a></td>'+
+               '<td>'+data[i].gid+'</td>'+ 
+               '</tr>';
+            }
+
+            $("#hir_data").html(str);
 
         }
     });
