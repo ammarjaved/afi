@@ -360,13 +360,13 @@ else {
                                 <div class="modal-dialog">
                                 
                                 <!-- Modal content-->
-                                <div class="modal-content" style="width: max-content; height:auto;">
+                                <div class="modal-content" style="width:930px; height:530px; cursor:move;">
                                     <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <h4 class="modal-title">High Rise Data</h4>
                                     </div>
-                                    <div class="modal-body" style= 'width:700px; height:400px; overflow-y:scroll;'>
-                                    <table  id='userTable' class="table table-bordered table-striped" style="width:max-content; height:max-content; overflow-x:scroll; overflow-y:scroll;">
+                                    <div class="modal-body" style= 'width:920px; height:400px; overflow-y:scroll;'>
+                                    <table  id='userTable' class="table table-bordered table-striped" style="width:800px; height:400px; overflow-x:scroll; overflow-y:scroll;">
                                     <thead>   
                                         <tr>
                                             <th>pk_id</th>
@@ -391,7 +391,7 @@ else {
                                         </tr>
 
                                     </thead> 
-                                        <tbody id="hir_data" style="width:700px; height:500px;">
+                                        <tbody id="hir_data" style="width:900px; height:400px;">
 
                                         </tbody>
                                     </table>
