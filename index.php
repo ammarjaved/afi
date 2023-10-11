@@ -6,7 +6,7 @@ if (isset($_SESSION['logedin'])) {
 
 } 
 else {
-    header("Location:" . $loc . "/afi/login/loginform.php");
+    header("Location:" . $loc . "/afi2/login/loginform.php");
 }
 ?>
 <html>
@@ -44,7 +44,7 @@ else {
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
      
-      <img src="images/logo.png" width="150"  height="47" alt="" class="d-inline-block align-middle mr-2"/>
+      <img src="images/logo.png" width="150"  height="75" alt="" class="d-inline-block align-middle mr-2"/>
       <span class="text-uppercase font-weight-bold text-muted">AFI</span>
     </div>
 
@@ -60,6 +60,7 @@ else {
             <li> <a href="http://121.121.232.54:88/afi_dashboard/" target="_blank">Afi Dashboard</a></li>
             <li> <a data-toggle="collapse" data-target="#filter_div" style="cursor: pointer;">Search and Filters</a></li>
             <li> <a onclick="getHighRise()" style="cursor: pointer;">High Rise Map click</a></li>
+            <li> <a onclick="show_hide_demand_point()" style="cursor: pointer;">Toggle DP</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="services/logout.php">Logout</a></li>
           </ul>
@@ -126,8 +127,8 @@ else {
             <div class="col-md-3 remove_right_padding">
                 <div class=" panel panel-default">
                     <div class="panel-body panel_body_style">
-                        <label style="font-weight: bold;">FP</label>
-                        <select class="form-control formControlWIdth" name="fp" id="fpdropdown">
+                        <label style="font-weight: bold;">FP</label><br />
+                        <select style="width:300px;height:300px;" tabindex="-1" class="form-control select2-hidden-accessible" name="fp" id="fpdropdown" >
                         <option selected disabled value="0">--Select ID--</option>
                         </select>
                     </div>
@@ -410,6 +411,10 @@ else {
 <script src="libs/images_slider/js-view/jQueryRotate.js"></script>
  <link rel="stylesheet" href="libs/window-engine.css" />
  <script src="libs/window-engine.js"></script>
+
+ <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js"></script>
+
 
 
 

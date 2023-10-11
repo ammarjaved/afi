@@ -29,47 +29,47 @@ var phase_val="";
     });
 	
 	var dp_submitted = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:dp_submitted',
+        layers: 'cite:dp_submitted_2',
         format: 'image/png',
         maxZoom: 20,
         transparent: true
     });
 
     var non_surveyed_dp = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:demand_point_not_surveyed',
+        layers: 'cite:demand_point_not_surveyed_2',
         format: 'image/png',
         maxZoom: 20,
         transparent: true
     });
 
     var pano_layer = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:pano_afi',
+        layers: 'cite:pano_layer_2',
         format: 'image/png',
         maxZoom: 20,
         transparent: true
     });
-	var cd_track = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:cd_tracking',
-        format: 'image/png',
-        maxZoom: 20,
-        transparent: true
-    });
+	// var cd_track = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+    //     layers: 'cite:cd_tracking',
+    //     format: 'image/png',
+    //     maxZoom: 20,
+    //     transparent: true
+    // });
 	
 	
 
-	var boundry = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:boundary_alor_gajah',
-        format: 'image/png',
-        maxZoom: 20,
-        transparent: true
-    });
+	// var boundry = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+    //     layers: 'cite:boundary_alor_gajah',
+    //     format: 'image/png',
+    //     maxZoom: 20,
+    //     transparent: true
+    // });
 	
-	var grid = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
-        layers: 'cite:grid_alor_gajah',
-        format: 'image/png',
-        maxZoom: 20,
-        transparent: true
-    });
+	// var grid = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
+    //     layers: 'cite:grid_alor_gajah',
+    //     format: 'image/png',
+    //     maxZoom: 20,
+    //     transparent: true
+    // });
 	
 	var high_rise = L.tileLayer.wms("http://121.121.232.54:7090/geoserver/cite/wms", {
         layers: 'cite:high_rise',
@@ -79,10 +79,10 @@ var phase_val="";
     });
 
     var map = L.map('map_div', {
-        center: [2.3773940674819998, 102.21967220306398],
+        center: [2.2130229989574106, 102.25439071655275],
         // center: [31.5204, 74.3587],
         zoom: 12,
-        layers: [googleSat,cd_track, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,boundry,grid,high_rise,dp_submitted],
+        layers: [googleSat,high_rise, demand_point,pano_layer,lvdb_l1,SFP_L2,MFP_L3,dp_submitted],
         attributionControl:false
     });
 
@@ -452,13 +452,12 @@ var overlays = {
     "FPL_L1&nbsp&nbsp<img src='images/1.png' width='30' height='30'>": lvdb_l1,
     "SFP_L2&nbsp&nbsp<img src='images/2.png' width='30' height='30'>": SFP_L2,
     "MFP_L3&nbsp&nbsp<img src='images/3.png' width='30' height='30'>": MFP_L3,
-    "Surveyed Demand Points &nbsp&nbsp ": demand_point,
     "Non Surveyed D/P": non_surveyed_dp,
     "Pano Layer":pano_layer,
-	"CD Tracking":cd_track,
 	"DP Submitted":dp_submitted,
-	"Alor Gaja Boundary":boundry,
-	"Alor Gaja Grid":grid,
+    "DP":demand_point,
+	//"Alor Gaja Boundary":boundry,
+//	"Alor Gaja Grid":grid,
 	"High Rise":high_rise
 };
 
@@ -466,23 +465,23 @@ L.control.layers(baseLayers, overlays).addTo(map);
 
 
 var Icont = L.icon({
-    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
+    iconUrl: 'http://121.121.232.54:88/afi/images/1.png',
     iconSize:     [0, 0] // size of the icon
 });
 var Icon1 = L.icon({
-    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/1.png',
+    iconUrl: 'http://121.121.232.54:88/afi/images/1.png',
     iconSize:     [35, 35] // size of the icon
 });
 var Icon2 = L.icon({
-    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/2.png',
+    iconUrl: 'http://121.121.232.54:88/afi/images/2.png',
     iconSize:     [35, 35] // size of the icon
 });
 var Icon3 = L.icon({
-    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/3.png',
+    iconUrl: 'http://121.121.232.54:88/afi/images/3.png',
     iconSize:     [35, 35] // size of the icon
 });
 var ryb= L.icon({
-    iconUrl: 'https://061.bz/scripts/AWIS/assets/img/ryb.png',
+    iconUrl: 'http://121.121.232.54:88/afi/images/ryb.png',
     iconSize:     [25, 25] // size of the icon
 });
 
@@ -498,22 +497,72 @@ function fillDropDowns(di,lyr){
             // var r=JSON.parse(response)
             console.log(data)
             for(var j=0;j<data.count.length;j++){ 
-                if(data.count[j].phase=="R"){       
-                $("#sred").text(data.count[j].count);
+             if(data.count_h!=false){   
+                if(data.count[j].phase=="R"){ 
+                for(var k=0;k<data.count_h.length;k++){
+                   if(data.count_h[k].phase=="R"){ 
+                    $("#sred").text(Number(data.count[j].count)+Number(data.count_h[k].count));
+                   }
+                }          
                 }
                 if(data.count[j].phase=="Y"){
-                $("#syellow").text(data.count[j].count);
+                 for(var k=0;k<data.count_h.length;k++){
+                   if(data.count_h[k].phase=="Y"){ 
+                    $("#syellow").text(Number(data.count[j].count)+Number(data.count_h[k].count));
+                   }
+                }         
+                //$("#syellow").text(data.count[j].count);
                 }
                 if(data.count[j].phase=="B"){
-                $("#sblue").text(data.count[j].count);
+                    for(var k=0;k<data.count_h.length;k++){
+                        if(data.count_h[k].phase=="B"){ 
+                         $("#sblue").text(Number(data.count[j].count)+Number(data.count_h[k].count));
+                        }
+                     }      
+                //$("#sblue").text(data.count[j].count);
                 }
+                var gh=0;
                 if(data.count[j].phase=="RYB"){
-                $("#tryb").text(data.count[j].count);
+                    for(var k=0;k<data.count_h.length;k++){
+                        if(data.count_h[k].phase=="RYB"){ 
+                         $("#tryb").text(Number((data.count[j])?data.count[j].count:'0')+Number((data.count_h[k])?data.count_h[k].count:'0'));
+                         gh=1;
+                        }
+                     }
+                     if(gh==0){
+                        $("#tryb").text(Number((data.count[j])?data.count[j].count:'0'));
+                     }    
+                //$("#tryb").text(data.count[j].count);
                 }
+            }else{
+                
+                    if(data.count[j].phase=="R"){       
+                    $("#sred").text(data.count[j].count);
+                    }
+                    if(data.count[j].phase=="Y"){
+                    $("#syellow").text(data.count[j].count);
+                    }
+                    if(data.count[j].phase=="B"){
+                    $("#sblue").text(data.count[j].count);
+                    }
+                    if(data.count[j].phase=="RYB"){
+                    $("#tryb").text(data.count[j].count);
+                    }
+                  
+            }
               }
               var total_sum=0;
-              var total_sum=Number(checkIncomingValue(data,0)) + Number(checkIncomingValue(data,1))  + Number(checkIncomingValue(data,2))  + Number(checkIncomingValue(data,3));
-              $("#total_count").text(total_sum );
+              if(data.count_h!=false){ 
+              var total_sum_n=Number(checkIncomingValue(data.count[0].count)) + Number(checkIncomingValue(data.count[1].count))  + Number(checkIncomingValue(data.count[2].count))  + Number(checkIncomingValue(data.count[3].count));            
+              var total_sum_h=Number(checkIncomingValue((data.count_h[0])?data.count_h[0].count:'0')) + Number(checkIncomingValue((data.count_h[1])?data.count_h[1].count:'0'))  + Number(checkIncomingValue((data.count_h[2])?data.count_h[2].count:'0'))  + Number(checkIncomingValue((data.count_h[3])?data.count_h[3].count:'0'));
+              total_sum=Number(total_sum_n)+Number(total_sum_h);
+              $("#total_count").text(total_sum);
+              }else{
+                var total_sum_n=Number(checkIncomingValue(data.count[0].count)) + Number(checkIncomingValue(data.count[1].count))  + Number(checkIncomingValue(data.count[2].count))  + Number(checkIncomingValue(data.count[3].count));            
+                total_sum=Number(total_sum_n);
+                $("#total_count").text(total_sum);
+              }
+              $("#total_count").text(total_sum);
             $("#total_count_p").text(parseInt(((total_sum*100)/50000))+'%');
             if(lyr=='fp'){
                // $('.load_options').remove();
@@ -524,6 +573,11 @@ function fillDropDowns(di,lyr){
                     str1=str1+'<option value="'+ data.fp[i].l1_id+","+data.fp[i].x+"-"+data.fp[i].y+'">'+data.fp[i].l1_id+' ('+data.fp[i].pe_name+')'+'</option>';
                 }
                     $('select[name="fp"]').html(str1);
+
+                    $("#fpdropdown").select2();
+
+                        
+                
             }
             }
             else if(lyr=='sfp'){
@@ -937,13 +991,15 @@ function addDemandPointAtZoomLevel(extent){
                 }
             })
 
-            map.addLayer(demand_point)
+          //  map.addLayer(demand_point)
+       demand_point.addTo(map)
             //console.log(demand_point.getZIndex())
             //console.log(dp_submitted.getZIndex())
             demand_point.setZIndex(0);
             demand_point.bringToBack();
             dp_submitted.bringToFront();
             map.removeLayer(dp_submitted)
+            high_rise.bringToFront();
             //dp_submitted.setZIndex(demand_point.getZIndex()+1)
             //dp_submitted.addTo(map);
 
@@ -959,6 +1015,17 @@ function addDemandPointAtZoomLevel(extent){
 }
 
 
+show_hide_demand_point_status=true;
+function show_hide_demand_point(){
+  //  if(show_hide_demand_point_status==true){
+        map.removeLayer(demand_point);
+        show_hide_demand_point_status=false;
+    // }else{
+    //     map.addLayer(demand_point);
+    //     show_hide_demand_point_status=true
+    // }
+
+}
 //-----------add remove geojson----------  
 function addRemoveLayer(name){
     if(name=='lvdb_l1'){
@@ -1124,8 +1191,12 @@ $('.fd_p').on('click',function(){
 
     // map.removeLayer(demand_point)
     // console.log(current_phase_val+','+fd_no)
+    
+    var bounds=map.getBounds();
+    var poly=createPolygonFromBounds(bounds)
+    var wkt=toWKT(poly).toString();
     $.ajax({
-        url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=" + fd_no+ "&phase=" + current_phase_val,
+        url: "services/get_demand_point_geojson.php?lid="+current_dropdown_Lid + "&fd_no=" + fd_no+ "&phase=" + current_phase_val+"&extent="+wkt,
         type: "GET",
         dataType: "json",
         contentType: "application/json; charset=utf-8",
@@ -1241,7 +1312,7 @@ function drawlines_against_fp_geojson(response,did,table){
             let arr = Array();
             let arr1 = Array()
             let arr4 = Array()
-            if (current_dropdown_latlng[1].length) {
+            if (Array.isArray(current_dropdown_latlng[1])) {
                 arr4.push(current_dropdown_latlng[1][1])
                 arr4.push(current_dropdown_latlng[1][0])
                 arr.push(arr4);
@@ -1512,9 +1583,9 @@ function exportExcel(){
 }
 
 
-function checkIncomingValue(val,num){
-    if(val.count[num]){
-        return val.count[num].count;
+function checkIncomingValue(val){
+    if(val){
+        return val;
     }else{
         return 0
     }
